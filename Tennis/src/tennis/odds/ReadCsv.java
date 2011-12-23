@@ -9,14 +9,25 @@ public class ReadCsv {
 
 	public static void main(final String[] args) throws IOException
 	{
-		final CSVReader reader = new CSVReader(new FileReader("doc\\matchshort.csv"));
+		final CSVReader reader = new CSVReader(new FileReader("doc\\sharapova.csv"));
+	    printLine(reader.readNext());
+	    printLine(reader.readNext());
 	    String [] nextLine;
 	    while ((nextLine = reader.readNext()) != null) {
-	        for (final String string : nextLine)
-			{
-	        	System.out.print(string + ", ");
-			}
-	        System.out.println();
+	        printLpm(nextLine);
 	    }
+	}
+
+	private static void printLpm(final String[] nextLine)
+	{
+		System.out.print("Time: " + nextLine[0] + ", Player: " + nextLine[3] + ", LPM: " + nextLine[9] + '\n');
+	}
+
+	private static void printLine(final String[] nextLine)
+	{
+		for (final String string : nextLine)
+		{
+			System.out.print(string + ", ");
+		}
 	}
 }
