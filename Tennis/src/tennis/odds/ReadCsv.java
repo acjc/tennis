@@ -9,7 +9,7 @@ public class ReadCsv {
 
 	public static void main(final String[] args) throws IOException
 	{
-		final CSVReader reader = new CSVReader(new FileReader("doc\\match.csv"));
+		final CSVReader reader = new CSVReader(new FileReader("doc\\matchshort.csv"));
 	    String [] nextLine;
 	    while ((nextLine = reader.readNext()) != null) {
 	        for (final String string : nextLine)
