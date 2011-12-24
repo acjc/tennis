@@ -5,8 +5,8 @@ import java.io.IOException;
 
 import au.com.bytecode.opencsv.CSVReader;
 
-public class ReadCsv {
-
+public class ReadCsv
+{
 	public static void main(final String[] args) throws IOException
 	{
 		final CSVReader reader = new CSVReader(new FileReader("doc\\sharapova.csv"));
@@ -20,7 +20,7 @@ public class ReadCsv {
 
 	private static void printLpm(final String[] nextLine)
 	{
-		System.out.print("Time: " + nextLine[0] + ", Player: " + nextLine[3] + ", LPM: " + nextLine[9] + '\n');
+		System.out.print("Time: " + nextLine[1] + ", Player: " + nextLine[4] + ", LPM: " + nextLine[10] + '\n');
 	}
 
 	private static void printLine(final String[] nextLine)

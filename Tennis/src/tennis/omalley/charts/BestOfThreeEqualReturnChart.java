@@ -1,5 +1,7 @@
 package tennis.omalley.charts;
 
+import java.io.IOException;
+
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -7,9 +9,9 @@ import org.jfree.ui.RefineryUtilities;
 
 import tennis.omalley.probabilities.OMalley;
 
-public class BestOfThreeEqualReturnChart extends TennisChart{
-
-	public BestOfThreeEqualReturnChart()
+public class BestOfThreeEqualReturnChart extends XYLineChart
+{
+	public BestOfThreeEqualReturnChart() throws IOException
 	{
 	    super("Probability of winning a best-of-3 set match", "p", "bestOfThree(p, 0.5)");
 	}
@@ -29,9 +31,9 @@ public class BestOfThreeEqualReturnChart extends TennisChart{
 	    return dataset;
 	}
 
-	public static void main(final String[] args) {
-
-	    final TennisChart chart = new BestOfThreeEqualReturnChart();
+	public static void main(final String[] args) throws IOException
+	{
+	    final XYLineChart chart = new BestOfThreeEqualReturnChart();
 	    chart.pack();
 	    RefineryUtilities.centerFrameOnScreen(chart);
 	    chart.setVisible(true);

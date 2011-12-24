@@ -1,5 +1,7 @@
 package tennis.omalley.charts;
 
+import java.io.IOException;
+
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -7,9 +9,9 @@ import org.jfree.ui.RefineryUtilities;
 
 import tennis.omalley.probabilities.OMalley;
 
-public class GameChart extends TennisChart{
-
-	public GameChart()
+public class GameChart extends XYLineChart
+{
+	public GameChart() throws IOException
 	{
 	    super("Probability of winning a game", "p", "game(p)");
 	}
@@ -29,9 +31,9 @@ public class GameChart extends TennisChart{
 	    return dataset;
 	}
 
-	public static void main(final String[] args) {
-
-	    final TennisChart chart = new GameChart();
+	public static void main(final String[] args) throws IOException
+	{
+	    final XYLineChart chart = new GameChart();
 	    chart.pack();
 	    RefineryUtilities.centerFrameOnScreen(chart);
 	    chart.setVisible(true);

@@ -1,6 +1,7 @@
 package tennis.omalley.charts;
 
 import java.awt.Color;
+import java.awt.Dimension;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -11,26 +12,26 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.ui.ApplicationFrame;
 
-public abstract class TennisChart extends ApplicationFrame{
-
+public abstract class XYLineChart extends ApplicationFrame
+{
 	private final String title;
 	private final String xLabel;
 	private final String yLabel;
 
-	public TennisChart(final String title, final String xLabel, final String yLabel)
+	public XYLineChart(final String title, final String xLabel, final String yLabel)
 	{
 	    super(title);
 		this.title = title;
 		this.xLabel = xLabel;
 		this.yLabel = yLabel;
-		final ChartPanel chartPanel = new ChartPanel(createChart());
-	    chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
+		final ChartPanel chartPanel = new ChartPanel(createXYLineChart());
+	    chartPanel.setPreferredSize(new Dimension(500, 270));
 	    setContentPane(chartPanel);
 	}
 
 	protected abstract XYDataset createDataset();
 
-	private JFreeChart createChart()
+	private JFreeChart createXYLineChart()
 	{
 	    final JFreeChart chart = ChartFactory.createXYLineChart(
 	        title,

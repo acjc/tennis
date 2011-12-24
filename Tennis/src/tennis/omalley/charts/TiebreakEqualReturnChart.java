@@ -1,5 +1,7 @@
 package tennis.omalley.charts;
 
+import java.io.IOException;
+
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -7,9 +9,9 @@ import org.jfree.ui.RefineryUtilities;
 
 import tennis.omalley.probabilities.OMalley;
 
-public class TiebreakEqualReturnChart extends TennisChart{
+public class TiebreakEqualReturnChart extends XYLineChart{
 
-	public TiebreakEqualReturnChart()
+	public TiebreakEqualReturnChart() throws IOException
 	{
 	    super("Probability of winning a tiebreak", "p", "tiebreak(p, 0.5)");
 	}
@@ -29,9 +31,9 @@ public class TiebreakEqualReturnChart extends TennisChart{
 	    return dataset;
 	}
 
-	public static void main(final String[] args) {
-
-	    final TennisChart chart = new TiebreakEqualReturnChart();
+	public static void main(final String[] args) throws IOException
+	{
+	    final XYLineChart chart = new TiebreakEqualReturnChart();
 	    chart.pack();
 	    RefineryUtilities.centerFrameOnScreen(chart);
 	    chart.setVisible(true);
