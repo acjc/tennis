@@ -5,9 +5,9 @@ import tennis.omalley.matrices.Matrices;
 
 public final class OMalley
 {
-	public static double game(final double point)
+	public static double game(final double probabilityOfPointOnServe)
 	{
-		final double p = point;
+		final double p = probabilityOfPointOnServe;
 		return pow(p, 4) * (15 - (4 * p) - ((10 * pow(p, 2)) / (1 - (2 * p) * (1 - p))));
 	}
 
@@ -15,6 +15,7 @@ public final class OMalley
 	{
 		final double p = onServe;
 		final double q = returnServe;
+
 		double result = 0;
 		for (final double[] a : Matrices.tbMatrix)
 		{
@@ -34,6 +35,7 @@ public final class OMalley
 		final double q = returnServe;
 		final double gp = game(p);
 		final double gq = game(q);
+
 		double result = 0;
 		for (final double[] b : Matrices.setMatrix)
 		{
@@ -43,10 +45,55 @@ public final class OMalley
 		return result;
 	}
 
+	public static double setInPlay(final double onServe, final double returnServe, final int targetScore, final int opponentScore, final boolean servingNext)
+	{
+		final double p = onServe;
+		final double q = returnServe;
+		final int a = targetScore;
+		final int b = opponentScore;
+
+		if (a == 6 && b < 5) // Target player has won
+		{
+			return 1;
+		}
+		else if (a == b) // Scores equal
+		{
+			if (a == 0) // Set just starting
+			{
+				return set(p, q);
+			}
+			else
+			{
+				final double futureScore = (a == 5) ? tiebreak(p, q) : setInPlay(p, q, a + 1, b + 1, true);
+				return game(p) * game(q) + (game(p) * (1 - game(q)) + (1 - game(p)) * game(q)) * futureScore;
+			}
+		}
+		else if (b == 5) // Opponent on verge of winning
+		{
+			if (servingNext)
+			{
+				return game(p) * setInPlay(p, q, a + 1, b, false);
+			}
+			else
+			{
+				return game(q) * setInPlay(p, q, a + 1, b, true);
+			}
+		}
+		else if (servingNext) // Depends who is next to serve
+		{
+			return game(p) * setInPlay(p, q, a + 1, b, false) + (1 - game(p)) * setInPlay(p, q, a, b + 1, false);
+		}
+		else
+		{
+			return game(q) * setInPlay(p, q, a + 1, b, true) + (1 - game(q)) * setInPlay(p, q, a, b + 1, true);
+		}
+	}
+
 	public static double bestOfThree(final double onServe, final double returnServe)
 	{
 		final double p = onServe;
 		final double q = returnServe;
+
 		return pow(set(p, q), 2) * (1 + 2 * (1 - set(p, q)));
 	}
 
@@ -54,6 +101,7 @@ public final class OMalley
 	{
 		final double p = onServe;
 		final double q = returnServe;
+
 		return pow(set(p, q), 3) * (1 + 3 * (1 - set(p, q)) + 6 * (1 - pow(set(p, q), 2)));
 	}
 }

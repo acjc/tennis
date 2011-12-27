@@ -32,6 +32,7 @@ public class LpmChart extends ApplicationFrame
 		this.title = title;
 		this.playerOneFile = playerOneFile;
 		this.playerTwoFile = playerTwoFile;
+
 		final ChartPanel chartPanel = new ChartPanel(createTimeSeriesChart());
 	    chartPanel.setPreferredSize(new Dimension(500, 270));
 	    setContentPane(chartPanel);
@@ -50,11 +51,13 @@ public class LpmChart extends ApplicationFrame
 		final TimeSeries playerOneLpm = new TimeSeries("LPM");
 		final CSVReader reader = new CSVReader(new FileReader(playerFile));
 	    reader.readNext(); reader.readNext(); reader.readNext(); // header
+
 	    String [] nextLine;
 	    while ((nextLine = reader.readNext()) != null && Double.parseDouble(nextLine[10]) != -1)
 	    {
     		playerOneLpm.add(new Second(new Date(Long.parseLong(nextLine[0]))), Double.parseDouble(nextLine[10]));
 	    }
+
 		return playerOneLpm;
 	}
 
@@ -63,7 +66,7 @@ public class LpmChart extends ApplicationFrame
 	    final JFreeChart chart = ChartFactory.createTimeSeriesChart(
 	    	title,
 	    	"Time",
-	    	"LPM (Sharapova)",
+	    	"LPM",
 	        createDataset(),
 	        false,                    			 // legend
 	        true,                     			 // tooltips
