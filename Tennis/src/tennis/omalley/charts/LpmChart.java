@@ -51,12 +51,9 @@ public class LpmChart extends ApplicationFrame
 		final CSVReader reader = new CSVReader(new FileReader(playerFile));
 	    reader.readNext(); reader.readNext(); reader.readNext(); // header
 	    String [] nextLine;
-	    while ((nextLine = reader.readNext()) != null)
+	    while ((nextLine = reader.readNext()) != null && Double.parseDouble(nextLine[10]) != -1)
 	    {
-	    	if(Double.parseDouble(nextLine[10]) != -1)
-	    	{
-	    		playerOneLpm.add(new Second(new Date(Long.parseLong(nextLine[0]))), Double.parseDouble(nextLine[10]));
-	    	}
+    		playerOneLpm.add(new Second(new Date(Long.parseLong(nextLine[0]))), Double.parseDouble(nextLine[10]));
 	    }
 		return playerOneLpm;
 	}
@@ -79,7 +76,6 @@ public class LpmChart extends ApplicationFrame
 	    plot.setBackgroundPaint(Color.lightGray);
 	    plot.setDomainGridlinePaint(Color.white);
 	    plot.setRangeGridlinePaint(Color.white);
-	    plot.getRangeAxis().setUpperBound(20);
 
 	    return chart;
 	}
