@@ -8,7 +8,7 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.chart.renderer.xy.XYSplineRenderer;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.ui.ApplicationFrame;
 
@@ -50,9 +50,11 @@ public abstract class XYLineChart extends ApplicationFrame
 	    plot.setBackgroundPaint(Color.lightGray);
 	    plot.setDomainGridlinePaint(Color.white);
 	    plot.setRangeGridlinePaint(Color.white);
+	    plot.getDomainAxis().setMinorTickCount(10);
 
-	    final XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
+	    final XYSplineRenderer renderer = new XYSplineRenderer();
 	    renderer.setSeriesLinesVisible(0, true);
+	    renderer.setSeriesShapesVisible(0, false);
 	    plot.setRenderer(renderer);
 
 	    return chart;

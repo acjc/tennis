@@ -9,19 +9,19 @@ import org.jfree.ui.RefineryUtilities;
 
 import tennis.omalley.probabilities.OMalley;
 
-public class TiebreakEqualReturnChart extends XYLineChart{
-
-	public TiebreakEqualReturnChart() throws IOException
+public class SetFromThreeAllOnServeEqualReturnChart extends XYLineChart
+{
+	public SetFromThreeAllOnServeEqualReturnChart() throws IOException
 	{
-	    super("Probability of winning a tiebreak", "p", "tiebreak(p, 0.5)");
+	    super("Probability of winning the set when on serve at 3-3", "p", "setInPlay(p, 0.5, 3, 3, true)");
 	}
 
 	@Override
 	protected XYDataset createDataset()
 	{
-		final XYSeries series = new XYSeries("Tiebreak");
+		final XYSeries series = new XYSeries("ThreeAllOnServe");
 	    for(double i = 0; i < 1.0; i += 0.02) {
-			series.add(i, OMalley.tiebreak(i, 0.5));
+			series.add(i, OMalley.setInPlay(i, 0.5, 3, 3, true));
 	    }
 
 	    final XYSeriesCollection dataset = new XYSeriesCollection();
@@ -32,7 +32,7 @@ public class TiebreakEqualReturnChart extends XYLineChart{
 
 	public static void main(final String[] args) throws IOException
 	{
-	    final XYLineChart chart = new TiebreakEqualReturnChart();
+	    final XYLineChart chart = new SetFromThreeAllOnServeEqualReturnChart();
 	    chart.pack();
 	    RefineryUtilities.centerFrameOnScreen(chart);
 	    chart.setVisible(true);

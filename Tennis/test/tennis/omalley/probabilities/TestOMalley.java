@@ -19,9 +19,14 @@ public class TestOMalley {
 	}
 
 	@Test
+	public void testBestOfThree()
+	{
+		System.out.println(OMalley.bestOfThree(0.55, 0.55));
+	}
+
+	@Test
 	public void testSetInPlay()
 	{
-//		System.out.println(OMalley.setInPlay(0.6, 0.5, 3, 3, true));
 		assertThat(setInPlay(0.5, 0.5, 5, 5, true), equalTo(0.5));
 		assertThat(setInPlay(0.5, 0.5, 5, 5, false), equalTo(0.5));
 		assertThat(setInPlay(0.6, 0.4, 4, 5, true), greaterThan(setInPlay(0.6, 0.4, 4, 5, false)));

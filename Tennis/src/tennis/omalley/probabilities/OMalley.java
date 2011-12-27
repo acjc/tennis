@@ -56,30 +56,15 @@ public final class OMalley
 		{
 			return 1;
 		}
-		else if (a == b) // Scores equal
+		if (a < 5 && b == 6) // Opponent has won
 		{
-			if (a == 0) // Set just starting
-			{
-				return set(p, q);
-			}
-			else
-			{
-				final double futureScore = (a == 5) ? tiebreak(p, q) : setInPlay(p, q, a + 1, b + 1, true);
-				return game(p) * game(q) + (game(p) * (1 - game(q)) + (1 - game(p)) * game(q)) * futureScore;
-			}
+			return 0;
 		}
-		else if (b == 5) // Opponent on verge of winning
+		if (a == 5 && b == 5) // Either the target player wins 7-5 or he/she wins on a tiebreak
 		{
-			if (servingNext)
-			{
-				return game(p) * setInPlay(p, q, a + 1, b, false);
-			}
-			else
-			{
-				return game(q) * setInPlay(p, q, a + 1, b, true);
-			}
+			return game(p) * game(q) + (game(p) * (1 - game(q)) + (1 - game(p)) * game(q)) * tiebreak(p, q);
 		}
-		else if (servingNext) // Depends who is next to serve
+		if (servingNext) // Otherwise, depends who is next to serve
 		{
 			return game(p) * setInPlay(p, q, a + 1, b, false) + (1 - game(p)) * setInPlay(p, q, a, b + 1, false);
 		}
