@@ -20,7 +20,8 @@ public class SetFromThreeAllOnServeEqualReturnChart extends XYLineChart
 	protected XYDataset createDataset()
 	{
 		final XYSeries series = new XYSeries("ThreeAllOnServe");
-	    for(double i = 0; i < 1.0; i += 0.02) {
+	    for(double i = 0; i < 1.0; i += 0.02)
+	    {
 			series.add(i, OMalley.setInPlay(i, 0.5, 3, 3, true));
 	    }
 

@@ -87,6 +87,6 @@ public final class OMalley
 		final double p = onServe;
 		final double q = returnServe;
 
-		return pow(set(p, q), 3) * (1 + 3 * (1 - set(p, q)) + 6 * (1 - pow(set(p, q), 2)));
+		return pow(set(p, q), 3) * (1 + 3 * (1 - set(p, q)) + 6 * (pow(1 - set(p, q), 2)));
 	}
 }

@@ -19,9 +19,9 @@ public class TestOMalley {
 	}
 
 	@Test
-	public void testBestOfThree()
+	public void testMatch()
 	{
-		System.out.println(OMalley.bestOfThree(0.55, 0.55));
+		System.out.println(OMalley.bestOfFive(0.55, 0.5));
 	}
 
 	@Test
