@@ -20,9 +20,8 @@ public class TiebreakEqualReturnChart extends XYLineChart{
 	protected XYDataset createDataset()
 	{
 		final XYSeries series = new XYSeries("Tiebreak");
-	    final OMalley oMalley = new OMalley();
 	    for(double i = 0; i < 1.0; i += 0.1) {
-			series.add(i, oMalley.tiebreak(i, 0.5));
+			series.add(i, OMalley.tiebreak(i, 0.5));
 	    }
 
 	    final XYSeriesCollection dataset = new XYSeriesCollection();

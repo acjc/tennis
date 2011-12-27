@@ -7,13 +7,11 @@ import org.junit.Test;
 
 public class TestOMalley {
 
-	OMalley oMalley = new OMalley();
-
 	@Test
 	public void testGame()
 	{
-		assertThat(oMalley.game(0.0), equalTo(0.0));
-		assertThat(oMalley.game(0.5), equalTo(0.5));
-		assertThat(oMalley.game(1.0), equalTo(1.0));
+		assertThat(OMalley.game(0.0), equalTo(0.0));
+		assertThat(OMalley.game(0.5), equalTo(0.5));
+		assertThat(OMalley.game(1.0), equalTo(1.0));
 	}
 }

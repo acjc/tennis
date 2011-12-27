@@ -3,15 +3,15 @@ package tennis.omalley.probabilities;
 import static java.lang.Math.pow;
 import tennis.omalley.matrices.Matrices;
 
-public class OMalley {
-
-	public double game(final double point)
+public final class OMalley
+{
+	public static double game(final double point)
 	{
 		final double p = point;
 		return pow(p, 4) * (15 - (4 * p) - ((10 * pow(p, 2)) / (1 - (2 * p) * (1 - p))));
 	}
 
-	public double tiebreak(final double onServe, final double returnServe)
+	public static double tiebreak(final double onServe, final double returnServe)
 	{
 		final double p = onServe;
 		final double q = returnServe;
@@ -23,11 +23,12 @@ public class OMalley {
 		return result;
 	}
 
-	private double d(final double p, final double q) {
+	private static double d(final double p, final double q)
+	{
 		return p * q * pow(1 - (p * (1 - q) + (1 - p) * q), -1);
 	}
 
-	public double set(final double onServe, final double returnServe)
+	public static double set(final double onServe, final double returnServe)
 	{
 		final double p = onServe;
 		final double q = returnServe;
@@ -42,14 +43,14 @@ public class OMalley {
 		return result;
 	}
 
-	public double bestOfThree(final double onServe, final double returnServe)
+	public static double bestOfThree(final double onServe, final double returnServe)
 	{
 		final double p = onServe;
 		final double q = returnServe;
 		return pow(set(p, q), 2) * (1 + 2 * (1 - set(p, q)));
 	}
 
-	public double bestOfFive(final double onServe, final double returnServe)
+	public static double bestOfFive(final double onServe, final double returnServe)
 	{
 		final double p = onServe;
 		final double q = returnServe;

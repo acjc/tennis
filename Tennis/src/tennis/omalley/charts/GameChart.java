@@ -20,9 +20,8 @@ public class GameChart extends XYLineChart
 	protected XYDataset createDataset()
 	{
 		final XYSeries series = new XYSeries("Game");
-	    final OMalley oMalley = new OMalley();
 	    for(double i = 0; i < 1.0; i += 0.1) {
-			series.add(i, oMalley.game(i));
+			series.add(i, OMalley.game(i));
 	    }
 
 	    final XYSeriesCollection dataset = new XYSeriesCollection();
