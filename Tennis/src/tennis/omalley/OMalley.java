@@ -1,4 +1,4 @@
-package tennis.omalley.formula;
+package tennis.omalley;
 
 import static java.lang.Math.pow;
 

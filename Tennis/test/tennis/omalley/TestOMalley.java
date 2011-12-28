@@ -1,14 +1,14 @@
-package tennis.omalley.probabilities;
+package tennis.omalley;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
-import static tennis.omalley.formula.OMalley.game;
-import static tennis.omalley.formula.OMalley.setInPlay;
+import static tennis.omalley.OMalley.game;
+import static tennis.omalley.OMalley.setInPlay;
 
 import org.junit.Test;
 
-import tennis.omalley.formula.OMalley;
+import tennis.omalley.OMalley;
 
 public class TestOMalley {
 

@@ -1,4 +1,4 @@
-package tennis.omalley.chart;
+package tennis.charts;
 
 import java.awt.Color;
 import java.awt.Dimension;

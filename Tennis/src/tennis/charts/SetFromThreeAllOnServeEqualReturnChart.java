@@ -1,4 +1,4 @@
-package tennis.omalley.chart;
+package tennis.charts;
 
 import java.io.IOException;
 
@@ -7,7 +7,7 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.RefineryUtilities;
 
-import tennis.omalley.formula.OMalley;
+import tennis.omalley.OMalley;
 
 public class SetFromThreeAllOnServeEqualReturnChart extends XYLineChart
 {

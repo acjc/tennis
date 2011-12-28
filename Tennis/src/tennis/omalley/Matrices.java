@@ -1,4 +1,4 @@
-package tennis.omalley.formula;
+package tennis.omalley;
 
 public class Matrices {
 
