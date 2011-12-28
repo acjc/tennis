@@ -1,4 +1,4 @@
-package tennis.omalley.charts;
+package tennis.omalley.chart;
 
 import java.io.IOException;
 
@@ -7,22 +7,22 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.RefineryUtilities;
 
-import tennis.omalley.probabilities.OMalley;
+import tennis.omalley.formula.OMalley;
 
-public class BestOfFiveEqualReturnChart extends XYLineChart
+public class SingleGameChart extends XYLineChart
 {
-	public BestOfFiveEqualReturnChart() throws IOException
+	public SingleGameChart() throws IOException
 	{
-	    super("Probability of winning a best-of-5 set match", "p", "bestOfFive(p, 0.5)");
+	    super("Probability of winning a game", "p", "game(p)");
 	}
 
 	@Override
 	protected XYDataset createDataset()
 	{
-		final XYSeries series = new XYSeries("BestOfFive");
+		final XYSeries series = new XYSeries("Game");
 	    for(double i = 0; i < 1.0; i += 0.02)
 	    {
-			series.add(i, OMalley.bestOfFive(i, 0.5));
+			series.add(i, OMalley.game(i));
 	    }
 
 	    final XYSeriesCollection dataset = new XYSeriesCollection();
@@ -33,7 +33,7 @@ public class BestOfFiveEqualReturnChart extends XYLineChart
 
 	public static void main(final String[] args) throws IOException
 	{
-	    final XYLineChart chart = new BestOfFiveEqualReturnChart();
+	    final XYLineChart chart = new SingleGameChart();
 	    chart.pack();
 	    RefineryUtilities.centerFrameOnScreen(chart);
 	    chart.setVisible(true);

@@ -1,7 +1,6 @@
-package tennis.omalley.probabilities;
+package tennis.omalley.formula;
 
 import static java.lang.Math.pow;
-import tennis.omalley.matrices.Matrices;
 
 public final class OMalley
 {

@@ -1,4 +1,4 @@
-package tennis.omalley.charts;
+package tennis.omalley.chart;
 
 import java.io.IOException;
 
@@ -7,22 +7,22 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.RefineryUtilities;
 
-import tennis.omalley.probabilities.OMalley;
+import tennis.omalley.formula.OMalley;
 
-public class SetEqualReturnChart extends XYLineChart
+public class BestOfThreeEqualReturnChart extends XYLineChart
 {
-	public SetEqualReturnChart() throws IOException
+	public BestOfThreeEqualReturnChart() throws IOException
 	{
-	    super("Probability of winning a set", "p", "set(p, 0.5)");
+	    super("Probability of winning a best-of-3 set match", "p", "bestOfThree(p, 0.5)");
 	}
 
 	@Override
 	protected XYDataset createDataset()
 	{
-		final XYSeries series = new XYSeries("Set");
+		final XYSeries series = new XYSeries("BestOfThree");
 	    for(double i = 0; i < 1.0; i += 0.02)
 	    {
-			series.add(i, OMalley.set(i, 0.5));
+			series.add(i, OMalley.bestOfThree(i, 0.5));
 	    }
 
 	    final XYSeriesCollection dataset = new XYSeriesCollection();
@@ -33,7 +33,7 @@ public class SetEqualReturnChart extends XYLineChart
 
 	public static void main(final String[] args) throws IOException
 	{
-	    final XYLineChart chart = new SetEqualReturnChart();
+	    final XYLineChart chart = new BestOfThreeEqualReturnChart();
 	    chart.pack();
 	    RefineryUtilities.centerFrameOnScreen(chart);
 	    chart.setVisible(true);

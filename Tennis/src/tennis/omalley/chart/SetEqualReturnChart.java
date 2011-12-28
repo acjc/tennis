@@ -1,4 +1,4 @@
-package tennis.omalley.charts;
+package tennis.omalley.chart;
 
 import java.io.IOException;
 
@@ -7,22 +7,22 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.RefineryUtilities;
 
-import tennis.omalley.probabilities.OMalley;
+import tennis.omalley.formula.OMalley;
 
-public class SetFromFourFiveOnServeEqualReturnChart extends XYLineChart
+public class SetEqualReturnChart extends XYLineChart
 {
-	public SetFromFourFiveOnServeEqualReturnChart() throws IOException
+	public SetEqualReturnChart() throws IOException
 	{
-	    super("Probability of winning the set when returning at 4-5", "p", "setInPlay(p, 0.5, 4, 5, false)");
+	    super("Probability of winning a set", "p", "set(p, 0.5)");
 	}
 
 	@Override
 	protected XYDataset createDataset()
 	{
-		final XYSeries series = new XYSeries("FourFiveReturning");
+		final XYSeries series = new XYSeries("Set");
 	    for(double i = 0; i < 1.0; i += 0.02)
 	    {
-			series.add(i, OMalley.setInPlay(i, 0.5, 4, 5, false));
+			series.add(i, OMalley.set(i, 0.5));
 	    }
 
 	    final XYSeriesCollection dataset = new XYSeriesCollection();
@@ -33,7 +33,7 @@ public class SetFromFourFiveOnServeEqualReturnChart extends XYLineChart
 
 	public static void main(final String[] args) throws IOException
 	{
-	    final XYLineChart chart = new SetFromFourFiveOnServeEqualReturnChart();
+	    final XYLineChart chart = new SetEqualReturnChart();
 	    chart.pack();
 	    RefineryUtilities.centerFrameOnScreen(chart);
 	    chart.setVisible(true);
