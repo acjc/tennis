@@ -96,10 +96,10 @@ public final class OMalley
 		{
 			return 0.0;
 		}
-		else // Doesn't matter who serves the next set because you don't know who served at the end of the previous set
+		else // Doesn't matter who serves first the next set because you don't know who served at the end of the previous set
 		{
-			return setInPlay(p, q, targetGames, opponentGames, servingNext) * matchInPlay(p, q, targetSets + 1, opponentSets, numSetsForWin)
-				   + (1 - setInPlay(p, q, targetGames, opponentGames, servingNext)) * matchInPlay(p, q, targetSets, opponentSets + 1, numSetsForWin);
+			final double s = setInPlay(p, q, targetGames, opponentGames, servingNext);
+			return s * matchInPlay(p, q, targetSets + 1, opponentSets, numSetsForWin) + (1 - s) * matchInPlay(p, q, targetSets, opponentSets + 1, numSetsForWin);
 		}
 	}
 
@@ -112,7 +112,7 @@ public final class OMalley
 
 	public static double matchInPlay(final double onServe, final double returnServe, final int numSetsForWin)
 	{
-		return matchInPlay(onServe, returnServe, 0, 0, 0, 0, (Math.random() < 0.5) ? true : false, numSetsForWin);
+		return matchInPlay(onServe, returnServe, 0, 0, numSetsForWin);
 	}
 
 	public static double bestOfThree(final double onServe, final double returnServe)
