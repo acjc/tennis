@@ -52,7 +52,7 @@ public class MatchState
 
 	public boolean setOver()
 	{
-		if ((Math.abs(targetGames - opponentGames) >= 2 && (targetGames >= 6 || opponentGames >= 6))
+		if ((Math.abs(targetGames - opponentGames) >= 2 && (targetGames == 6 || opponentGames == 6))
 			|| (targetGames == 7 || opponentGames == 7))
 		{
 			resetSet();

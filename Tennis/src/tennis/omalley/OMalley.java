@@ -61,7 +61,7 @@ public final class OMalley
 		{
 			return 0.0;
 		}
-		if (a == 6 && b == 6) // Either the target player wins 7-5 or he/she wins on a tiebreak
+		if (a == 6 && b == 6)
 		{
 			return tiebreak(p, q);
 		}
