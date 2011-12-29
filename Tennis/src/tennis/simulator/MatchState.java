@@ -2,12 +2,8 @@ package tennis.simulator;
 
 public class MatchState
 {
-	private boolean servingNext;
-
-	private int targetPoints;
-	private int opponentPoints;
-	private int targetGames;
-	private int opponentGames;
+	private final GameState game;
+	private final SetState set;
 	private int targetSets;
 	private int opponentSets;
 
@@ -15,70 +11,80 @@ public class MatchState
 
 	public MatchState()
 	{
-		this(0, 0, 0, 0, 0, 0, (Math.random() < 0.5) ? true : false, 3);
+		this(0, 0, new SetState(), new GameState(), 3);
 	}
 
+	// Deep copy
 	public MatchState(final MatchState s)
 	{
-		this(s.getTargetSets(), s.getOpponentSets(), s.getTargetGames(), s.getOpponentGames(),
-			 s.getTargetPoints(), s.getOpponentPoints(), s.isServingNext(), s.getNumSetsForWin());
+		this(s.getTargetSets(), s.getOpponentSets(), s.getSetState(), s.getGameState(), s.getNumSetsForWin());
 	}
 
-	public MatchState(final int targetSets, final int opponentSets,
-					  final int targetGames, final int opponentGames,
-					  final int targetPoints, final int opponentPoints,
-					  final boolean servingNext, final int numSetsForWin)
+	public MatchState(final int targetSets, final int opponentSets, final SetState set, final GameState game, final int numSetsForWin)
 	{
 		this.targetSets = targetSets;
 		this.opponentSets = opponentSets;
-		this.targetGames = targetGames;
-		this.opponentGames = opponentGames;
-		this.targetPoints = targetPoints;
-		this.opponentPoints = opponentPoints;
-
-		this.servingNext = servingNext;
+		this.set = set;
+		this.game = game;
 		this.numSetsForWin = numSetsForWin;
 	}
 
 	public boolean isServingNext()
 	{
-		return servingNext;
+		return game.isServing();
 	}
 
-	public void changeServer()
+	public void targetPoint()
 	{
-		servingNext = !servingNext;
+		game.targetPoint();
+	}
+
+	public void opponentPoint()
+	{
+		game.opponentPoint();
 	}
 
 	public boolean setOver()
 	{
-		if ((Math.abs(targetGames - opponentGames) >= 2 && (targetGames == 6 || opponentGames == 6))
-			|| (targetGames == 7 || opponentGames == 7))
+		if (set.setOver())
 		{
-			resetSet();
+			if (set.targetWon())
+			{
+				targetSets++;
+			}
+			else
+			{
+				opponentSets++;
+			}
+			set.reset();
 			return true;
 		}
 		return false;
 	}
 
-	private void resetSet()
+	public boolean tiebreak()
 	{
-		if (targetGames > opponentGames)
-		{
-			targetSets++;
-		}
-		else
-		{
-			opponentSets++;
-		}
+		return set.tiebreak();
+	}
 
-		targetGames = 0;
-		opponentGames = 0;
+	public boolean isOddPoint()
+	{
+		return game.isOddPoint();
+	}
+
+	public boolean tiebreakOver()
+	{
+		if (game.tiebreakOver())
+		{
+			resetGame();
+			return true;
+		}
+		return false;
 	}
 
 	public boolean gameOver()
 	{
-		if (Math.abs(targetPoints - opponentPoints) >= 2 && (targetPoints >= 4 || opponentPoints >= 4))
+		if (game.gameOver())
 		{
 			resetGame();
 			return true;
@@ -88,28 +94,16 @@ public class MatchState
 
 	private void resetGame()
 	{
-		if (targetPoints > opponentPoints)
+		if (game.targetWon())
 		{
-			targetGames++;
+			set.targetGame();
 		}
 		else
 		{
-			opponentGames++;
+			set.opponentGame();
 		}
 
-		targetPoints = 0;
-		opponentPoints = 0;
-		changeServer();
-	}
-
-	public void targetPoint()
-	{
-		targetPoints++;
-	}
-
-	public void opponentPoint()
-	{
-		opponentPoints++;
+		game.reset();
 	}
 
 	public boolean matchOver()
@@ -122,53 +116,28 @@ public class MatchState
 		return targetSets == numSetsForWin;
 	}
 
-	public boolean tiebreak()
-	{
-		return targetGames == 6 && opponentGames == 6;
-	}
-
-	public boolean tiebreakOver()
-	{
-		if (Math.abs(targetPoints - opponentPoints) >= 2 && (targetPoints >= 7 || opponentPoints >= 7))
-		{
-			resetGame();
-			return true;
-		}
-		return false;
-	}
-
-	public int getTargetPoints()
-	{
-		return targetPoints;
-	}
-
-	public int getOpponentPoints()
-	{
-		return opponentPoints;
-	}
-
-	public int getTargetGames()
-	{
-		return targetGames;
-	}
-
-	public int getOpponentGames()
-	{
-		return opponentGames;
-	}
-
-	public int getTargetSets()
+	private int getTargetSets()
 	{
 		return targetSets;
 	}
 
-	public int getOpponentSets()
+	private int getOpponentSets()
 	{
 		return opponentSets;
 	}
 
-	public int getNumSetsForWin()
+	private int getNumSetsForWin()
 	{
 		return numSetsForWin;
+	}
+
+	private SetState getSetState()
+	{
+		return new SetState(set);
+	}
+
+	private GameState getGameState()
+	{
+		return new GameState(game);
 	}
 }

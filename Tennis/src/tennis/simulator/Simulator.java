@@ -10,9 +10,9 @@ public class Simulator
 		this(new MatchState(), false);
 	}
 
-	public Simulator(final MatchState matchState, final boolean scenario)
+	public Simulator(final MatchState initialState, final boolean scenario)
 	{
-		initialState = matchState;
+		this.initialState = initialState;
 		this.scenario = scenario;
 	}
 
@@ -57,7 +57,7 @@ public class Simulator
 		while (!score.tiebreakOver())
 		{
 			playPoint(p, q, score, servingNext);
-			if ((score.getTargetPoints() + score.getOpponentPoints()) % 2 == 1) // Service changes every odd point
+			if (score.isOddPoint()) // Service changes every odd point
 			{
 				servingNext = !servingNext;
 			}
