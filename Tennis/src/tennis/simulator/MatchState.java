@@ -3,16 +3,41 @@ package tennis.simulator;
 public class MatchState
 {
 	private boolean servingNext;
-	private int targetPoints = 0;
-	private int opponentPoints = 0;
-	private int targetGames = 0;
-	private int opponentGames = 0;
-	private int targetSets = 0;
-	private int opponentSets = 0;
+
+	private int targetPoints;
+	private int opponentPoints;
+	private int targetGames;
+	private int opponentGames;
+	private int targetSets;
+	private int opponentSets;
+
+	private final int numSetsForWin;
 
 	public MatchState()
 	{
-		servingNext = (Math.random() < 0.5) ? true : false;
+		this(0, 0, 0, 0, 0, 0, (Math.random() < 0.5) ? true : false, 3);
+	}
+
+	public MatchState(final MatchState s)
+	{
+		this(s.getTargetSets(), s.getOpponentSets(), s.getTargetGames(), s.getOpponentGames(),
+			 s.getTargetPoints(), s.getOpponentPoints(), s.isServingNext(), s.getNumSetsForWin());
+	}
+
+	public MatchState(final int targetSets, final int opponentSets,
+					  final int targetGames, final int opponentGames,
+					  final int targetPoints, final int opponentPoints,
+					  final boolean servingNext, final int numSetsForWin)
+	{
+		this.targetSets = targetSets;
+		this.opponentSets = opponentSets;
+		this.targetGames = targetGames;
+		this.opponentGames = opponentGames;
+		this.targetPoints = targetPoints;
+		this.opponentPoints = opponentPoints;
+
+		this.servingNext = servingNext;
+		this.numSetsForWin = numSetsForWin;
 	}
 
 	public boolean isServingNext()
@@ -27,9 +52,8 @@ public class MatchState
 
 	public boolean setOver()
 	{
-		if ((targetGames == 7 || opponentGames == 7)
-			|| (targetGames == 6 && opponentGames < 5)
-			|| (targetGames < 5 && opponentGames == 6))
+		if ((Math.abs(targetGames - opponentGames) >= 2 && (targetGames >= 6 || opponentGames >= 6))
+			|| (targetGames == 7 || opponentGames == 7))
 		{
 			resetSet();
 			return true;
@@ -54,9 +78,7 @@ public class MatchState
 
 	public boolean gameOver()
 	{
-		if ((Math.abs(targetPoints - opponentPoints) >= 2 && (targetPoints >= 5 || opponentPoints >= 5))
-			|| (targetPoints == 4 && opponentPoints < 3)
-			|| (targetPoints < 3 && opponentPoints == 4))
+		if (Math.abs(targetPoints - opponentPoints) >= 2 && (targetPoints >= 4 || opponentPoints >= 4))
 		{
 			resetGame();
 			return true;
@@ -64,7 +86,7 @@ public class MatchState
 		return false;
 	}
 
-	public void resetGame()
+	private void resetGame()
 	{
 		if (targetPoints > opponentPoints)
 		{
@@ -92,12 +114,12 @@ public class MatchState
 
 	public boolean matchOver()
 	{
-		return targetSets == 3 || opponentSets == 3;
+		return targetSets == numSetsForWin || opponentSets == numSetsForWin;
 	}
 
 	public boolean targetWon()
 	{
-		return targetSets == 3;
+		return targetSets == numSetsForWin;
 	}
 
 	public boolean tiebreak()
@@ -113,5 +135,40 @@ public class MatchState
 			return true;
 		}
 		return false;
+	}
+
+	public int getTargetPoints()
+	{
+		return targetPoints;
+	}
+
+	public int getOpponentPoints()
+	{
+		return opponentPoints;
+	}
+
+	public int getTargetGames()
+	{
+		return targetGames;
+	}
+
+	public int getOpponentGames()
+	{
+		return opponentGames;
+	}
+
+	public int getTargetSets()
+	{
+		return targetSets;
+	}
+
+	public int getOpponentSets()
+	{
+		return opponentSets;
+	}
+
+	public int getNumSetsForWin()
+	{
+		return numSetsForWin;
 	}
 }

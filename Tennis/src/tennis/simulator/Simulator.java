@@ -2,7 +2,21 @@ package tennis.simulator;
 
 public class Simulator
 {
-	public double simulateFiveSetMatch(final double onServe, final double returnServe, final double runs)
+	private final MatchState initialState;
+	private final boolean scenario;
+
+	public Simulator()
+	{
+		this(new MatchState(), false);
+	}
+
+	public Simulator(final MatchState matchState, final boolean scenario)
+	{
+		initialState = matchState;
+		this.scenario = scenario;
+	}
+
+	public double simulate(final double onServe, final double returnServe, final double runs)
 	{
 		final double p = onServe;
 		final double q = returnServe;
@@ -10,7 +24,9 @@ public class Simulator
 		double matchesWon = 0.0;
 		for (int i = 0; i < runs; i++)
 		{
-			final MatchState score = new MatchState();
+			// If simulating a particular scenario, we want to replicate the starting conditions exactly
+			// Otherwise, start a fresh match with a random first server
+			final MatchState score = scenario ? new MatchState(initialState) : new MatchState();
 			while (!score.matchOver())
 			{
 				while (!score.setOver())
@@ -19,7 +35,7 @@ public class Simulator
 					{
 						playPoint(p, q, score, score.isServingNext());
 					}
-					if (score.tiebreak()) // Assume tiebreakers always used
+					if (score.tiebreak()) // Assume tiebreaks are always used for now
 					{
 						playTiebreak(p, q, score);
 					}
@@ -36,22 +52,14 @@ public class Simulator
 
 	private void playTiebreak(final double p, final double q, final MatchState score)
 	{
+		// Whomever serves first is the server for this 'game'
 		boolean servingNext = score.isServingNext();
-
-		// Service changes after first point
-		// Whoever serves first is the server for this 'game'
-		playPoint(p, q, score, servingNext);
-		servingNext = !servingNext;
-
-		int i = 0;
 		while (!score.tiebreakOver())
 		{
 			playPoint(p, q, score, servingNext);
-			i++;
-			if (i == 2) // Service then changes after every two points
+			if ((score.getTargetPoints() + score.getOpponentPoints()) % 2 == 1) // Service changes every odd point
 			{
 				servingNext = !servingNext;
-				i = 0;
 			}
 		}
 	}

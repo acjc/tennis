@@ -39,7 +39,7 @@ public final class OMalley
 		for (final double[] b : Matrices.setMatrix)
 		{
 			result += b[0] * pow(gp, b[1]) * pow(1 - gp, b[2]) * pow(gq, b[3]) * pow(1 - gq, b[4]) *
-					  pow(gp * gq + (gq * (1 - gq) + (1 - gp) * gq) * tiebreak(p, q), b[5]);
+					  pow(gp * gq + (gp * (1 - gq) + (1 - gp) * gq) * tiebreak(p, q), b[5]);
 		}
 		return result;
 	}
@@ -50,26 +50,28 @@ public final class OMalley
 		final double q = returnServe;
 		final int a = targetScore;
 		final int b = opponentScore;
+		final double gp = game(p);
+		final double gq = game(q);
 
-		if (a == 6 && b < 5) // Target player has won
+		if (a == 7 || (a == 6 && b < 5)) // Target player has won
 		{
-			return 1;
+			return 1.0;
 		}
-		if (a < 5 && b == 6) // Opponent has won
+		if ((a < 5 && b == 6) || b == 7) // Opponent has won
 		{
-			return 0;
+			return 0.0;
 		}
-		if (a == 5 && b == 5) // Either the target player wins 7-5 or he/she wins on a tiebreak
+		if (a == 6 && b == 6) // Either the target player wins 7-5 or he/she wins on a tiebreak
 		{
-			return game(p) * game(q) + (game(p) * (1 - game(q)) + (1 - game(p)) * game(q)) * tiebreak(p, q);
+			return tiebreak(p, q);
 		}
 		if (servingNext) // Otherwise, depends who is next to serve
 		{
-			return game(p) * setInPlay(p, q, a + 1, b, false) + (1 - game(p)) * setInPlay(p, q, a, b + 1, false);
+			return gp * setInPlay(p, q, a + 1, b, false) + (1 - gp) * setInPlay(p, q, a, b + 1, false);
 		}
 		else
 		{
-			return game(q) * setInPlay(p, q, a + 1, b, true) + (1 - game(q)) * setInPlay(p, q, a, b + 1, true);
+			return gq * setInPlay(p, q, a + 1, b, true) + (1 - gq) * setInPlay(p, q, a, b + 1, true);
 		}
 	}
 
