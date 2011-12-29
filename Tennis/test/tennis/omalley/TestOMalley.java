@@ -3,9 +3,7 @@ package tennis.omalley;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
-import static tennis.omalley.OMalley.game;
-import static tennis.omalley.OMalley.set;
-import static tennis.omalley.OMalley.setInPlay;
+import static tennis.omalley.OMalley.*;
 
 import java.text.DecimalFormat;
 
@@ -22,9 +20,14 @@ public class TestOMalley {
 	}
 
 	@Test
-	public void testMatch()
+	public void testMatchInPlay()
 	{
-		System.out.println(OMalley.bestOfFive(0.55, 0.55));
+		assertThat(round(matchInPlay(0.67, 0.38, 3)), equalTo(round(bestOfFive(0.67, 0.38))));
+		assertThat(round(matchInPlay(0.67, 0.38, 2)), equalTo(round(bestOfThree(0.67, 0.38))));
+
+		assertThat(round(matchInPlay(0.55, 0.55, 3)), equalTo(0.953));
+
+		assertThat(matchInPlay(0.5, 0.5, 3), equalTo(0.5));
 	}
 
 	@Test

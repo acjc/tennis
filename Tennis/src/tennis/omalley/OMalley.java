@@ -44,6 +44,11 @@ public final class OMalley
 		return result;
 	}
 
+	public static double setInPlay(final double onServe, final double returnServe, final boolean servingNext)
+	{
+		return setInPlay(onServe, returnServe, 0, 0, servingNext);
+	}
+
 	public static double setInPlay(final double onServe, final double returnServe, final int targetScore, final int opponentScore, final boolean servingNext)
 	{
 		final double p = onServe;
@@ -73,6 +78,41 @@ public final class OMalley
 		{
 			return gq * setInPlay(p, q, a + 1, b, true) + (1 - gq) * setInPlay(p, q, a, b + 1, true);
 		}
+	}
+
+	public static double matchInPlay(final double onServe, final double returnServe,
+									 final int targetSets, final int opponentSets,
+									 final int targetGames, final int opponentGames,
+									 final boolean servingNext, final int numSetsForWin)
+	{
+		final double p = onServe;
+		final double q = returnServe;
+
+		if (targetSets == numSetsForWin)
+		{
+			return 1.0;
+		}
+		if (opponentSets == numSetsForWin)
+		{
+			return 0.0;
+		}
+		else // Doesn't matter who serves the next set because you don't know who served at the end of the previous set
+		{
+			return setInPlay(p, q, targetGames, opponentGames, servingNext) * matchInPlay(p, q, targetSets + 1, opponentSets, numSetsForWin)
+				   + (1 - setInPlay(p, q, targetGames, opponentGames, servingNext)) * matchInPlay(p, q, targetSets, opponentSets + 1, numSetsForWin);
+		}
+	}
+
+	public static double matchInPlay(final double onServe, final double returnServe,
+									 final int targetSets, final int opponentSets,
+									 final int numSetsForWin)
+	{
+		return matchInPlay(onServe, returnServe, targetSets, opponentSets, 0, 0, (Math.random() < 0.5) ? true : false, numSetsForWin);
+	}
+
+	public static double matchInPlay(final double onServe, final double returnServe, final int numSetsForWin)
+	{
+		return matchInPlay(onServe, returnServe, 0, 0, 0, 0, (Math.random() < 0.5) ? true : false, numSetsForWin);
 	}
 
 	public static double bestOfThree(final double onServe, final double returnServe)
