@@ -35,6 +35,9 @@ public class TestOMalley {
 		assertThat(setInPlay(0.5, 0.5, 5, 5, true), equalTo(0.5));
 		assertThat(setInPlay(0.5, 0.5, 5, 5, false), equalTo(0.5));
 
+		assertThat(setInPlay(0.5, 0.5, 0, 0, true), equalTo(0.5));
+		assertThat(setInPlay(0.5, 0.5, 0, 0, false), equalTo(0.5));
+
 		assertThat(round(setInPlay(0.61, 0.37, 0, 0, true)), equalTo(round(setInPlay(0.61, 0.37, 0, 0, false))));
 		assertThat(setInPlay(0.6, 0.4, 4, 5, true), greaterThan(setInPlay(0.6, 0.4, 4, 5, false)));
 
