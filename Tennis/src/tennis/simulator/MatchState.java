@@ -1,6 +1,6 @@
 package tennis.simulator;
 
-public class MatchState
+public class MatchState implements Score
 {
 	private final GameState game;
 	private final SetState set;
@@ -34,19 +34,21 @@ public class MatchState
 		return game.isServing();
 	}
 
-	public void targetPoint()
+	@Override
+	public void incrementTarget()
 	{
-		game.targetPoint();
+		game.incrementTarget();
 	}
 
-	public void opponentPoint()
+	@Override
+	public void incrementOpponent()
 	{
-		game.opponentPoint();
+		game.incrementOpponent();
 	}
 
-	public boolean setOver()
+	public boolean setFinished()
 	{
-		if (set.setOver())
+		if (set.finished())
 		{
 			if (set.targetWon())
 			{
@@ -82,9 +84,9 @@ public class MatchState
 		return false;
 	}
 
-	public boolean gameOver()
+	public boolean gameFinished()
 	{
-		if (game.gameOver())
+		if (game.finished())
 		{
 			resetGame();
 			return true;
@@ -96,21 +98,23 @@ public class MatchState
 	{
 		if (game.targetWon())
 		{
-			set.targetGame();
+			set.incrementTarget();
 		}
 		else
 		{
-			set.opponentGame();
+			set.incrementOpponent();
 		}
 
 		game.reset();
 	}
 
-	public boolean matchOver()
+	@Override
+	public boolean finished()
 	{
 		return targetSets == numSetsForWin || opponentSets == numSetsForWin;
 	}
 
+	@Override
 	public boolean targetWon()
 	{
 		return targetSets == numSetsForWin;

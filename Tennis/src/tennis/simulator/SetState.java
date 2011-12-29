@@ -1,6 +1,6 @@
 package tennis.simulator;
 
-public class SetState
+public class SetState implements Score
 {
 	private int targetGames;
 	private int opponentGames;
@@ -21,23 +21,27 @@ public class SetState
 		this(s.getTargetGames(), s.getOpponentGames());
 	}
 
-	public boolean setOver()
+	@Override
+	public boolean finished()
 	{
 		return (Math.abs(targetGames - opponentGames) >= 2 && (targetGames == 6 || opponentGames == 6))
 				|| (targetGames == 7 || opponentGames == 7);
 	}
 
+	@Override
 	public boolean targetWon()
 	{
 		return targetGames > opponentGames;
 	}
 
-	public void targetGame()
+	@Override
+	public void incrementTarget()
 	{
 		targetGames++;
 	}
 
-	public void opponentGame()
+	@Override
+	public void incrementOpponent()
 	{
 		opponentGames++;
 	}

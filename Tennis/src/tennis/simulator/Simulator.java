@@ -27,11 +27,11 @@ public class Simulator
 			// If simulating a particular scenario, we want to replicate the starting conditions exactly
 			// Otherwise, start a fresh match with a random first server
 			final MatchState score = scenario ? new MatchState(initialState) : new MatchState();
-			while (!score.matchOver())
+			while (!score.finished())
 			{
-				while (!score.setOver())
+				while (!score.setFinished())
 				{
-					while (!score.gameOver())
+					while (!score.gameFinished())
 					{
 						playPoint(p, q, score, score.isServingNext());
 					}
@@ -64,16 +64,16 @@ public class Simulator
 		}
 	}
 
-	private void playPoint(final double p, final double q, final MatchState score, final boolean servingNext)
+	private void playPoint(final double p, final double q, final Score score, final boolean servingNext)
 	{
 		final double playPoint = Math.random();
 		if ((servingNext && playPoint < p) || (!servingNext && playPoint < q))
 		{
-			score.targetPoint();
+			score.incrementTarget();
 		}
 		else
 		{
-			score.opponentPoint();
+			score.incrementOpponent();
 		}
 	}
 }

@@ -1,6 +1,6 @@
 package tennis.simulator;
 
-public class GameState
+public class GameState implements Score
 {
 	private boolean serving;
 
@@ -29,7 +29,8 @@ public class GameState
 		this(s.getTargetPoints(), s.getOpponentPoints(), s.isServing());
 	}
 
-	public boolean gameOver()
+	@Override
+	public boolean finished()
 	{
 		return Math.abs(targetPoints - opponentPoints) >= 2 && (targetPoints >= 4 || opponentPoints >= 4);
 	}
@@ -39,16 +40,19 @@ public class GameState
 		return Math.abs(targetPoints - opponentPoints) >= 2 && (targetPoints >= 7 || opponentPoints >= 7);
 	}
 
-	public void targetPoint()
+	@Override
+	public void incrementTarget()
 	{
 		targetPoints++;
 	}
 
-	public void opponentPoint()
+	@Override
+	public void incrementOpponent()
 	{
 		opponentPoints++;
 	}
 
+	@Override
 	public boolean targetWon()
 	{
 		return targetPoints > opponentPoints;
