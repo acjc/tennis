@@ -104,7 +104,6 @@ public class MatchState implements Score
 		{
 			set.incrementOpponent();
 		}
-
 		game.reset();
 	}
 
