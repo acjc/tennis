@@ -7,7 +7,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JFreeChart"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Test"/>
 	<classpathentry kind="lib" path="C:/Users/Adam/eclipse/custom/opencsv-2.2.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Adam/eclipse/custom/WGETJava.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/ApacheIO"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/HttpClient"/>
 	<classpathentry kind="output" path="bin"/>

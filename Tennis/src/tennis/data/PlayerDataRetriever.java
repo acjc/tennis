@@ -11,8 +11,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
 
-import edu.depauw.csc.dcheeseman.wgetjava.WGETJavaResults;
-
 public class PlayerDataRetriever
 {
 	public int getPlayerId(final String playerHtml) throws IOException
@@ -65,7 +63,8 @@ public class PlayerDataRetriever
 		}
 	}
 
-	public WGETJavaResults downloadFile(final URL theUrl, final File file) throws IOException {
+	public void downloadFile(final URL theUrl, final File file) throws IOException
+	{
 		URLConnection connection;
 		connection = theUrl.openConnection();
 		final String cookies = "cookTube4=Better+Off; cookname=debapriyapal; cookpass=enigmatic";
@@ -89,12 +88,7 @@ public class PlayerDataRetriever
 
 			os.close();
 			in.close();
+		}
 
-			return WGETJavaResults.COMPLETE;
-		}
-		else
-		{
-			return WGETJavaResults.FAILED_UKNOWNTYPE;
-		}
 	}
 }
