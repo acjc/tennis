@@ -8,7 +8,9 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Set;
 
+import org.hamcrest.Matchers;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -37,6 +39,26 @@ public class TestPlayerDataRetriever
 		assertThat(retriever.findStat("<test>   \n" +
 									  "<test>5.84%    (61-12)<test>\n" +
 									  "  <test>Stat<test>", "Stat"), equalTo("5.84%"));
+	}
+
+	// One Year = 380
+	// Player ID: 1 = Roger Federer
+	@Test
+	public void testGetPlayerActivity() throws IOException
+	{
+		final File file = new File("doc\\activity.html");
+		retriever.downloadFile(new URL("http://www.tennisinsight.com/player_activity.php?player_id=1&activity=1"), file);
+		final String activityHtml = retriever.readFileToString(file);
+
+		assertThat(activityHtml, containsString("Last 1-50 Activity - Roger Federer - All Matches with Any Odds"));
+	}
+
+	@Test
+	public void testGetOpponentsDefeated()
+	{
+		final Set<String> players = retriever.getOpponentsDefeated("<test>Def. (2W)<test>Novak Djokovic<test>(2,6.23) (SRB) 7-6(5) 6-3 3-6 7-6(5)   ");
+
+		assertThat(players, Matchers.contains("Novak Djokovic"));
 	}
 
 	@Test

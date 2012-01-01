@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,6 +26,26 @@ public class PlayerDataRetriever
 	public String readFileToString(final File file) throws IOException
 	{
 		return FileUtils.readFileToString(file);
+	}
+
+	public Set<String> getOpponentsDefeated(final String html)
+	{
+		final Set<String> players = new HashSet<String>();
+		final String text = html.replaceAll("\\<.*?>","");
+		final Pattern pattern = Pattern.compile("Def\\. (\\(\\w*\\))*(.*?)\\(");
+		final Matcher matcher = pattern.matcher(text);
+		while (matcher.find())
+		{
+			if (matcher.groupCount() > 1)
+			{
+				players.add(matcher.group(2));
+			}
+			else
+			{
+				players.add(matcher.group(1));
+			}
+		}
+		return players;
 	}
 
 	public int getNumberOfMatches(final String html)
