@@ -1,8 +1,7 @@
 package tennis.data;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,7 +9,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Set;
 
-import org.hamcrest.Matchers;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -41,7 +39,7 @@ public class TestPlayerDataRetriever
 									  "  <test>Stat<test>", "Stat"), equalTo("5.84%"));
 	}
 
-	// One Year = 380
+	// All Matches = 1
 	// Player ID: 1 = Roger Federer
 	@Test
 	public void testGetPlayerActivity() throws IOException
@@ -56,9 +54,23 @@ public class TestPlayerDataRetriever
 	@Test
 	public void testGetOpponentsDefeated()
 	{
-		final Set<String> players = retriever.getOpponentsDefeated("<test>Def. (2W)<test>Novak Djokovic<test>(2,6.23) (SRB) 7-6(5) 6-3 3-6 7-6(5)   ");
+		final Set<String> players = retriever.getOpponentsDefeated("<test>Def. (2W)<test>Novak Djokovic<test>(2,6.23) " +
+																   "<test>Def. (2W)<test>Novak Djokovic<test>(2,6.23) " +
+																   "<test>Def. (4W)<test>Andy Murray<test>(4,5.57)  ");
 
-		assertThat(players, Matchers.contains("Novak Djokovic"));
+		assertThat(players.size(), equalTo(2));
+		assertThat(players, contains("Novak Djokovic", "Andy Murray"));
+	}
+
+	@Test
+	public void testGetOpponentsLostTo()
+	{
+		final Set<String> players = retriever.getOpponentsLostTo("<test>Lost to (2W)<test>Novak Djokovic<test>(2,6.23) " +
+																 "<test>Lost to (2W)<test>Novak Djokovic<test>(2,6.23) " +
+																 "<test>Lost to (4W)<test>Andy Murray<test>(4,5.57)  ");
+
+		assertThat(players.size(), equalTo(2));
+		assertThat(players, contains("Novak Djokovic", "Andy Murray"));
 	}
 
 	@Test
@@ -75,7 +87,7 @@ public class TestPlayerDataRetriever
 	// One Year = 380
 	// Player ID: 1 = Roger Federer
 	@Test
-	public void testGetPlayerStatsOneYear() throws MalformedURLException, IOException
+	public void testDownloadPlayerStatsOneYear() throws MalformedURLException, IOException
 	{
 		final File file = new File("doc\\player.html");
 		retriever.downloadFile(new URL("http://www.tennisinsight.com/player_overview.php?player_id=1&duration=380"), file);

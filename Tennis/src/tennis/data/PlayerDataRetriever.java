@@ -48,6 +48,26 @@ public class PlayerDataRetriever
 		return players;
 	}
 
+	public Set<String> getOpponentsLostTo(final String html)
+	{
+		final Set<String> players = new HashSet<String>();
+		final String text = html.replaceAll("\\<.*?>","");
+		final Pattern pattern = Pattern.compile("Lost to (\\(\\w*\\))*(.*?)\\(");
+		final Matcher matcher = pattern.matcher(text);
+		while (matcher.find())
+		{
+			if (matcher.groupCount() > 1)
+			{
+				players.add(matcher.group(2));
+			}
+			else
+			{
+				players.add(matcher.group(1));
+			}
+		}
+		return players;
+	}
+
 	public int getNumberOfMatches(final String html)
 	{
 		final String text = html.replaceAll("\\<.*?>","");
