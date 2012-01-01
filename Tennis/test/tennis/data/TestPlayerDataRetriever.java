@@ -36,7 +36,15 @@ public class TestPlayerDataRetriever
 	{
 		assertThat(retriever.findStat("<test>   \n" +
 									  "<test>5.84%    (61-12)<test>\n" +
-									  "  <test>Stat<test>", "Stat"), equalTo("5.84%"));
+									  "  <test>Stat<test>", "Stat"), equalTo(5.84));
+	}
+
+	@Test
+	public void testFindTourAverage() throws IOException
+	{
+		assertThat(retriever.findTourAverage("<test>5.84%    (61-12)<test>\n" +
+											 "  <test>Stat<test>\n" +
+											 "<test>50.57%    (265-250)<test>", "Stat"), equalTo(50.57));
 	}
 
 	// All Matches = 1
@@ -56,7 +64,7 @@ public class TestPlayerDataRetriever
 	{
 		final Set<String> players = retriever.getOpponentsDefeated("<test>Def. (2W)<test>Novak Djokovic<test>(2,6.23) " +
 																   "<test>Def. (2W)<test>Novak Djokovic<test>(2,6.23) " +
-																   "<test>Def. (4W)<test>Andy Murray<test>(4,5.57)  ");
+																   "<test>Def. <test>Andy Murray<test>(4,5.57)  ");
 
 		assertThat(players.size(), equalTo(2));
 		assertThat(players, contains("Novak Djokovic", "Andy Murray"));
@@ -67,7 +75,7 @@ public class TestPlayerDataRetriever
 	{
 		final Set<String> players = retriever.getOpponentsLostTo("<test>Lost to (2W)<test>Novak Djokovic<test>(2,6.23) " +
 																 "<test>Lost to (2W)<test>Novak Djokovic<test>(2,6.23) " +
-																 "<test>Lost to (4W)<test>Andy Murray<test>(4,5.57)  ");
+																 "<test>Lost to <test>Andy Murray<test>(4,5.57)  ");
 
 		assertThat(players.size(), equalTo(2));
 		assertThat(players, contains("Novak Djokovic", "Andy Murray"));
@@ -76,9 +84,7 @@ public class TestPlayerDataRetriever
 	@Test
 	public void testFindPlayerByName() throws MalformedURLException, IOException
 	{
-		final File file = new File("doc\\player.html");
-		retriever.downloadFile(new URL("http://www.tennisinsight.com/player_search_action.php?player_search=Jo-Wilfried Tsonga"), file);
-		final String playerHtml = retriever.readFileToString(file);
+		final String playerHtml = retriever.downloadPlayerProfile("Jo-Wilfried Tsonga");
 
 		assertThat(playerHtml, containsString("TennisInsight.com"));
 		assertThat(playerHtml, containsString("Jo-Wilfried Tsonga"));
@@ -89,9 +95,7 @@ public class TestPlayerDataRetriever
 	@Test
 	public void testDownloadPlayerStatsOneYear() throws MalformedURLException, IOException
 	{
-		final File file = new File("doc\\player.html");
-		retriever.downloadFile(new URL("http://www.tennisinsight.com/player_overview.php?player_id=1&duration=380"), file);
-		final String playerHtml = retriever.readFileToString(file);
+		final String playerHtml = retriever.downloadPlayerStatistics(1);
 
 		assertThat(playerHtml, containsString("<option value=\"380\" selected=\"selected\">1 year</option>"));
 	}

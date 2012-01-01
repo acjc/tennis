@@ -48,6 +48,13 @@ public class PlayerDataRetriever
 		return players;
 	}
 
+	public String downloadPlayerProfile(final String name) throws IOException
+	{
+		final File file = new File("doc\\player.html");
+		downloadFile(new URL("http://www.tennisinsight.com/player_search_action.php?player_search=" + name), file);
+		return readFileToString(file);
+	}
+
 	public Set<String> getOpponentsLostTo(final String html)
 	{
 		final Set<String> players = new HashSet<String>();
@@ -77,13 +84,29 @@ public class PlayerDataRetriever
 		return Integer.parseInt(matcher.group(1)) + Integer.parseInt(matcher.group(2));
 	}
 
-	public String findStat(final String html, final String stat)
+	public double findStat(final String html, final String stat)
 	{
 		final String text = html.replaceAll("\\<.*?>","");
-		final Pattern pattern = Pattern.compile("([\\d\\.%]+).*\\s*" + stat);
+		final Pattern pattern = Pattern.compile("([\\d\\.]+)%?.*\\s*" + stat);
 		final Matcher matcher = pattern.matcher(text);
 		matcher.find();
-		return matcher.group(1);
+		return Double.parseDouble(matcher.group(1));
+	}
+
+	public double findTourAverage(final String html, final String stat)
+	{
+		final String text = html.replaceAll("\\<.*?>","");
+		final Pattern pattern = Pattern.compile(stat + "\\s*([\\d\\.]+)");
+		final Matcher matcher = pattern.matcher(text);
+		matcher.find();
+		return Double.parseDouble(matcher.group(1));
+	}
+
+	public String downloadPlayerStatistics(final int id) throws IOException
+	{
+		final File file = new File("doc\\player.html");
+		downloadFile(new URL("http://www.tennisinsight.com/player_overview.php?player_id=" + id + "&duration=380"), file);
+		return readFileToString(file);
 	}
 
 	public void printCookies() throws IOException
