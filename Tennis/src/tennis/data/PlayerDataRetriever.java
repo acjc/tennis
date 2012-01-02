@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashSet;
@@ -36,16 +37,33 @@ public class PlayerDataRetriever
 		final Matcher matcher = pattern.matcher(text);
 		while (matcher.find())
 		{
-			if (matcher.groupCount() > 1)
-			{
-				players.add(matcher.group(2));
-			}
-			else
-			{
-				players.add(matcher.group(1));
-			}
+			players.add(matcher.group(matcher.groupCount()));
 		}
 		return players;
+	}
+
+	public Set<Integer> getVictoryIds(final String html)
+	{
+		final Set<Integer> ids = new HashSet<Integer>();
+		final Pattern pattern = Pattern.compile("Def\\..*?match_id=(\\d*)");
+		final Matcher matcher = pattern.matcher(html);
+		while (matcher.find())
+		{
+			ids.add(Integer.parseInt(matcher.group(1)));
+		}
+		return ids;
+	}
+
+	public Set<Integer> getDefeatIds(final String html)
+	{
+		final Set<Integer> ids = new HashSet<Integer>();
+		final Pattern pattern = Pattern.compile("Lost to.*?match_id=(\\d*)");
+		final Matcher matcher = pattern.matcher(html);
+		while (matcher.find())
+		{
+			ids.add(Integer.parseInt(matcher.group(1)));
+		}
+		return ids;
 	}
 
 	public String downloadPlayerProfile(final String name) throws IOException
@@ -59,18 +77,11 @@ public class PlayerDataRetriever
 	{
 		final Set<String> players = new HashSet<String>();
 		final String text = html.replaceAll("\\<.*?>","");
-		final Pattern pattern = Pattern.compile("Lost to (\\(\\w*\\))*(.*?)\\(");
+		final Pattern pattern = Pattern.compile("Lost to (\\(\\w*\\))?(.*?)\\(");
 		final Matcher matcher = pattern.matcher(text);
 		while (matcher.find())
 		{
-			if (matcher.groupCount() > 1)
-			{
-				players.add(matcher.group(2));
-			}
-			else
-			{
-				players.add(matcher.group(1));
-			}
+			players.add(matcher.group(matcher.groupCount()));
 		}
 		return players;
 	}
@@ -106,6 +117,13 @@ public class PlayerDataRetriever
 	{
 		final File file = new File("doc\\player.html");
 		downloadFile(new URL("http://www.tennisinsight.com/player_overview.php?player_id=" + id + "&duration=380"), file);
+		return readFileToString(file);
+	}
+
+	public String downloadPlayerActivity(final int id) throws MalformedURLException, IOException
+	{
+		final File file = new File("doc\\activity.html");
+		downloadFile(new URL("http://www.tennisinsight.com/player_activity.php?player_id="+ id + "&activity=1"), file);
 		return readFileToString(file);
 	}
 
@@ -155,5 +173,10 @@ public class PlayerDataRetriever
 			in.close();
 		}
 
+	}
+
+	public Set<String> getVictoryStatistics(final String html)
+	{
+		return null;
 	}
 }

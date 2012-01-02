@@ -3,10 +3,8 @@ package tennis.data;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Set;
 
 import org.junit.Ignore;
@@ -52,11 +50,7 @@ public class TestPlayerDataRetriever
 	@Test
 	public void testGetPlayerActivity() throws IOException
 	{
-		final File file = new File("doc\\activity.html");
-		retriever.downloadFile(new URL("http://www.tennisinsight.com/player_activity.php?player_id=1&activity=1"), file);
-		final String activityHtml = retriever.readFileToString(file);
-
-		assertThat(activityHtml, containsString("Last 1-50 Activity - Roger Federer - All Matches with Any Odds"));
+		assertThat(retriever.downloadPlayerActivity(1), containsString("Last 1-50 Activity - Roger Federer - All Matches with Any Odds"));
 	}
 
 	@Test
@@ -68,6 +62,24 @@ public class TestPlayerDataRetriever
 
 		assertThat(players.size(), equalTo(2));
 		assertThat(players, contains("Novak Djokovic", "Andy Murray"));
+	}
+
+	@Test
+	public void testGetVictoryIds() throws MalformedURLException, IOException
+	{
+		final Set<Integer> ids = retriever.getVictoryIds("<test>Def. <test>    <test?match_id=777>test" +
+														 "<test>Def. <test>    <test?match_id=888>test");
+		assertThat(ids.size(), equalTo(2));
+		assertThat(ids, contains(888, 777));
+	}
+
+	@Test
+	public void testGetDefeatIds() throws MalformedURLException, IOException
+	{
+		final Set<Integer> ids = retriever.getDefeatIds("<test>Lost to <test>    <test?match_id=777>test" +
+														"<test>Lost to <test>    <test?match_id=888>test");
+		assertThat(ids.size(), equalTo(2));
+		assertThat(ids, contains(888, 777));
 	}
 
 	@Test
@@ -95,9 +107,7 @@ public class TestPlayerDataRetriever
 	@Test
 	public void testDownloadPlayerStatsOneYear() throws MalformedURLException, IOException
 	{
-		final String playerHtml = retriever.downloadPlayerStatistics(1);
-
-		assertThat(playerHtml, containsString("<option value=\"380\" selected=\"selected\">1 year</option>"));
+		assertThat(retriever.downloadPlayerStatistics(1), containsString("<option value=\"380\" selected=\"selected\">1 year</option>"));
 	}
 
 	@Test
