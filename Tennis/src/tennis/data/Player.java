@@ -34,27 +34,29 @@ public class Player
 	{
 		this.name = name;
 
-		final PlayerDataRetriever retriever = new PlayerDataRetriever();
-		id = retriever.getPlayerId(retriever.downloadPlayerProfile(name));
+		final DataDownloader downloader = new DataDownloader();
+		final DataParser parser = new DataParser();
 
-		final String stats = retriever.downloadPlayerOverview(id);
-		firstServesIn = retriever.findStat(stats, "1st Serve %");
-		firstServePointsWon = retriever.findStat(stats, "1st Serve W%");
-		secondServePointsWon = retriever.findStat(stats, "2nd Serve W%");
-		servicePointsWon = retriever.findStat(stats, "Service Pts W%");
-		firstServeReturnsWon = retriever.findStat(stats, "1st Return W%");
-		secondServeReturnsWon = retriever.findStat(stats, "2nd Return W%");
-		returnPointsWon = retriever.findStat(stats, "Return Pts W%");
+		id = parser.getPlayerId(downloader.downloadPlayerProfile(name));
 
-		final String activity = retriever.downloadPlayerActivity(id);
-		previousOpponentsDefeated = retriever.getPreviousOpponentsDefeated(activity);
-		previousOpponentsLostTo = retriever.getPreviousOpponentsLostTo(activity);
+		final String stats = downloader.downloadPlayerOverview(id);
+		firstServesIn = parser.findStat(stats, "1st Serve %");
+		firstServePointsWon = parser.findStat(stats, "1st Serve W%");
+		secondServePointsWon = parser.findStat(stats, "2nd Serve W%");
+		servicePointsWon = parser.findStat(stats, "Service Pts W%");
+		firstServeReturnsWon = parser.findStat(stats, "1st Return W%");
+		secondServeReturnsWon = parser.findStat(stats, "2nd Return W%");
+		returnPointsWon = parser.findStat(stats, "Return Pts W%");
+
+		final String activity = downloader.downloadPlayerActivity(id);
+		previousOpponentsDefeated = parser.getPreviousOpponentsDefeated(activity);
+		previousOpponentsLostTo = parser.getPreviousOpponentsLostTo(activity);
 		previousOpponents = new ArrayList<String>(previousOpponentsDefeated); previousOpponents.addAll(previousOpponentsLostTo);
 
-		victoryIds = retriever.getVictoryIds(activity);
-		victoryStats = retriever.getVictoryStatistics(activity);
-		defeatIds = retriever.getDefeatIds(activity);
-		defeatStats = retriever.getDefeatStatistics(activity);
+		victoryIds = parser.getVictoryIds(activity);
+		victoryStats = parser.getVictoryStatistics(activity);
+		defeatIds = parser.getDefeatIds(activity);
+		defeatStats = parser.getDefeatStatistics(activity);
 
 		matchIds = new ArrayList<Integer>(victoryIds); matchIds.addAll(defeatIds);
 		matchStats = new ArrayList<String>(victoryStats); matchStats.addAll(defeatStats);

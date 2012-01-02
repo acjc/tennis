@@ -1,25 +1,18 @@
 package tennis.data;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.equalTo;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.List;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
-public class TestPlayerDataRetriever
+public class TestDataParser
 {
-	private final PlayerDataRetriever retriever = new PlayerDataRetriever();
-
-	@Ignore
-	@Test
-	public void testPrintCookies() throws IOException
-	{
-		retriever.printCookies();
-	}
+	private final DataParser retriever = new DataParser();
 
 	@Test
 	public void testGetPlayerId() throws MalformedURLException, IOException
@@ -49,14 +42,6 @@ public class TestPlayerDataRetriever
 		assertThat(retriever.findTourAverage("<test>5.84%    (61-12)<test>\n" +
 											 "  <test>Stat<test>\n" +
 											 "<test>50.57%    (265-250)<test>", "Stat"), equalTo(50.57));
-	}
-
-	// All Matches = 1
-	// Player ID: 1 = Roger Federer
-	@Test
-	public void testGetPlayerActivity() throws IOException
-	{
-		assertThat(retriever.downloadPlayerActivity(1), containsString("Last 1-50 Activity - Roger Federer - All Matches with Any Odds"));
 	}
 
 	@Test
@@ -122,23 +107,5 @@ public class TestPlayerDataRetriever
 															   "<test>Def. <test>test<test> <test=javascript:makePopup('popup3')>test");
 
 		assertThat(stats, contains("popup1", "popup2"));
-	}
-
-
-	@Test
-	public void testFindPlayerByName() throws MalformedURLException, IOException
-	{
-		final String playerHtml = retriever.downloadPlayerProfile("Jo-Wilfried Tsonga");
-
-		assertThat(playerHtml, containsString("TennisInsight.com"));
-		assertThat(playerHtml, containsString("Jo-Wilfried Tsonga"));
-	}
-
-	// One Year = 380
-	// Player ID: 1 = Roger Federer
-	@Test
-	public void testDownloadPlayerStatsOneYear() throws MalformedURLException, IOException
-	{
-		assertThat(retriever.downloadPlayerOverview(1), containsString("<option value=\"380\" selected=\"selected\">1 year</option>"));
 	}
 }
