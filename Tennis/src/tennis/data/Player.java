@@ -1,6 +1,7 @@
 package tennis.data;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +36,7 @@ public class Player
 		this.name = name;
 
 		final DataDownloader downloader = new DataDownloader();
-		final DataParser parser = new DataParser();
+		final PlayerDataParser parser = new PlayerDataParser();
 
 		id = parser.getPlayerId(downloader.downloadPlayerProfile(name));
 
@@ -64,13 +65,14 @@ public class Player
 		System.out.println("Finished retrieving data for: " + name + " (" + id + ")");
 	}
 
-	public void adjustStatistics(final Player opponent)
+	public void adjustStatistics(final Player opponent) throws MalformedURLException, IOException
 	{
 		for (int i = 0; i < previousOpponents.size(); i++)
 		{
 			if (previousOpponents.get(i).equals(opponent.name()))
 			{
 				System.out.println("Found match vs " + previousOpponents.get(i) + " with Match ID: " + matchIds.get(i));
+				final MatchData matchData = new MatchData(matchStats.get(i), matchIds.get(i), name(), opponent.name());
 			}
 		}
 	}

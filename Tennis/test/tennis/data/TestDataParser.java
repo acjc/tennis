@@ -12,7 +12,7 @@ import org.junit.Test;
 
 public class TestDataParser
 {
-	private final DataParser retriever = new DataParser();
+	private final PlayerDataParser retriever = new PlayerDataParser();
 
 	@Test
 	public void testGetPlayerId() throws MalformedURLException, IOException

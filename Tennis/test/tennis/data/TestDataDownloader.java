@@ -49,9 +49,9 @@ public class TestDataDownloader
 	@Test
 	public void testDownloadMatchStats() throws MalformedURLException, IOException
 	{
-		assertThat(downloader.downloadMatch("http://www.atpworldtour.com/Share/Match-Facts-Pop-Up.aspx?t=352&y=2011&r=6&p=T786", 171834501),
+		assertThat(downloader.downloadMatchData("http://www.atpworldtour.com/Share/Match-Facts-Pop-Up.aspx?t=352&y=2011&r=6&p=T786", 171834501),
 				   containsString("Jo-Wilfried Tsonga"));
-		assertThat(downloader.downloadMatch("http://tennisinsight.com/match_stats_popup.php?matchID=168934503", 168934503),
+		assertThat(downloader.downloadMatchData("http://tennisinsight.com/match_stats_popup.php?matchID=172004201", 172004201),
 				   containsString("Jo-Wilfried Tsonga"));
 	}
 }
