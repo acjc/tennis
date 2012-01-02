@@ -33,7 +33,7 @@ public class Player
 		final PlayerDataRetriever retriever = new PlayerDataRetriever();
 		id = retriever.getPlayerId(retriever.downloadPlayerProfile(name));
 
-		final String stats = retriever.downloadPlayerStatistics(id);
+		final String stats = retriever.downloadPlayerOverview(id);
 		firstServesIn = retriever.findStat(stats, "1st Serve %");
 		firstServePointsWon = retriever.findStat(stats, "1st Serve W%");
 		secondServePointsWon = retriever.findStat(stats, "2nd Serve W%");

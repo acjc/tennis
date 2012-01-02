@@ -16,54 +16,9 @@ import org.apache.commons.io.FileUtils;
 
 public class PlayerDataRetriever
 {
-	public int getPlayerId(final String playerHtml) throws IOException
-	{
-		final Pattern pattern = Pattern.compile("player_id=(\\d*)");
-		final Matcher matcher = pattern.matcher(playerHtml);
-		matcher.find();
-		return Integer.parseInt(matcher.group(1));
-	}
-
 	public String readFileToString(final File file) throws IOException
 	{
 		return FileUtils.readFileToString(file);
-	}
-
-	public Set<String> getOpponentsDefeated(final String html)
-	{
-		final Set<String> players = new HashSet<String>();
-		final String text = html.replaceAll("\\<.*?>","");
-		final Pattern pattern = Pattern.compile("Def\\. (\\(\\w*\\))*(.*?)\\(");
-		final Matcher matcher = pattern.matcher(text);
-		while (matcher.find())
-		{
-			players.add(matcher.group(matcher.groupCount()));
-		}
-		return players;
-	}
-
-	public Set<Integer> getVictoryIds(final String html)
-	{
-		final Set<Integer> ids = new HashSet<Integer>();
-		final Pattern pattern = Pattern.compile("Def\\..*?match_id=(\\d*)");
-		final Matcher matcher = pattern.matcher(html);
-		while (matcher.find())
-		{
-			ids.add(Integer.parseInt(matcher.group(1)));
-		}
-		return ids;
-	}
-
-	public Set<Integer> getDefeatIds(final String html)
-	{
-		final Set<Integer> ids = new HashSet<Integer>();
-		final Pattern pattern = Pattern.compile("Lost to.*?match_id=(\\d*)");
-		final Matcher matcher = pattern.matcher(html);
-		while (matcher.find())
-		{
-			ids.add(Integer.parseInt(matcher.group(1)));
-		}
-		return ids;
 	}
 
 	public String downloadPlayerProfile(final String name) throws IOException
@@ -73,17 +28,19 @@ public class PlayerDataRetriever
 		return readFileToString(file);
 	}
 
-	public Set<String> getOpponentsLostTo(final String html)
+	public int getPlayerId(final String playerHtml) throws IOException
 	{
-		final Set<String> players = new HashSet<String>();
-		final String text = html.replaceAll("\\<.*?>","");
-		final Pattern pattern = Pattern.compile("Lost to (\\(\\w*\\))?(.*?)\\(");
-		final Matcher matcher = pattern.matcher(text);
-		while (matcher.find())
-		{
-			players.add(matcher.group(matcher.groupCount()));
-		}
-		return players;
+		final Pattern pattern = Pattern.compile("player_id=(\\d*)");
+		final Matcher matcher = pattern.matcher(playerHtml);
+		matcher.find();
+		return Integer.parseInt(matcher.group(1));
+	}
+
+	public String downloadPlayerOverview(final int id) throws IOException
+	{
+		final File file = new File("doc\\player.html");
+		downloadFile(new URL("http://www.tennisinsight.com/player_overview.php?player_id=" + id + "&duration=380"), file);
+		return readFileToString(file);
 	}
 
 	public int getNumberOfMatches(final String html)
@@ -113,18 +70,85 @@ public class PlayerDataRetriever
 		return Double.parseDouble(matcher.group(1));
 	}
 
-	public String downloadPlayerStatistics(final int id) throws IOException
-	{
-		final File file = new File("doc\\player.html");
-		downloadFile(new URL("http://www.tennisinsight.com/player_overview.php?player_id=" + id + "&duration=380"), file);
-		return readFileToString(file);
-	}
-
 	public String downloadPlayerActivity(final int id) throws MalformedURLException, IOException
 	{
 		final File file = new File("doc\\activity.html");
 		downloadFile(new URL("http://www.tennisinsight.com/player_activity.php?player_id="+ id + "&activity=1"), file);
 		return readFileToString(file);
+	}
+
+	public Set<String> getOpponentsDefeated(final String html)
+	{
+		final Set<String> players = new HashSet<String>();
+		final String text = html.replaceAll("\\<.*?>","");
+		final Pattern pattern = Pattern.compile("Def\\. (\\(\\w*\\))*(.*?)\\(");
+		final Matcher matcher = pattern.matcher(text);
+		while (matcher.find())
+		{
+			players.add(matcher.group(matcher.groupCount()));
+		}
+		return players;
+	}
+
+	public Set<Integer> getVictoryIds(final String html)
+	{
+		final Set<Integer> ids = new HashSet<Integer>();
+		final Pattern pattern = Pattern.compile("Def\\..*?match_id=(\\d*)");
+		final Matcher matcher = pattern.matcher(html);
+		while (matcher.find())
+		{
+			ids.add(Integer.parseInt(matcher.group(1)));
+		}
+		return ids;
+	}
+
+	public Set<String> getVictoryStatistics(final String html)
+	{
+		final Set<String> stats = new HashSet<String>();
+		final Pattern pattern = Pattern.compile("Def\\..*?makePopup\\('(.*?)'\\)");
+		final Matcher matcher = pattern.matcher(html);
+		while (matcher.find())
+		{
+			stats.add(matcher.group(1));
+		}
+		return stats;
+	}
+
+	public Set<String> getOpponentsLostTo(final String html)
+	{
+		final Set<String> players = new HashSet<String>();
+		final String text = html.replaceAll("\\<.*?>","");
+		final Pattern pattern = Pattern.compile("Lost to (\\(\\w*\\))?(.*?)\\(");
+		final Matcher matcher = pattern.matcher(text);
+		while (matcher.find())
+		{
+			players.add(matcher.group(matcher.groupCount()));
+		}
+		return players;
+	}
+
+	public Set<Integer> getDefeatIds(final String html)
+	{
+		final Set<Integer> ids = new HashSet<Integer>();
+		final Pattern pattern = Pattern.compile("Lost to.*?match_id=(\\d*)");
+		final Matcher matcher = pattern.matcher(html);
+		while (matcher.find())
+		{
+			ids.add(Integer.parseInt(matcher.group(1)));
+		}
+		return ids;
+	}
+
+	public Set<String> getDefeatStatistics(final String html)
+	{
+		final Set<String> stats = new HashSet<String>();
+		final Pattern pattern = Pattern.compile("Lost to.*?makePopup\\('(.*?)'\\)");
+		final Matcher matcher = pattern.matcher(html);
+		while (matcher.find())
+		{
+			stats.add(matcher.group(1));
+		}
+		return stats;
 	}
 
 	public void printCookies() throws IOException
@@ -173,10 +197,5 @@ public class PlayerDataRetriever
 			in.close();
 		}
 
-	}
-
-	public Set<String> getVictoryStatistics(final String html)
-	{
-		return null;
 	}
 }

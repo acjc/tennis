@@ -56,9 +56,10 @@ public class TestPlayerDataRetriever
 	@Test
 	public void testGetOpponentsDefeated()
 	{
-		final Set<String> players = retriever.getOpponentsDefeated("<test>Def. (2W)<test>Novak Djokovic<test>(2,6.23) " +
-																   "<test>Def. (2W)<test>Novak Djokovic<test>(2,6.23) " +
-																   "<test>Def. <test>Andy Murray<test>(4,5.57)  ");
+		final Set<String> players = retriever.getOpponentsDefeated("<test>Def. (2W)<test>Novak Djokovic<test>(2,6.23)" +
+																   "<test>Def. (2W)<test>Novak Djokovic<test>(2,6.23)" +
+																   "<test>Def. <test>Andy Murray<test>(4,5.57)" +
+																   "<test>Lost to <test>Roger Federer<test>(3,3.94)");
 
 		assertThat(players.size(), equalTo(2));
 		assertThat(players, contains("Novak Djokovic", "Andy Murray"));
@@ -68,30 +69,55 @@ public class TestPlayerDataRetriever
 	public void testGetVictoryIds() throws MalformedURLException, IOException
 	{
 		final Set<Integer> ids = retriever.getVictoryIds("<test>Def. <test>    <test?match_id=777>test" +
-														 "<test>Def. <test>    <test?match_id=888>test");
+														 "<test>Def. <test>    <test?match_id=888>test" +
+														 "<test>Lost to <test>    <test?match_id=999>test");
+
 		assertThat(ids.size(), equalTo(2));
 		assertThat(ids, contains(888, 777));
 	}
 
 	@Test
-	public void testGetDefeatIds() throws MalformedURLException, IOException
+	public void testGetVictoryStatistics() throws MalformedURLException, IOException
 	{
-		final Set<Integer> ids = retriever.getDefeatIds("<test>Lost to <test>    <test?match_id=777>test" +
-														"<test>Lost to <test>    <test?match_id=888>test");
-		assertThat(ids.size(), equalTo(2));
-		assertThat(ids, contains(888, 777));
+		final Set<String> stats = retriever.getVictoryStatistics("<test>Def. <test>test<test> <test=javascript:makePopup('popup1')>test" +
+															   "<test>Def. <test>test<test> <test=javascript:makePopup('popup2')>test" +
+															   "<test>Lost to <test>test<test> <test=javascript:makePopup('popup3')>test");
+
+		assertThat(stats, contains("popup1", "popup2"));
 	}
 
 	@Test
 	public void testGetOpponentsLostTo()
 	{
-		final Set<String> players = retriever.getOpponentsLostTo("<test>Lost to (2W)<test>Novak Djokovic<test>(2,6.23) " +
-																 "<test>Lost to (2W)<test>Novak Djokovic<test>(2,6.23) " +
-																 "<test>Lost to <test>Andy Murray<test>(4,5.57)  ");
+		final Set<String> players = retriever.getOpponentsLostTo("<test>Lost to (2W)<test>Novak Djokovic<test>(2,6.23)" +
+																 "<test>Lost to (2W)<test>Novak Djokovic<test>(2,6.23)" +
+																 "<test>Lost to <test>Andy Murray<test>(4,5.57)" +
+																 "<test>Def. <test>Roger Federer<test>(3,3.94)");
 
 		assertThat(players.size(), equalTo(2));
 		assertThat(players, contains("Novak Djokovic", "Andy Murray"));
 	}
+	@Test
+	public void testGetDefeatIds() throws MalformedURLException, IOException
+	{
+		final Set<Integer> ids = retriever.getDefeatIds("<test>Lost to <test>    <test?match_id=777>test" +
+														"<test>Lost to <test>    <test?match_id=888>test" +
+														"<test>Def. <test>    <test?match_id=999>test");
+
+		assertThat(ids.size(), equalTo(2));
+		assertThat(ids, contains(888, 777));
+	}
+
+	@Test
+	public void testGetDefeatStatistics() throws MalformedURLException, IOException
+	{
+		final Set<String> stats = retriever.getDefeatStatistics("<test>Lost to <test>test<test> <test=javascript:makePopup('popup1')>test" +
+															   "<test>Lost to <test>test<test> <test=javascript:makePopup('popup2')>test" +
+															   "<test>Def. <test>test<test> <test=javascript:makePopup('popup3')>test");
+
+		assertThat(stats, contains("popup1", "popup2"));
+	}
+
 
 	@Test
 	public void testFindPlayerByName() throws MalformedURLException, IOException
@@ -107,12 +133,12 @@ public class TestPlayerDataRetriever
 	@Test
 	public void testDownloadPlayerStatsOneYear() throws MalformedURLException, IOException
 	{
-		assertThat(retriever.downloadPlayerStatistics(1), containsString("<option value=\"380\" selected=\"selected\">1 year</option>"));
+		assertThat(retriever.downloadPlayerOverview(1), containsString("<option value=\"380\" selected=\"selected\">1 year</option>"));
 	}
 
 	@Test
 	public void testGetPlayerId() throws MalformedURLException, IOException
 	{
-		assertThat(retriever.getPlayerId("test_test?player_id=777\" test"), equalTo(777));
+		assertThat(retriever.getPlayerId("test_test?player_id=777' test"), equalTo(777));
 	}
 }
