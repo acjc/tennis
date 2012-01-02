@@ -1,8 +1,8 @@
 package tennis.data;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Player
 {
@@ -18,13 +18,17 @@ public class Player
 	private final double secondServeReturnsWon;
 	private final double returnPointsWon;
 
-	private final Set<String> opponentsDefeated;
-	private final Set<String> opponentsLostTo;
-	private final Set<String> opponents;
-	private final Set<Integer> victoryIds;
-	private final Set<String> victoryStats;
-	private final Set<Integer> defeatIds;
-	private final Set<String> defeatStats;
+	private final List<String> previousOpponentsDefeated;
+	private final List<String> previousOpponentsLostTo;
+	private final List<String> previousOpponents;
+
+	private final List<Integer> victoryIds;
+	private final List<String> victoryStats;
+	private final List<Integer> defeatIds;
+	private final List<String> defeatStats;
+
+	private final List<Integer> matchIds;
+	private final List<String> matchStats;
 
 	public Player(final String name) throws IOException
 	{
@@ -43,16 +47,35 @@ public class Player
 		returnPointsWon = retriever.findStat(stats, "Rtn Points W%");
 
 		final String activity = retriever.downloadPlayerActivity(id);
-		opponentsDefeated = retriever.getOpponentsDefeated(activity);
-		opponentsLostTo = retriever.getOpponentsLostTo(activity);
-		opponents = new HashSet<String>(opponentsDefeated); opponents.addAll(opponentsLostTo);
+		previousOpponentsDefeated = retriever.getPreviousOpponentsDefeated(activity);
+		previousOpponentsLostTo = retriever.getPreviousOpponentsLostTo(activity);
+		previousOpponents = new ArrayList<String>(previousOpponentsDefeated); previousOpponents.addAll(previousOpponentsLostTo);
 
 		victoryIds = retriever.getVictoryIds(activity);
 		victoryStats = retriever.getVictoryStatistics(activity);
 		defeatIds = retriever.getDefeatIds(activity);
 		defeatStats = retriever.getDefeatStatistics(activity);
 
+		matchIds = new ArrayList<Integer>(victoryIds); matchIds.addAll(defeatIds);
+		matchStats = new ArrayList<String>(victoryStats); matchStats.addAll(defeatStats);
+
 		System.out.println("Finished retrieving data for: " + name + "(" + id + ")");
+	}
+
+	public void adjustStatistics(final Player opponent)
+	{
+		for (int i = 0; i < previousOpponents.size(); i++)
+		{
+			if (previousOpponents.get(i).equals(opponent.name()))
+			{
+				System.out.println("Found match vs " + previousOpponents.get(i) + " with Match ID: " + matchIds.get(i));
+			}
+		}
+	}
+
+	private String name()
+	{
+		return name;
 	}
 
 	public double firstServesIn()
@@ -88,5 +111,40 @@ public class Player
 	public double returnPointsWon()
 	{
 		return returnPointsWon;
+	}
+
+	public List<String> getOpponentsDefeated()
+	{
+		return previousOpponentsDefeated;
+	}
+
+	public List<String> getOpponentsLostTo()
+	{
+		return previousOpponentsLostTo;
+	}
+
+	public List<String> getOpponents()
+	{
+		return previousOpponents;
+	}
+
+	public List<Integer> getVictoryIds()
+	{
+		return victoryIds;
+	}
+
+	public List<String> getVictoryStats()
+	{
+		return victoryStats;
+	}
+
+	public List<Integer> getDefeatIds()
+	{
+		return defeatIds;
+	}
+
+	public List<String> getDefeatStats()
+	{
+		return defeatStats;
 	}
 }

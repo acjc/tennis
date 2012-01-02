@@ -7,8 +7,8 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -77,9 +77,9 @@ public class PlayerDataRetriever
 		return readFileToString(file);
 	}
 
-	public Set<String> getOpponentsDefeated(final String html)
+	public List<String> getPreviousOpponentsDefeated(final String html)
 	{
-		final Set<String> players = new HashSet<String>();
+		final List<String> players = new ArrayList<String>();
 		final String text = html.replaceAll("\\<.*?>","");
 		final Pattern pattern = Pattern.compile("Def\\. (\\(\\w*\\))*(.*?)\\(");
 		final Matcher matcher = pattern.matcher(text);
@@ -90,9 +90,9 @@ public class PlayerDataRetriever
 		return players;
 	}
 
-	public Set<Integer> getVictoryIds(final String html)
+	public List<Integer> getVictoryIds(final String html)
 	{
-		final Set<Integer> ids = new HashSet<Integer>();
+		final List<Integer> ids = new ArrayList<Integer>();
 		final Pattern pattern = Pattern.compile("Def\\..*?match_id=(\\d*)");
 		final Matcher matcher = pattern.matcher(html);
 		while (matcher.find())
@@ -102,9 +102,9 @@ public class PlayerDataRetriever
 		return ids;
 	}
 
-	public Set<String> getVictoryStatistics(final String html)
+	public List<String> getVictoryStatistics(final String html)
 	{
-		final Set<String> stats = new HashSet<String>();
+		final List<String> stats = new ArrayList<String>();
 		final Pattern pattern = Pattern.compile("Def\\..*?makePopup\\('(.*?)'\\)");
 		final Matcher matcher = pattern.matcher(html);
 		while (matcher.find())
@@ -114,9 +114,9 @@ public class PlayerDataRetriever
 		return stats;
 	}
 
-	public Set<String> getOpponentsLostTo(final String html)
+	public List<String> getPreviousOpponentsLostTo(final String html)
 	{
-		final Set<String> players = new HashSet<String>();
+		final List<String> players = new ArrayList<String>();
 		final String text = html.replaceAll("\\<.*?>","");
 		final Pattern pattern = Pattern.compile("Lost to (\\(\\w*\\))?(.*?)\\(");
 		final Matcher matcher = pattern.matcher(text);
@@ -127,9 +127,9 @@ public class PlayerDataRetriever
 		return players;
 	}
 
-	public Set<Integer> getDefeatIds(final String html)
+	public List<Integer> getDefeatIds(final String html)
 	{
-		final Set<Integer> ids = new HashSet<Integer>();
+		final List<Integer> ids = new ArrayList<Integer>();
 		final Pattern pattern = Pattern.compile("Lost to.*?match_id=(\\d*)");
 		final Matcher matcher = pattern.matcher(html);
 		while (matcher.find())
@@ -139,9 +139,9 @@ public class PlayerDataRetriever
 		return ids;
 	}
 
-	public Set<String> getDefeatStatistics(final String html)
+	public List<String> getDefeatStatistics(final String html)
 	{
-		final Set<String> stats = new HashSet<String>();
+		final List<String> stats = new ArrayList<String>();
 		final Pattern pattern = Pattern.compile("Lost to.*?makePopup\\('(.*?)'\\)");
 		final Matcher matcher = pattern.matcher(html);
 		while (matcher.find())
