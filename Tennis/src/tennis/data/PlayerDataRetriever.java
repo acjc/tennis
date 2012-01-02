@@ -24,13 +24,13 @@ public class PlayerDataRetriever
 	public String downloadPlayerProfile(final String name) throws IOException
 	{
 		final File file = new File("doc\\player.html");
-		downloadFile(new URL("http://www.tennisinsight.com/player_search_action.php?player_search=" + name), file);
+		downloadFile(new URL("http://www.tennisinsight.com/player_search_action.php?player_search=" + name.replace(" ", "%20")), file);
 		return readFileToString(file);
 	}
 
 	public int getPlayerId(final String playerHtml) throws IOException
 	{
-		final Pattern pattern = Pattern.compile("player_id=(\\d*)");
+		final Pattern pattern = Pattern.compile("activity.php\\?player_id=(\\d*)");
 		final Matcher matcher = pattern.matcher(playerHtml);
 		matcher.find();
 		return Integer.parseInt(matcher.group(1));

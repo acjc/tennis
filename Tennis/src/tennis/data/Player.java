@@ -44,7 +44,7 @@ public class Player
 		servicePointsWon = retriever.findStat(stats, "Service Pts W%");
 		firstServeReturnsWon = retriever.findStat(stats, "1st Return W%");
 		secondServeReturnsWon = retriever.findStat(stats, "2nd Return W%");
-		returnPointsWon = retriever.findStat(stats, "Rtn Points W%");
+		returnPointsWon = retriever.findStat(stats, "Return Pts W%");
 
 		final String activity = retriever.downloadPlayerActivity(id);
 		previousOpponentsDefeated = retriever.getPreviousOpponentsDefeated(activity);
@@ -59,7 +59,7 @@ public class Player
 		matchIds = new ArrayList<Integer>(victoryIds); matchIds.addAll(defeatIds);
 		matchStats = new ArrayList<String>(victoryStats); matchStats.addAll(defeatStats);
 
-		System.out.println("Finished retrieving data for: " + name + "(" + id + ")");
+		System.out.println("Finished retrieving data for: " + name + " (" + id + ")");
 	}
 
 	public void adjustStatistics(final Player opponent)

@@ -22,6 +22,12 @@ public class TestPlayerDataRetriever
 	}
 
 	@Test
+	public void testGetPlayerId() throws MalformedURLException, IOException
+	{
+		assertThat(retriever.getPlayerId("activity.php?player_id=777' test"), equalTo(777));
+	}
+
+	@Test
 	public void testGetNumberOfMatches() throws IOException
 	{
 		assertThat(retriever.getNumberOfMatches("<test>   \n" +
@@ -34,7 +40,7 @@ public class TestPlayerDataRetriever
 	{
 		assertThat(retriever.findStat("<test>   \n" +
 									  "<test>5.84%    (61-12)<test>\n" +
-									  "  <test>Stat<test>", "Stat"), equalTo(5.84));
+									  "  <test>1st Stat %<test>", "1st Stat %"), equalTo(5.84));
 	}
 
 	@Test
@@ -134,11 +140,5 @@ public class TestPlayerDataRetriever
 	public void testDownloadPlayerStatsOneYear() throws MalformedURLException, IOException
 	{
 		assertThat(retriever.downloadPlayerOverview(1), containsString("<option value=\"380\" selected=\"selected\">1 year</option>"));
-	}
-
-	@Test
-	public void testGetPlayerId() throws MalformedURLException, IOException
-	{
-		assertThat(retriever.getPlayerId("test_test?player_id=777' test"), equalTo(777));
 	}
 }
