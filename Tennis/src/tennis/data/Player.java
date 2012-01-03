@@ -12,16 +12,19 @@ public class Player
 {
 	private final String name;
 	private final int id;
+	private final boolean inTournament;
 
 	private double firstServesIn;
 	private double firstServePointsWon;
 	private double secondServePointsWon;
 	private double servicePointsWon;
+	private double tournamentAverageServicePointsWon = 0.0;
 	private final double tourAverageServicePointsWon;
 
 	private double firstServeReturnsWon;
 	private double secondServeReturnsWon;
 	private double returnPointsWon;
+	private double tournamentAverageReturnPointsWon = 0.0;
 	private final double tourAverageReturnPointsWon;
 
 	private final List<String> previousOpponentsDefeated;
@@ -43,6 +46,7 @@ public class Player
 		id = parser.getPlayerId(downloader.downloadPlayerProfile(name));
 
 		final String overview = downloader.downloadPlayerOverview(id, surface);
+		inTournament = parser.inTournament(overview);
 		firstServesIn = parser.findStat(overview, "1st Serve %");
 		firstServePointsWon = parser.findStat(overview, "1st Serve W%");
 		secondServePointsWon = parser.findStat(overview, "2nd Serve W%");
@@ -53,6 +57,19 @@ public class Player
 		secondServeReturnsWon = parser.findStat(overview, "2nd Return W%");
 		returnPointsWon = parser.findStat(overview, "Return Pts W%");
 		tourAverageReturnPointsWon = parser.findTourAverage(overview, "Return Pts W%");
+
+		if (inTournament)
+		{
+			final int tournamentId = parser.getTournamentId(overview);
+			final String tournament = downloader.downloadTournamentData(tournamentId);
+			tournamentAverageServicePointsWon = parser.findStat(tournament, "Service Pts W%");
+			tournamentAverageReturnPointsWon = parser.findStat(tournament, "Return Pts W%");
+			System.out.println("Currently participating in: " + parser.getTournamentName(tournament) + " (" + tournamentId + ")");
+		}
+		else
+		{
+			System.out.println(name + " has no matches upcoming");
+		}
 
 		final String activity = downloader.downloadPlayerActivity(id, convertToActivitySurface(surface));
 		previousOpponentsDefeated = parser.getPreviousOpponentsDefeated(activity);
@@ -75,10 +92,17 @@ public class Player
 		defeatIds = parser.getDefeatIds(activity);
 		matchIds = new ArrayList<Integer>(victoryIds); matchIds.addAll(defeatIds);
 
+		printInitialPlayerSummary();
+	}
+
+	private void printInitialPlayerSummary()
+	{
 		System.out.println("Finished retrieving player data for: " + name + " (ID: " + id + ")");
-		System.out.println("-> FSI = " + firstServesIn + ", FSPW = " + firstServePointsWon + ", SSPW = " + secondServePointsWon +
+		System.out.println("Lifetime -> FSI = " + firstServesIn + ", FSPW = " + firstServePointsWon + ", SSPW = " + secondServePointsWon +
 				   		   ", FSRW = " + firstServeReturnsWon + ", SSRW = " + secondServeReturnsWon +
-				   		   ", SPW = " + servicePointsWon + ", RPW = " + returnPointsWon + '\n');
+				   		   ", SPW = " + servicePointsWon + ", RPW = " + returnPointsWon);
+		System.out.println("Tournament Averages -> SPW = " + tournamentAverageServicePointsWon + ", RPW = " + tournamentAverageReturnPointsWon);
+		System.out.println("Tour Averages -> SPW = " + tourAverageServicePointsWon + ", RPW = " + tourAverageReturnPointsWon + '\n');
 	}
 
 	private ActivitySurface convertToActivitySurface(final Surface surface)
@@ -236,8 +260,20 @@ public class Player
 
 	public double servicePointsWonAgainst(final Player opponent)
 	{
-		System.out.println(servicePointsWon + ", " + opponent.returnPointsWon() + ", " + tourAverageReturnPointsWon);
+		if (inTournament)
+		{
+			return (tournamentAverageServicePointsWon + (servicePointsWon - tourAverageServicePointsWon) - (opponent.returnPointsWon() - tourAverageReturnPointsWon)) / 100;
+		}
 		return (servicePointsWon - opponent.returnPointsWon() + tourAverageReturnPointsWon) / 100;
+	}
+
+	public double returnPointsWonAgainst(final Player opponent)
+	{
+		if (inTournament)
+		{
+			return (tournamentAverageReturnPointsWon + (returnPointsWon - tourAverageReturnPointsWon) - (opponent.servicePointsWon() - tourAverageServicePointsWon)) / 100;
+		}
+		return (returnPointsWon - opponent.servicePointsWon() + tourAverageServicePointsWon) / 100;
 	}
 
 	private double round(final double value)

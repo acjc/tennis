@@ -31,6 +31,14 @@ public class PlayerDataParser
 		return Integer.parseInt(matcher.group(1));
 	}
 
+	public String getTournamentName(final String tournamentHtml)
+	{
+		final Pattern pattern = Pattern.compile("fontMainTitle\">(.*?)<");
+		final Matcher matcher = pattern.matcher(tournamentHtml);
+		matcher.find();
+		return matcher.group(1);
+	}
+
 	public int getNumberOfMatches(final String html)
 	{
 		final String text = html.replaceAll("\\<.*?>","");

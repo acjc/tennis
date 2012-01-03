@@ -12,26 +12,32 @@ import org.junit.Test;
 
 public class TestPlayerDataParser
 {
-	private final PlayerDataParser retriever = new PlayerDataParser();
+	private final PlayerDataParser parser = new PlayerDataParser();
 
 	@Test
 	public void testGetPlayerId() throws MalformedURLException, IOException
 	{
-		assertThat(retriever.getPlayerId("activity.php?player_id=777' test"), equalTo(777));
+		assertThat(parser.getPlayerId("activity.php?player_id=777' test"), equalTo(777));
 	}
 
 	@Test
 	public void testGetTournamentId() throws IOException
 	{
 		final String html = "<test>Next Match<test>test<test=tournamentid777.htm>test";
-		assertThat(retriever.inTournament(html), equalTo(true));
-		assertThat(retriever.getTournamentId(html), equalTo(777));
+		assertThat(parser.inTournament(html), equalTo(true));
+		assertThat(parser.getTournamentId(html), equalTo(777));
+	}
+
+	@Test
+	public void testGetTournamentName() throws IOException
+	{
+		assertThat(parser.getTournamentName("<test=\"fontMainTitle\">Tournie<test>"), equalTo("Tournie"));
 	}
 
 	@Test
 	public void testGetNumberOfMatches() throws IOException
 	{
-		assertThat(retriever.getNumberOfMatches("<test>   \n" +
+		assertThat(parser.getNumberOfMatches("<test>   \n" +
 												"<test>84%    (61-12)<test>\n" +
 												"  <test>Match W/L<test>"), equalTo(73));
 	}
@@ -39,7 +45,7 @@ public class TestPlayerDataParser
 	@Test
 	public void testFindStat() throws IOException
 	{
-		assertThat(retriever.findStat("<test>   \n" +
+		assertThat(parser.findStat("<test>   \n" +
 									  "<test>5.84%    (61-12)<test>\n" +
 									  "  <test>1st Stat %<test>", "1st Stat %"), equalTo(5.84));
 	}
@@ -47,7 +53,7 @@ public class TestPlayerDataParser
 	@Test
 	public void testFindTourAverage() throws IOException
 	{
-		assertThat(retriever.findTourAverage("<test>5.84%    (61-12)<test>\n" +
+		assertThat(parser.findTourAverage("<test>5.84%    (61-12)<test>\n" +
 											 "  <test>Stat<test>\n" +
 											 "<test>50.57%    (265-250)<test>", "Stat"), equalTo(50.57));
 	}
@@ -55,7 +61,7 @@ public class TestPlayerDataParser
 	@Test
 	public void testGetOpponentsDefeated()
 	{
-		final List<String> players = retriever.getPreviousOpponentsDefeated("<test>Def. (2W)<test>Novak Djokovic<test>(2,6.23)" +
+		final List<String> players = parser.getPreviousOpponentsDefeated("<test>Def. (2W)<test>Novak Djokovic<test>(2,6.23)" +
 																   "<test>Def. (2W)<test>Novak Djokovic<test>(2,6.23)" +
 																   "<test>Def. <test>Andy Murray<test>(4,5.57)" +
 																   "<test>Lost to <test>Roger Federer<test>(3,3.94)");
@@ -67,7 +73,7 @@ public class TestPlayerDataParser
 	@Test
 	public void testGetVictoryIds() throws MalformedURLException, IOException
 	{
-		final List<Integer> ids = retriever.getVictoryIds("<test>Def. <test>    <test?match_id=777>test" +
+		final List<Integer> ids = parser.getVictoryIds("<test>Def. <test>    <test?match_id=777>test" +
 														 "<test>Def. <test>    <test?match_id=888>test" +
 														 "<test>Lost to <test>    <test?match_id=999>test");
 
@@ -78,7 +84,7 @@ public class TestPlayerDataParser
 	@Test
 	public void testGetOpponentsLostTo()
 	{
-		final List<String> players = retriever.getPreviousOpponentsLostTo("<test>Lost to (2W)<test>Novak Djokovic<test>(2,6.23)" +
+		final List<String> players = parser.getPreviousOpponentsLostTo("<test>Lost to (2W)<test>Novak Djokovic<test>(2,6.23)" +
 																 "<test>Lost to (2W)<test>Novak Djokovic<test>(2,6.23)" +
 																 "<test>Lost to <test>Andy Murray<test>(4,5.57)" +
 																 "<test>Def. <test>Roger Federer<test>(3,3.94)");
@@ -89,7 +95,7 @@ public class TestPlayerDataParser
 	@Test
 	public void testGetDefeatIds() throws MalformedURLException, IOException
 	{
-		final List<Integer> ids = retriever.getDefeatIds("<test>Lost to <test>    <test?match_id=777>test" +
+		final List<Integer> ids = parser.getDefeatIds("<test>Lost to <test>    <test?match_id=777>test" +
 														"<test>Lost to <test>    <test?match_id=888>test" +
 														"<test>Def. <test>    <test?match_id=999>test");
 
