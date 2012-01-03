@@ -17,7 +17,7 @@ public class TestMatchData
 	{
 		matchData1 = new MatchData("http://www.atpworldtour.com/Share/Match-Facts-Pop-Up.aspx?t=352&y=2011&r=6&p=T786", 171834501,
 								   "Jo-Wilfried Tsonga", "John Isner");
-		matchData2 = new MatchData("http://tennisinsight.com/match_stats_popup.php?matchID=172004201", 172004201,
+		matchData2 = new MatchData("match_stats_popup.php?matchID=172004201", 172004201,
 								   "Jo-Wilfried Tsonga", "Roger Federer");
 	}
 

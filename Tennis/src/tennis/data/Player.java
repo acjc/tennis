@@ -10,13 +10,13 @@ public class Player
 	private final String name;
 	private final int id;
 
-	private final double firstServesIn;
-	private final double firstServePointsWon;
-	private final double secondServePointsWon;
+	private double firstServesIn;
+	private double firstServePointsWon;
+	private double secondServePointsWon;
 	private final double servicePointsWon;
 
-	private final double firstServeReturnsWon;
-	private final double secondServeReturnsWon;
+	private double firstServeReturnsWon;
+	private double secondServeReturnsWon;
 	private final double returnPointsWon;
 
 	private final List<String> previousOpponentsDefeated;
@@ -69,11 +69,30 @@ public class Player
 	{
 		for (int i = 0; i < previousOpponents.size(); i++)
 		{
+			double weight = 0.0;
+			double totalFirstServesIn = 0, totalFirstServePointsWon = 0, totalSecondServePointsWon = 0, totalFirstServeReturnsWon = 0,
+						 totalSecondServeReturnsWon = 0, totalServicePointsWon = 0, totalReturnPointsWon = 0;
 			if (previousOpponents.get(i).equals(opponent.name()))
 			{
+				weight++;
 				System.out.println("Found match vs " + previousOpponents.get(i) + " with Match ID: " + matchIds.get(i));
 				final MatchData matchData = new MatchData(matchStats.get(i), matchIds.get(i), name(), opponent.name());
+				totalFirstServesIn += matchData.firstServesIn();
+				totalFirstServePointsWon += matchData.firstServePointsWon();
+				totalSecondServePointsWon += matchData.secondServePointsWon();
+				totalFirstServeReturnsWon += matchData.firstServeReturnsWon();
+				totalSecondServeReturnsWon += matchData.secondServeReturnsWon();
+				totalServicePointsWon += matchData.servicePointsWon();
+				totalReturnPointsWon += matchData.returnPointsWon();
 			}
+
+			firstServesIn = totalFirstServesIn / weight;
+			firstServePointsWon = totalFirstServePointsWon / weight;
+			secondServePointsWon = totalSecondServePointsWon / weight;
+			firstServeReturnsWon = totalFirstServeReturnsWon / weight;
+			secondServeReturnsWon = totalSecondServeReturnsWon / weight;
+			totalServicePointsWon = totalServicePointsWon / weight;
+			totalReturnPointsWon = totalReturnPointsWon / weight;
 		}
 	}
 

@@ -66,7 +66,7 @@ public class MatchData
 		return tennisInsight ? findStat("1st Return Points Won") : findStat("1st Serve Return Points Won");
 	}
 
-	public double secondServeReturnPointsWon()
+	public double secondServeReturnsWon()
 	{
 		return tennisInsight ? findStat("2nd Return Points Won") : findStat("2nd Serve Return Points Won");
 	}
