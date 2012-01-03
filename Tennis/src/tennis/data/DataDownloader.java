@@ -38,20 +38,13 @@ public class DataDownloader
 		return readFileToString(file);
 	}
 
-	public String downloadMatchData(final String matchUrl, final int id) throws MalformedURLException, IOException
+	public String downloadMatchData(final int id) throws MalformedURLException, IOException
 	{
 		System.out.println("Downloading statistics for match: " + id);
 		final File file = new File("doc\\match-" + id + ".html");
 		if (!file.isFile())
 		{
-			if (matchUrl.contains("http"))
-			{
-				downloadFile(new URL(matchUrl), file);
-			}
-			else
-			{
-				downloadFile(new URL("http://www.tennisinsight.com/" + matchUrl), file);
-			}
+			downloadFile(new URL("http://www.tennisinsight.com/match_stats_popup.php?matchID=" + id), file);
 		}
 		return readFileToString(file);
 	}

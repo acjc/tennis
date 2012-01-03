@@ -45,13 +45,10 @@ public class TestDataDownloader
 		assertThat(downloader.downloadPlayerOverview(1), containsString("<option value=\"380\" selected=\"selected\">1 year</option>"));
 	}
 
-	// Two matches involving Jo-Wilfried Tsonga
+	// A match involving Jo-Wilfried Tsonga
 	@Test
 	public void testDownloadMatchStats() throws MalformedURLException, IOException
 	{
-		assertThat(downloader.downloadMatchData("http://www.atpworldtour.com/Share/Match-Facts-Pop-Up.aspx?t=352&y=2011&r=6&p=T786", 171834501),
-				   containsString("Jo-Wilfried Tsonga"));
-		assertThat(downloader.downloadMatchData("http://tennisinsight.com/match_stats_popup.php?matchID=172004201", 172004201),
-				   containsString("Jo-Wilfried Tsonga"));
+		assertThat(downloader.downloadMatchData(172004201), containsString("Jo-Wilfried Tsonga"));
 	}
 }

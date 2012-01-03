@@ -7,18 +7,32 @@ import java.util.regex.Pattern;
 
 public class MatchData
 {
-	private final String matchHtml;
+	private String matchHtml;
+	private boolean playerIsFirst;
+	private final int id;
+	private final String target;
+	private final String opponent;
 
-	private final boolean playerIsFirst;
-	private final boolean tennisInsight;
+	public MatchData(final int id, final String target, final String opponent)
+	{
+		this.id = id;
+		this.target = target;
+		this.opponent = opponent;
+	}
 
-	public MatchData(final String matchUrl, final int id, final String target, final String opponent) throws MalformedURLException, IOException
+	public boolean downloadMatchData() throws MalformedURLException, IOException
 	{
 		final DataDownloader downloader = new DataDownloader();
-		matchHtml = downloader.downloadMatchData(matchUrl, id);
-		tennisInsight = !matchUrl.contains("http");
-
-		playerIsFirst = checkIfPlayerFirst(target, opponent);
+		matchHtml = downloader.downloadMatchData(id);
+		if (matchHtml.contains("Match stats currently not available"))
+		{
+			return false;
+		}
+		else
+		{
+			playerIsFirst = checkIfPlayerFirst(target, opponent);
+			return true;
+		}
 	}
 
 	public boolean checkIfPlayerFirst(final String target, final String opponent)
@@ -48,7 +62,7 @@ public class MatchData
 
 	public double firstServesIn()
 	{
-		return tennisInsight ? findStat("1st Serve Percentage") : findStat("1st Serve");
+		return findStat("1st Serve Percentage");
 	}
 
 	public double firstServePointsWon()
@@ -63,12 +77,12 @@ public class MatchData
 
 	public double firstServeReturnsWon()
 	{
-		return tennisInsight ? findStat("1st Return Points Won") : findStat("1st Serve Return Points Won");
+		return findStat("1st Return Points Won");
 	}
 
 	public double secondServeReturnsWon()
 	{
-		return tennisInsight ? findStat("2nd Return Points Won") : findStat("2nd Serve Return Points Won");
+		return findStat("2nd Return Points Won");
 	}
 
 	public double servicePointsWon()

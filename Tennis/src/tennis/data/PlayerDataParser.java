@@ -68,18 +68,6 @@ public class PlayerDataParser
 		return ids;
 	}
 
-	public List<String> getVictoryStatistics(final String html)
-	{
-		final List<String> stats = new ArrayList<String>();
-		final Pattern pattern = Pattern.compile("Def\\..*?makePopup\\('(.*?)'\\)");
-		final Matcher matcher = pattern.matcher(html);
-		while (matcher.find())
-		{
-			stats.add(matcher.group(1));
-		}
-		return stats;
-	}
-
 	public List<String> getPreviousOpponentsLostTo(final String html)
 	{
 		final List<String> players = new ArrayList<String>();
@@ -103,17 +91,5 @@ public class PlayerDataParser
 			ids.add(Integer.parseInt(matcher.group(1)));
 		}
 		return ids;
-	}
-
-	public List<String> getDefeatStatistics(final String html)
-	{
-		final List<String> stats = new ArrayList<String>();
-		final Pattern pattern = Pattern.compile("Lost to.*?makePopup\\('(.*?)'\\)");
-		final Matcher matcher = pattern.matcher(html);
-		while (matcher.find())
-		{
-			stats.add(matcher.group(1));
-		}
-		return stats;
 	}
 }

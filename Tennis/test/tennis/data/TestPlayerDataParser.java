@@ -10,7 +10,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-public class TestDataParser
+public class TestPlayerDataParser
 {
 	private final PlayerDataParser retriever = new PlayerDataParser();
 
@@ -68,16 +68,6 @@ public class TestDataParser
 	}
 
 	@Test
-	public void testGetVictoryStatistics() throws MalformedURLException, IOException
-	{
-		final List<String> stats = retriever.getVictoryStatistics("<test>Def. <test>test<test> <test=javascript:makePopup('popup1')>test" +
-															   "<test>Def. <test>test<test> <test=javascript:makePopup('popup2')>test" +
-															   "<test>Lost to <test>test<test> <test=javascript:makePopup('popup3')>test");
-
-		assertThat(stats, contains("popup1", "popup2"));
-	}
-
-	@Test
 	public void testGetOpponentsLostTo()
 	{
 		final List<String> players = retriever.getPreviousOpponentsLostTo("<test>Lost to (2W)<test>Novak Djokovic<test>(2,6.23)" +
@@ -97,15 +87,5 @@ public class TestDataParser
 
 		assertThat(ids.size(), equalTo(2));
 		assertThat(ids, contains(777, 888));
-	}
-
-	@Test
-	public void testGetDefeatStatistics() throws MalformedURLException, IOException
-	{
-		final List<String> stats = retriever.getDefeatStatistics("<test>Lost to <test>test<test> <test=javascript:makePopup('popup1')>test" +
-															   "<test>Lost to <test>test<test> <test=javascript:makePopup('popup2')>test" +
-															   "<test>Def. <test>test<test> <test=javascript:makePopup('popup3')>test");
-
-		assertThat(stats, contains("popup1", "popup2"));
 	}
 }

@@ -13,23 +13,19 @@ public class Player
 	private double firstServesIn;
 	private double firstServePointsWon;
 	private double secondServePointsWon;
-	private final double servicePointsWon;
+	private double servicePointsWon;
 
 	private double firstServeReturnsWon;
 	private double secondServeReturnsWon;
-	private final double returnPointsWon;
+	private double returnPointsWon;
 
 	private final List<String> previousOpponentsDefeated;
 	private final List<String> previousOpponentsLostTo;
 	private final List<String> previousOpponents;
 
 	private final List<Integer> victoryIds;
-	private final List<String> victoryStats;
 	private final List<Integer> defeatIds;
-	private final List<String> defeatStats;
-
 	private final List<Integer> matchIds;
-	private final List<String> matchStats;
 
 	public Player(final String name) throws IOException
 	{
@@ -55,45 +51,58 @@ public class Player
 		previousOpponents = new ArrayList<String>(previousOpponentsDefeated); previousOpponents.addAll(previousOpponentsLostTo);
 
 		victoryIds = parser.getVictoryIds(activity);
-		victoryStats = parser.getVictoryStatistics(activity);
 		defeatIds = parser.getDefeatIds(activity);
-		defeatStats = parser.getDefeatStatistics(activity);
-
 		matchIds = new ArrayList<Integer>(victoryIds); matchIds.addAll(defeatIds);
-		matchStats = new ArrayList<String>(victoryStats); matchStats.addAll(defeatStats);
 
 		System.out.println("Finished retrieving data for: " + name + " (" + id + ")");
 	}
 
 	public void adjustStatistics(final Player opponent) throws MalformedURLException, IOException
 	{
+		double weight = 0.0;
+		double totalFirstServesIn = 0, totalFirstServePointsWon = 0, totalSecondServePointsWon = 0, totalFirstServeReturnsWon = 0,
+			   totalSecondServeReturnsWon = 0, totalServicePointsWon = 0, totalReturnPointsWon = 0;
 		for (int i = 0; i < previousOpponents.size(); i++)
 		{
-			double weight = 0.0;
-			double totalFirstServesIn = 0, totalFirstServePointsWon = 0, totalSecondServePointsWon = 0, totalFirstServeReturnsWon = 0,
-						 totalSecondServeReturnsWon = 0, totalServicePointsWon = 0, totalReturnPointsWon = 0;
 			if (previousOpponents.get(i).equals(opponent.name()))
 			{
-				weight++;
 				System.out.println("Found match vs " + previousOpponents.get(i) + " with Match ID: " + matchIds.get(i));
-				final MatchData matchData = new MatchData(matchStats.get(i), matchIds.get(i), name(), opponent.name());
-				totalFirstServesIn += matchData.firstServesIn();
-				totalFirstServePointsWon += matchData.firstServePointsWon();
-				totalSecondServePointsWon += matchData.secondServePointsWon();
-				totalFirstServeReturnsWon += matchData.firstServeReturnsWon();
-				totalSecondServeReturnsWon += matchData.secondServeReturnsWon();
-				totalServicePointsWon += matchData.servicePointsWon();
-				totalReturnPointsWon += matchData.returnPointsWon();
+				final MatchData matchData = new MatchData(matchIds.get(i), name(), opponent.name());
+				if (matchData.downloadMatchData())
+				{
+					System.out.println("FSI = " + matchData.firstServesIn() + ", FSPW = " + matchData.firstServePointsWon() + ", SSPW = " + matchData.secondServePointsWon() +
+									   ", FSRW = " + matchData.firstServeReturnsWon() + ", SSRW = " + matchData.secondServeReturnsWon() +
+									   ", SPW = " + matchData.servicePointsWon() + ", RPW = " + matchData.returnPointsWon());
+					weight++;
+					totalFirstServesIn += matchData.firstServesIn();
+					totalFirstServePointsWon += matchData.firstServePointsWon();
+					totalSecondServePointsWon += matchData.secondServePointsWon();
+					totalFirstServeReturnsWon += matchData.firstServeReturnsWon();
+					totalSecondServeReturnsWon += matchData.secondServeReturnsWon();
+					totalServicePointsWon += matchData.servicePointsWon();
+					totalReturnPointsWon += matchData.returnPointsWon();
+				}
+				else
+				{
+					System.out.println("No data for match: " + matchIds.get(i));
+					previousOpponents.remove(i);
+					matchIds.remove(i);
+				}
 			}
 
-			firstServesIn = totalFirstServesIn / weight;
-			firstServePointsWon = totalFirstServePointsWon / weight;
-			secondServePointsWon = totalSecondServePointsWon / weight;
-			firstServeReturnsWon = totalFirstServeReturnsWon / weight;
-			secondServeReturnsWon = totalSecondServeReturnsWon / weight;
-			totalServicePointsWon = totalServicePointsWon / weight;
-			totalReturnPointsWon = totalReturnPointsWon / weight;
 		}
+
+		firstServesIn = totalFirstServesIn / weight;
+		firstServePointsWon = totalFirstServePointsWon / weight;
+		secondServePointsWon = totalSecondServePointsWon / weight;
+		firstServeReturnsWon = totalFirstServeReturnsWon / weight;
+		secondServeReturnsWon = totalSecondServeReturnsWon / weight;
+		servicePointsWon = totalServicePointsWon / weight;
+		returnPointsWon = totalReturnPointsWon / weight;
+
+		System.out.println("OVERALL: FSI = " + firstServesIn + ", FSPW = " + firstServePointsWon + ", SSPW = " + secondServePointsWon +
+						   ", FSRW = " + firstServeReturnsWon + ", SSRW = " + secondServeReturnsWon +
+						   ", SPW = " + servicePointsWon + ", RPW = " + returnPointsWon);
 	}
 
 	private String name()
@@ -156,18 +165,8 @@ public class Player
 		return victoryIds;
 	}
 
-	public List<String> getVictoryStats()
-	{
-		return victoryStats;
-	}
-
 	public List<Integer> getDefeatIds()
 	{
 		return defeatIds;
-	}
-
-	public List<String> getDefeatStats()
-	{
-		return defeatStats;
 	}
 }
