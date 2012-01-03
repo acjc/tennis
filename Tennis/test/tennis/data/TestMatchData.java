@@ -28,6 +28,6 @@ public class TestMatchData
 	@Test
 	public void testFindStat()
 	{
-		assertThat(matchData1.findStat("1st Serve"), equalTo(56.0));
+		assertThat(matchData1.findStat("1st Serve Percentage"), equalTo(57.0));
 	}
 }

@@ -1,5 +1,6 @@
 package tennis.simulator;
 
+
 public class MatchState implements Score
 {
 	private final GameState game;
@@ -11,7 +12,7 @@ public class MatchState implements Score
 
 	public MatchState()
 	{
-		this(0, 0, new SetState(), new GameState(), 3);
+		this(3);
 	}
 
 	// Deep copy
@@ -27,6 +28,11 @@ public class MatchState implements Score
 		this.set = set;
 		this.game = game;
 		this.numSetsForWin = numSetsForWin;
+	}
+
+	public MatchState(final int numSetsToWin)
+	{
+		this(0, 0, new SetState(), new GameState(), numSetsToWin);
 	}
 
 	public boolean isServingNext()
@@ -142,5 +148,10 @@ public class MatchState implements Score
 	private GameState getGameState()
 	{
 		return new GameState(game);
+	}
+
+	public void coinToss()
+	{
+		game.coinToss();
 	}
 }

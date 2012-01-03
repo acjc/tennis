@@ -89,4 +89,9 @@ public class GameState implements Score
 	{
 		return opponentPoints;
 	}
+
+	public void coinToss()
+	{
+		serving = (Math.random() < 0.5) ? true : false;
+	}
 }

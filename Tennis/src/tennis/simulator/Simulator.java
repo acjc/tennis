@@ -10,6 +10,11 @@ public class Simulator
 		this(new MatchState(), false);
 	}
 
+	public Simulator(final int numSetsToWin)
+	{
+		this(new MatchState(numSetsToWin), false);
+	}
+
 	public Simulator(final MatchState initialState, final boolean scenario)
 	{
 		this.initialState = initialState;
@@ -36,9 +41,13 @@ public class Simulator
 		final double p = onServe;
 		final double q = returnServe;
 
-		// If simulating a particular scenario, we want to replicate the starting conditions exactly
+		// When simulating a particular scenario, we want to replicate the starting conditions exactly
 		// Otherwise, start a fresh match with a random first server
-		final MatchState score = scenario ? new MatchState(initialState) : new MatchState();
+		final MatchState score = new MatchState(initialState);
+		if (!scenario)
+		{
+			score.coinToss();
+		}
 		while (!score.finished())
 		{
 			while (!score.setFinished())
