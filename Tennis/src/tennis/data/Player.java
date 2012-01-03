@@ -14,10 +14,12 @@ public class Player
 	private double firstServePointsWon;
 	private double secondServePointsWon;
 	private double servicePointsWon;
+	private final double tourAverageServicePointsWon;
 
 	private double firstServeReturnsWon;
 	private double secondServeReturnsWon;
 	private double returnPointsWon;
+	private final double tourAverageReturnPointsWon;
 
 	private final List<String> previousOpponentsDefeated;
 	private final List<String> previousOpponentsLostTo;
@@ -36,14 +38,17 @@ public class Player
 
 		id = parser.getPlayerId(downloader.downloadPlayerProfile(name));
 
-		final String stats = downloader.downloadPlayerOverview(id);
-		firstServesIn = parser.findStat(stats, "1st Serve %");
-		firstServePointsWon = parser.findStat(stats, "1st Serve W%");
-		secondServePointsWon = parser.findStat(stats, "2nd Serve W%");
-		servicePointsWon = parser.findStat(stats, "Service Pts W%");
-		firstServeReturnsWon = parser.findStat(stats, "1st Return W%");
-		secondServeReturnsWon = parser.findStat(stats, "2nd Return W%");
-		returnPointsWon = parser.findStat(stats, "Return Pts W%");
+		final String overview = downloader.downloadPlayerOverview(id);
+		firstServesIn = parser.findStat(overview, "1st Serve %");
+		firstServePointsWon = parser.findStat(overview, "1st Serve W%");
+		secondServePointsWon = parser.findStat(overview, "2nd Serve W%");
+		servicePointsWon = parser.findStat(overview, "Service Pts W%");
+		tourAverageServicePointsWon = parser.findTourAverage(overview, "Service Pts W%");
+
+		firstServeReturnsWon = parser.findStat(overview, "1st Return W%");
+		secondServeReturnsWon = parser.findStat(overview, "2nd Return W%");
+		returnPointsWon = parser.findStat(overview, "Return Pts W%");
+		tourAverageReturnPointsWon = parser.findTourAverage(overview, "Return Pts W%");
 
 		final String activity = downloader.downloadPlayerActivity(id);
 		previousOpponentsDefeated = parser.getPreviousOpponentsDefeated(activity);
@@ -54,11 +59,12 @@ public class Player
 		defeatIds = parser.getDefeatIds(activity);
 		matchIds = new ArrayList<Integer>(victoryIds); matchIds.addAll(defeatIds);
 
-		System.out.println("Finished retrieving data for: " + name + " (" + id + ")");
+		System.out.println("Finished retrieving player data for: " + name + " (ID: " + id + ")\n");
 	}
 
 	public void adjustStatistics(final Player opponent) throws MalformedURLException, IOException
 	{
+		System.out.println("Retrieving past match data for " + name + " vs " + opponent.name());
 		double weight = 0.0;
 		double totalFirstServesIn = 0, totalFirstServePointsWon = 0, totalSecondServePointsWon = 0, totalFirstServeReturnsWon = 0,
 			   totalSecondServeReturnsWon = 0, totalServicePointsWon = 0, totalReturnPointsWon = 0;
@@ -70,7 +76,7 @@ public class Player
 				final MatchData matchData = new MatchData(matchIds.get(i), name(), opponent.name());
 				if (matchData.downloadMatchData())
 				{
-					System.out.println("FSI = " + matchData.firstServesIn() + ", FSPW = " + matchData.firstServePointsWon() + ", SSPW = " + matchData.secondServePointsWon() +
+					System.out.println("-> FSI = " + matchData.firstServesIn() + ", FSPW = " + matchData.firstServePointsWon() + ", SSPW = " + matchData.secondServePointsWon() +
 									   ", FSRW = " + matchData.firstServeReturnsWon() + ", SSRW = " + matchData.secondServeReturnsWon() +
 									   ", SPW = " + matchData.servicePointsWon() + ", RPW = " + matchData.returnPointsWon());
 					weight++;
@@ -102,7 +108,7 @@ public class Player
 
 		System.out.println("OVERALL: FSI = " + firstServesIn + ", FSPW = " + firstServePointsWon + ", SSPW = " + secondServePointsWon +
 						   ", FSRW = " + firstServeReturnsWon + ", SSRW = " + secondServeReturnsWon +
-						   ", SPW = " + servicePointsWon + ", RPW = " + returnPointsWon);
+						   ", SPW = " + servicePointsWon + ", RPW = " + returnPointsWon + '\n');
 	}
 
 	private String name()
@@ -130,6 +136,11 @@ public class Player
 		return servicePointsWon;
 	}
 
+	public double getTourAverageServicePointsWon()
+	{
+		return tourAverageServicePointsWon;
+	}
+
 	public double firstServeReturnsWon()
 	{
 		return firstServeReturnsWon;
@@ -143,6 +154,11 @@ public class Player
 	public double returnPointsWon()
 	{
 		return returnPointsWon;
+	}
+
+	public double getTourAverageReturnPointsWon()
+	{
+		return tourAverageReturnPointsWon;
 	}
 
 	public List<String> getOpponentsDefeated()
@@ -168,5 +184,10 @@ public class Player
 	public List<Integer> getDefeatIds()
 	{
 		return defeatIds;
+	}
+
+	public double servicePointsWonAgainst(final Player opponent)
+	{
+		return servicePointsWon - opponent.returnPointsWon() + tourAverageReturnPointsWon;
 	}
 }

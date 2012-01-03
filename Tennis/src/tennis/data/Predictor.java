@@ -9,5 +9,6 @@ public class Predictor
 		final Player p1 = new Player("Roger Federer");
 		final Player p2 = new Player("Jo-Wilfried Tsonga");
 		p1.adjustStatistics(p2);
+		p2.adjustStatistics(p1);
 	}
 }
