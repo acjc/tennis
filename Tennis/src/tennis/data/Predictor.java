@@ -8,13 +8,14 @@ import tennis.simulator.Simulator;
 
 public class Predictor
 {
-	private static final int RUNS = 200000;
+	private static final int RUNS = 500000;
 	private static final int NUM_SETS_TO_WIN = 2;
+	private static Surface SURFACE = Surface.HARD;
 
 	public static void main(final String[] args) throws IOException
 	{
-		final Player p1 = new Player("Rafael Nadal");
-		final Player p2 = new Player("Novak Djokovic");
+		final Player p1 = new Player("Andy Murray", SURFACE);
+		final Player p2 = new Player("Gilles Muller", SURFACE);
 		p1.adjustStatistics(p2);
 		p2.adjustStatistics(p1);
 		final double p = p1.servicePointsWonAgainst(p2);

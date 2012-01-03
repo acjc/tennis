@@ -16,6 +16,21 @@ public class PlayerDataParser
 		return Integer.parseInt(matcher.group(1));
 	}
 
+	public boolean inTournament(final String playerHtml)
+	{
+		final Pattern pattern = Pattern.compile("Next Match.*tournamentid\\d*.htm");
+		final Matcher matcher = pattern.matcher(playerHtml);
+		return matcher.find();
+	}
+
+	public int getTournamentId(final String playerHtml)
+	{
+		final Pattern pattern = Pattern.compile("Next Match.*tournamentid(\\d*)\\.htm");
+		final Matcher matcher = pattern.matcher(playerHtml);
+		matcher.find();
+		return Integer.parseInt(matcher.group(1));
+	}
+
 	public int getNumberOfMatches(final String html)
 	{
 		final String text = html.replaceAll("\\<.*?>","");

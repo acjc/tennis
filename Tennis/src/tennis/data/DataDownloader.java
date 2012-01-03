@@ -24,17 +24,25 @@ public class DataDownloader
 		return readFileToString(file);
 	}
 
-	public String downloadPlayerOverview(final int id) throws IOException
+	public String downloadTournamentData(final int id) throws MalformedURLException, IOException
 	{
-		final File file = new File("doc\\player.html");
-		downloadFile(new URL("http://www.tennisinsight.com/player_overview.php?player_id=" + id + "&duration=380"), file);
+		System.out.println("Downloading data for tournament: " + id);
+		final File file = new File("doc\\tournament-" + id + ".html");
+		downloadFile(new URL("http://www.tennisinsight.com/tournamentid" + id + ".htm"), file);
 		return readFileToString(file);
 	}
 
-	public String downloadPlayerActivity(final int id) throws MalformedURLException, IOException
+	public String downloadPlayerOverview(final int id, final Surface surface) throws IOException
+	{
+		final File file = new File("doc\\player.html");
+		downloadFile(new URL("http://www.tennisinsight.com/player_overview.php?player_id=" + id + "&surface=" + surface.getValue() + "&duration=380"), file);
+		return readFileToString(file);
+	}
+
+	public String downloadPlayerActivity(final int id, final ActivitySurface surface) throws MalformedURLException, IOException
 	{
 		final File file = new File("doc\\activity.html");
-		downloadFile(new URL("http://www.tennisinsight.com/player_activity.php?player_id="+ id + "&activity=1"), file);
+		downloadFile(new URL("http://www.tennisinsight.com/player_activity.php?player_id="+ id + "&activity=" + surface.getValue()), file);
 		return readFileToString(file);
 	}
 

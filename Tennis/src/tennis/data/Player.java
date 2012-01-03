@@ -33,7 +33,7 @@ public class Player
 	private final List<Integer> defeatIds;
 	private final List<Integer> matchIds;
 
-	public Player(final String name) throws IOException
+	public Player(final String name, final Surface surface) throws IOException
 	{
 		this.name = name;
 
@@ -42,7 +42,7 @@ public class Player
 
 		id = parser.getPlayerId(downloader.downloadPlayerProfile(name));
 
-		final String overview = downloader.downloadPlayerOverview(id);
+		final String overview = downloader.downloadPlayerOverview(id, surface);
 		firstServesIn = parser.findStat(overview, "1st Serve %");
 		firstServePointsWon = parser.findStat(overview, "1st Serve W%");
 		secondServePointsWon = parser.findStat(overview, "2nd Serve W%");
@@ -54,7 +54,7 @@ public class Player
 		returnPointsWon = parser.findStat(overview, "Return Pts W%");
 		tourAverageReturnPointsWon = parser.findTourAverage(overview, "Return Pts W%");
 
-		final String activity = downloader.downloadPlayerActivity(id);
+		final String activity = downloader.downloadPlayerActivity(id, convertToActivitySurface(surface));
 		previousOpponentsDefeated = parser.getPreviousOpponentsDefeated(activity);
 		previousOpponentsLostTo = parser.getPreviousOpponentsLostTo(activity);
 		previousOpponents = new ArrayList<String>(previousOpponentsDefeated); previousOpponents.addAll(previousOpponentsLostTo);
@@ -79,6 +79,20 @@ public class Player
 		System.out.println("-> FSI = " + firstServesIn + ", FSPW = " + firstServePointsWon + ", SSPW = " + secondServePointsWon +
 				   		   ", FSRW = " + firstServeReturnsWon + ", SSRW = " + secondServeReturnsWon +
 				   		   ", SPW = " + servicePointsWon + ", RPW = " + returnPointsWon + '\n');
+	}
+
+	private ActivitySurface convertToActivitySurface(final Surface surface)
+	{
+		switch(surface)
+		{
+			case ALL: return ActivitySurface.ALL;
+			case HARD: return ActivitySurface.HARD;
+			case INDOOR: return ActivitySurface.INDOOR;
+			case CARPET: return ActivitySurface.CARPET;
+			case CLAY: return ActivitySurface.CLAY;
+			case GRASS: return ActivitySurface.GRASS;
+			default: return ActivitySurface.ALL;
+		}
 	}
 
 	public void adjustStatistics(final Player opponent) throws MalformedURLException, IOException
@@ -222,6 +236,7 @@ public class Player
 
 	public double servicePointsWonAgainst(final Player opponent)
 	{
+		System.out.println(servicePointsWon + ", " + opponent.returnPointsWon() + ", " + tourAverageReturnPointsWon);
 		return (servicePointsWon - opponent.returnPointsWon() + tourAverageReturnPointsWon) / 100;
 	}
 

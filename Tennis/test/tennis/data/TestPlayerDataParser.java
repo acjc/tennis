@@ -21,6 +21,14 @@ public class TestPlayerDataParser
 	}
 
 	@Test
+	public void testGetTournamentId() throws IOException
+	{
+		final String html = "<test>Next Match<test>test<test=tournamentid777.htm>test";
+		assertThat(retriever.inTournament(html), equalTo(true));
+		assertThat(retriever.getTournamentId(html), equalTo(777));
+	}
+
+	@Test
 	public void testGetNumberOfMatches() throws IOException
 	{
 		assertThat(retriever.getNumberOfMatches("<test>   \n" +

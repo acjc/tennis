@@ -20,12 +20,25 @@ public class TestDataDownloader
 		downloader.printCookies();
 	}
 
+	// Tournament ID: 17220 = Qatar Open 2012
+	@Test
+	public void testDownloadTournamentData() throws MalformedURLException, IOException
+	{
+		final String tournamentData = downloader.downloadTournamentData(17220);
+
+		assertThat(tournamentData, containsString("TennisInsight.com"));
+		assertThat(tournamentData, containsString("Doha ATP"));
+	}
+
 	// All Matches = 1
 	// Player ID: 1 = Roger Federer
 	@Test
 	public void testGetPlayerActivity() throws IOException
 	{
-		assertThat(downloader.downloadPlayerActivity(1), containsString("Last 1-50 Activity - Roger Federer - All Matches with Any Odds"));
+		final String activity = downloader.downloadPlayerActivity(1, ActivitySurface.ALL);
+
+		assertThat(activity, containsString("TennisInsight.com"));
+		assertThat(activity, containsString("Last 1-50 Activity - Roger Federer - All Matches with Any Odds"));
 	}
 
 	@Test
@@ -40,15 +53,23 @@ public class TestDataDownloader
 	// One Year = 380
 	// Player ID: 1 = Roger Federer
 	@Test
-	public void testDownloadPlayerStatsOneYear() throws MalformedURLException, IOException
+	public void testDownloadPlayerStats() throws MalformedURLException, IOException
 	{
-		assertThat(downloader.downloadPlayerOverview(1), containsString("<option value=\"380\" selected=\"selected\">1 year</option>"));
+		final String overview = downloader.downloadPlayerOverview(1, Surface.GRASS);
+
+		assertThat(overview, containsString("TennisInsight.com"));
+		assertThat(overview, containsString("Roger Federer"));
+		assertThat(overview, containsString("<option value=\"380\" selected=\"selected\">1 year</option>"));
 	}
 
-	// A match involving Jo-Wilfried Tsonga
+	// A match involving Jo-Wilfried Tsonga and John Isner
 	@Test
 	public void testDownloadMatchStats() throws MalformedURLException, IOException
 	{
-		assertThat(downloader.downloadMatchData(172004201), containsString("Jo-Wilfried Tsonga"));
+		final String matchData = downloader.downloadMatchData(172004201);
+
+		assertThat(matchData, containsString("TennisInsight.com"));
+		assertThat(matchData, containsString("Jo-Wilfried Tsonga"));
+		assertThat(matchData, containsString("Roger Federer"));
 	}
 }
