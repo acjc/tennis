@@ -2,6 +2,7 @@ package tennis.data;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -98,20 +99,20 @@ public class Player
 
 		}
 
-		firstServesIn = totalFirstServesIn / weight;
-		firstServePointsWon = totalFirstServePointsWon / weight;
-		secondServePointsWon = totalSecondServePointsWon / weight;
-		firstServeReturnsWon = totalFirstServeReturnsWon / weight;
-		secondServeReturnsWon = totalSecondServeReturnsWon / weight;
-		servicePointsWon = totalServicePointsWon / weight;
-		returnPointsWon = totalReturnPointsWon / weight;
+		firstServesIn = round(totalFirstServesIn / weight);
+		firstServePointsWon = round(totalFirstServePointsWon / weight);
+		secondServePointsWon = round(totalSecondServePointsWon / weight);
+		firstServeReturnsWon = round(totalFirstServeReturnsWon / weight);
+		secondServeReturnsWon = round(totalSecondServeReturnsWon / weight);
+		servicePointsWon = round(totalServicePointsWon / weight);
+		returnPointsWon = round(totalReturnPointsWon / weight);
 
 		System.out.println("OVERALL: FSI = " + firstServesIn + ", FSPW = " + firstServePointsWon + ", SSPW = " + secondServePointsWon +
 						   ", FSRW = " + firstServeReturnsWon + ", SSRW = " + secondServeReturnsWon +
 						   ", SPW = " + servicePointsWon + ", RPW = " + returnPointsWon + '\n');
 	}
 
-	private String name()
+	public String name()
 	{
 		return name;
 	}
@@ -188,6 +189,11 @@ public class Player
 
 	public double servicePointsWonAgainst(final Player opponent)
 	{
-		return servicePointsWon - opponent.returnPointsWon() + tourAverageReturnPointsWon;
+		return (servicePointsWon - opponent.returnPointsWon() + tourAverageReturnPointsWon) / 100;
+	}
+
+	private double round(final double value)
+	{
+		return Double.parseDouble(new DecimalFormat("#.#####").format(value));
 	}
 }

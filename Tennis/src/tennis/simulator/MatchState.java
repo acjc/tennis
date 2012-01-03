@@ -119,12 +119,12 @@ public class MatchState implements Score
 		return targetSets == numSetsForWin;
 	}
 
-	private int getTargetSets()
+	public int getTargetSets()
 	{
 		return targetSets;
 	}
 
-	private int getOpponentSets()
+	public int getOpponentSets()
 	{
 		return opponentSets;
 	}

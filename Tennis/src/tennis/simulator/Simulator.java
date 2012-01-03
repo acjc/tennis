@@ -16,38 +16,44 @@ public class Simulator
 		this.scenario = scenario;
 	}
 
-	public double simulate(final double onServe, final double returnServe, final double runs)
+	public Outcomes simulate(final double onServe, final double returnServe, final double runs)
+	{
+		final Outcomes outcomes = new Outcomes(runs);
+		for (int i = 0; i < runs; i++)
+		{
+			final MatchState result = simulate(onServe, returnServe);
+			outcomes.incrementScore(result.getTargetSets(), result.getOpponentSets());
+			if (result.targetWon())
+			{
+				outcomes.incrementTargetMatchesWon();
+			}
+		}
+		return outcomes;
+	}
+
+	public MatchState simulate(final double onServe, final double returnServe)
 	{
 		final double p = onServe;
 		final double q = returnServe;
 
-		double matchesWon = 0.0;
-		for (int i = 0; i < runs; i++)
+		// If simulating a particular scenario, we want to replicate the starting conditions exactly
+		// Otherwise, start a fresh match with a random first server
+		final MatchState score = scenario ? new MatchState(initialState) : new MatchState();
+		while (!score.finished())
 		{
-			// If simulating a particular scenario, we want to replicate the starting conditions exactly
-			// Otherwise, start a fresh match with a random first server
-			final MatchState score = scenario ? new MatchState(initialState) : new MatchState();
-			while (!score.finished())
+			while (!score.setFinished())
 			{
-				while (!score.setFinished())
+				while (!score.gameFinished())
 				{
-					while (!score.gameFinished())
-					{
-						playPoint(p, q, score, score.isServingNext());
-					}
-					if (score.tiebreak()) // Assume tiebreaks are always used for now
-					{
-						playTiebreak(p, q, score);
-					}
+					playPoint(p, q, score, score.isServingNext());
+				}
+				if (score.tiebreak()) // Assume tiebreaks are always used for now
+				{
+					playTiebreak(p, q, score);
 				}
 			}
-			if (score.targetWon())
-			{
-				matchesWon++;
-			}
 		}
-
-		return matchesWon / runs;
+		return score;
 	}
 
 	private void playTiebreak(final double p, final double q, final MatchState score)

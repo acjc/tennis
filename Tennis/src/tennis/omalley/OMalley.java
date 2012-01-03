@@ -119,6 +119,7 @@ public final class OMalley
 	{
 		final double p = onServe;
 		final double q = returnServe;
+		System.out.println("Three set match with p = " + p + " q = " + q);
 
 		return pow(set(p, q), 2) * (1 + 2 * (1 - set(p, q)));
 	}
@@ -127,6 +128,7 @@ public final class OMalley
 	{
 		final double p = onServe;
 		final double q = returnServe;
+		System.out.println("Five set match with p = " + p + " q = " + q);
 
 		return pow(set(p, q), 3) * (1 + 3 * (1 - set(p, q)) + 6 * (pow(1 - set(p, q), 2)));
 	}
