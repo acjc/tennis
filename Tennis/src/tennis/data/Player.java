@@ -64,7 +64,7 @@ public class Player
 			final String tournament = downloader.downloadTournamentData(tournamentId);
 			tournamentAverageServicePointsWon = parser.findStat(tournament, "Service Pts W%");
 			tournamentAverageReturnPointsWon = parser.findStat(tournament, "Return Pts W%");
-			System.out.println("Currently participating in: " + parser.getTournamentName(tournament) + " (" + tournamentId + ")");
+			System.out.println("Currently participating in: " + parser.getTournamentName(tournament) + " (ID: " + tournamentId + ")");
 		}
 		else
 		{
