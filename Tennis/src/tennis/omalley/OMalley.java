@@ -44,6 +44,35 @@ public final class OMalley
 		return result;
 	}
 
+	public static double gameInPlay(final double onServe)
+	{
+		return gameInPlay(onServe, 0, 0);
+	}
+
+	public static double gameInPlay(final double onServe, final int targetScore, final int opponentScore)
+	{
+		final double p = onServe;
+		final int a = targetScore;
+		final int b = opponentScore;
+
+		if (a > b && a >= 4 && Math.abs(a - b) >= 2)
+		{
+			return 1.0;
+		}
+		if (b > a && b >= 4 && Math.abs(a - b) >= 2)
+		{
+			return 0.0;
+		}
+		if (a == 3 && b == 3) // Deuce (sum of an infinite geometric series)
+		{
+			return Math.pow(p, 2) / (1 - 2 * p * (1 - p));
+		}
+		else
+		{
+			return p * gameInPlay(p, a + 1, b) + (1 - p) * gameInPlay(p, a, b + 1);
+		}
+	}
+
 	public static double setInPlay(final double onServe, final double returnServe, final boolean servingNext)
 	{
 		return setInPlay(onServe, returnServe, 0, 0, servingNext);

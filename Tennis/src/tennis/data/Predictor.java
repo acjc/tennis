@@ -12,10 +12,12 @@ public class Predictor
 	private static final int NUM_SETS_TO_WIN = 2;
 	private static Surface SURFACE = Surface.HARD;
 
+	@SuppressWarnings("unused")
 	public static void main(final String[] args) throws IOException
 	{
-		final Player p1 = new Player("Andy Murray", SURFACE);
-		final Player p2 = new Player("Gilles Muller", SURFACE);
+		System.out.println("SURFACE = " + SURFACE + ", " + ((NUM_SETS_TO_WIN == 2) ? "BEST OF THREE" : "BEST OF FIVE"));
+		final Player p1 = new Player("Jo-Wilfried Tsonga", SURFACE);
+		final Player p2 = new Player("Roger Federer", SURFACE);
 		p1.adjustStatistics(p2);
 		p2.adjustStatistics(p1);
 		final double p = p1.servicePointsWonAgainst(p2);

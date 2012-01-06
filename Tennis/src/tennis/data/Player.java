@@ -98,7 +98,7 @@ public class Player
 	private void printInitialPlayerSummary()
 	{
 		System.out.println("Finished retrieving player data for: " + name + " (ID: " + id + ")");
-		System.out.println("Lifetime -> FSI = " + firstServesIn + ", FSPW = " + firstServePointsWon + ", SSPW = " + secondServePointsWon +
+		System.out.println("This year -> FSI = " + firstServesIn + ", FSPW = " + firstServePointsWon + ", SSPW = " + secondServePointsWon +
 				   		   ", FSRW = " + firstServeReturnsWon + ", SSRW = " + secondServeReturnsWon +
 				   		   ", SPW = " + servicePointsWon + ", RPW = " + returnPointsWon);
 		System.out.println("Tournament Averages -> SPW = " + tournamentAverageServicePointsWon + ", RPW = " + tournamentAverageReturnPointsWon);
@@ -188,39 +188,9 @@ public class Player
 		return name;
 	}
 
-	public double firstServesIn()
-	{
-		return firstServesIn;
-	}
-
-	public double firstServePointsWon()
-	{
-		return firstServePointsWon;
-	}
-
-	public double secondServePointsWon()
-	{
-		return secondServePointsWon;
-	}
-
 	public double servicePointsWon()
 	{
 		return servicePointsWon;
-	}
-
-	public double getTourAverageServicePointsWon()
-	{
-		return tourAverageServicePointsWon;
-	}
-
-	public double firstServeReturnsWon()
-	{
-		return firstServeReturnsWon;
-	}
-
-	public double secondServeReturnsWon()
-	{
-		return secondServeReturnsWon;
 	}
 
 	public double returnPointsWon()
@@ -228,34 +198,9 @@ public class Player
 		return returnPointsWon;
 	}
 
-	public double getTourAverageReturnPointsWon()
-	{
-		return tourAverageReturnPointsWon;
-	}
-
-	public List<String> getOpponentsDefeated()
-	{
-		return previousOpponentsDefeated;
-	}
-
-	public List<String> getOpponentsLostTo()
-	{
-		return previousOpponentsLostTo;
-	}
-
 	public List<String> getOpponents()
 	{
 		return previousOpponents;
-	}
-
-	public List<Integer> getVictoryIds()
-	{
-		return victoryIds;
-	}
-
-	public List<Integer> getDefeatIds()
-	{
-		return defeatIds;
 	}
 
 	public double servicePointsWonAgainst(final Player opponent)

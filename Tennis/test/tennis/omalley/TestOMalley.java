@@ -31,6 +31,16 @@ public class TestOMalley {
 	}
 
 	@Test
+	public void testGameInPlay()
+	{
+		assertThat(round(gameInPlay(0.592)), equalTo(round(game(0.592))));
+
+		assertThat(gameInPlay(0.5), equalTo(0.5));
+		assertThat(round(gameInPlay(0.6)), equalTo(0.736));
+		assertThat(round(gameInPlay(0.7)), equalTo(0.901));
+	}
+
+	@Test
 	public void testSetInPlay()
 	{
 		assertThat(round(setInPlay(0.592, 0.435, 0, 0, false)), equalTo(round(set(0.592, 0.435))));
