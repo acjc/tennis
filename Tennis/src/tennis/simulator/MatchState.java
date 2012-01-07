@@ -10,6 +10,9 @@ public class MatchState implements Score
 
 	private final int numSetsForWin;
 
+	private int tiebreaks = 0;
+	private final double[][] setScores = new double[8][8];
+
 	public MatchState()
 	{
 		this(3);
@@ -56,6 +59,7 @@ public class MatchState implements Score
 	{
 		if (set.over())
 		{
+			setScores[set.getTargetGames()][set.getOpponentGames()]++;
 			if (set.targetWon())
 			{
 				targetSets++;
@@ -85,6 +89,7 @@ public class MatchState implements Score
 		if (game.tiebreakOver())
 		{
 			resetGame();
+			tiebreaks++;
 			return true;
 		}
 		return false;
@@ -153,5 +158,15 @@ public class MatchState implements Score
 	public void coinToss()
 	{
 		game.coinToss();
+	}
+
+	public int tiebreaks()
+	{
+		return tiebreaks;
+	}
+
+	public double getSetScores(final int i, final int j)
+	{
+		return setScores[i][j];
 	}
 }

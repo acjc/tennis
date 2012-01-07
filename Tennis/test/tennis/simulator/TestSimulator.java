@@ -25,7 +25,7 @@ public class TestSimulator
 	@Test
 	public void testFiveSetMatch()
 	{
-		final double mwp = round(simulator.simulate(0.55, 0.55, 200000).proportionMatchesWon());
+		final double mwp = round(simulator.simulate(0.55, 0.55, 400000).proportionMatchesWon());
 		assertThat(mwp, equalTo(0.953));
 		System.out.println(mwp);
 	}
@@ -40,7 +40,7 @@ public class TestSimulator
 		{
 			for (int j = 0; j < 4; j++)
 			{
-				total += outcomes.percentageWithScore(i, j);
+				total += outcomes.percentageWithMatchScore(i, j);
 			}
 		}
 		assertThat(round(total), equalTo(100.0));

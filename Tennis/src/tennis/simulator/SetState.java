@@ -57,12 +57,12 @@ public class SetState implements Score
 		opponentGames = 0;
 	}
 
-	private int getTargetGames()
+	public int getTargetGames()
 	{
 		return targetGames;
 	}
 
-	private int getOpponentGames()
+	public int getOpponentGames()
 	{
 		return opponentGames;
 	}

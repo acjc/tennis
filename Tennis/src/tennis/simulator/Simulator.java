@@ -25,7 +25,7 @@ public class Simulator
 				result.coinToss();
 			}
 			simulateMatch(onServe, returnServe, result);
-			outcomes.incrementFinalScore(result);
+			outcomes.updateResult(result);
 			if (result.targetWon())
 			{
 				outcomes.incrementTargetMatchesWon();

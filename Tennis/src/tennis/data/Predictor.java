@@ -8,15 +8,15 @@ import tennis.simulator.Simulator;
 
 public class Predictor
 {
-	private static final int RUNS = 500000;
+	private static final int RUNS = 400000;
 	public static final int NUM_SETS_TO_WIN = 3;
 	private static Surface SURFACE = Surface.ALL;
 
 	@SuppressWarnings("unused")
 	public static void main(final String[] args) throws IOException
 	{
-		System.out.println("SURFACE = " + SURFACE + ", " + ((NUM_SETS_TO_WIN == 2) ? "BEST OF THREE" : "BEST OF FIVE"));
-		final Player p1 = new Player("Rafael Nadal", SURFACE);
+		System.out.println("SURFACE = " + SURFACE + ", " + "SETS TO WIN = " + NUM_SETS_TO_WIN);
+		final Player p1 = new Player("Novak Djokovic", SURFACE);
 		final Player p2 = new Player("Roger Federer", SURFACE);
 		p1.adjustStatistics(p2);
 		p2.adjustStatistics(p1);
@@ -37,8 +37,6 @@ public class Predictor
 
 		// Simulator
 		final SimulationOutcomes outcomes = new Simulator().simulate(p, q, NUM_SETS_TO_WIN, RUNS);
-		outcomes.printFinalScorePercentages(NUM_SETS_TO_WIN);
-		System.out.println("Simulator says: " + p1.name() + " = " + outcomes.percentageMatchesWon() + "% (Odds = " + outcomes.oddsOfTargetWin() + "), "
-						   + p2.name() + " = " + outcomes.percentageMatchesLost() + "% (Odds = " + outcomes.oddsOfOpponentWin() + ")");
+		outcomes.print(p1.name(), p2.name(), NUM_SETS_TO_WIN);
 	}
 }
