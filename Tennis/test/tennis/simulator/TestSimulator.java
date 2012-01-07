@@ -17,7 +17,7 @@ public class TestSimulator
 		assertThat(simulator.simulate(1, 0.3, 100).proportionMatchesWon(), equalTo(1.0));
 		assertThat(simulator.simulate(0, 0.3, 100).proportionMatchesWon(), equalTo(0.0));
 
-		final double percentageWon = simulator.simulate(0.6, 0.4, 200000).proportionMatchesWon();
+		final double percentageWon = simulator.simulate(0.6, 0.4, 1000000).proportionMatchesWon();
 		assertThat(percentageWon, lessThan(0.51));
 		assertThat(percentageWon, greaterThan(0.49));
 	}
@@ -25,16 +25,14 @@ public class TestSimulator
 	@Test
 	public void testFiveSetMatch()
 	{
-		final double mwp = round(simulator.simulate(0.55, 0.55, 200000).proportionMatchesWon());
-		assertThat(mwp, equalTo(0.953));
-		System.out.println(mwp);
+		assertThat(round(simulator.simulate(0.55, 0.55, 1000000).proportionMatchesWon()), equalTo(0.953));
 	}
 
 	@Test
 	public void testOutcomes()
 	{
 		final int runs = 1000;
-		final SimulationOutcomes outcomes = simulator.simulate(0.67, 0.38, runs);
+		final Outcomes outcomes = simulator.simulate(0.67, 0.38, runs);
 		double total = 0;
 		for (int i = 0; i < 4; i++)
 		{
@@ -49,9 +47,8 @@ public class TestSimulator
 	@Test
 	public void testMatchesInProgress()
 	{
-		final MatchState initialState = new MatchState(0, 0, new SetState(2, 3), new GameState(false), 1);
-		final SimulationOutcomes outcomes = new Simulator().simulate(0.67, 0.38, initialState, true, 200000);
-		System.out.println(outcomes.proportionMatchesWon());
+		final Simulator simulator = new Simulator(new MatchState(0, 0, new SetState(2, 3), new GameState(false), 1), true);
+		System.out.println(simulator.simulate(0.67, 0.38, 1000000).proportionMatchesWon());
 	}
 
 	private double round(final double value)

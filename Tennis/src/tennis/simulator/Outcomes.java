@@ -2,13 +2,13 @@ package tennis.simulator;
 
 import java.text.DecimalFormat;
 
-public class SimulationOutcomes
+public class Outcomes
 {
 	private final double runs;
 	private final double[][] scores = new double[4][4];
 	private double targetMatchesWon = 0;
 
-	public SimulationOutcomes(final double runs)
+	public Outcomes(final double runs)
 	{
 		this.runs = runs;
 	}
@@ -48,9 +48,9 @@ public class SimulationOutcomes
 		return round(runs / (runs - targetMatchesWon));
 	}
 
-	public void incrementFinalScore(final MatchState matchState)
+	public void incrementScore(final int i, final int j)
 	{
-		scores[matchState.getTargetSets()][matchState.getOpponentSets()]++;
+		scores[i][j]++;
 	}
 
 	public void incrementTargetMatchesWon()
@@ -61,19 +61,5 @@ public class SimulationOutcomes
 	private double round(final double value)
 	{
 		return Double.parseDouble(new DecimalFormat("#.#####").format(value));
-	}
-
-	public void printFinalScorePercentages(final int numSetsToWin)
-	{
-		for (int i = 0; i <= numSetsToWin; i++)
-		{
-			for (int j = 0; j <= numSetsToWin; j++)
-			{
-				if ((i == numSetsToWin ^ j == numSetsToWin))
-				{
-					System.out.println("Score (" + i + "-" + j + "): " + percentageWithScore(i, j) + "%, Odds = " + oddsOfScore(i, j));
-				}
-			}
-		}
 	}
 }
