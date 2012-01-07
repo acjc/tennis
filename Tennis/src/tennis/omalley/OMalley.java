@@ -4,9 +4,9 @@ import static java.lang.Math.pow;
 
 public final class OMalley
 {
-	public static double game(final double probabilityOfPointOnServe)
+	public static double game(final double probabilityOfWinningPoint)
 	{
-		final double p = probabilityOfPointOnServe;
+		final double p = probabilityOfWinningPoint;
 		return pow(p, 4) * (15 - (4 * p) - ((10 * pow(p, 2)) / (1 - (2 * p) * (1 - p))));
 	}
 
@@ -44,14 +44,14 @@ public final class OMalley
 		return result;
 	}
 
-	public static double gameInPlay(final double onServe)
+	public static double gameInPlay(final double probabilityOfWinningPoint)
 	{
-		return gameInPlay(onServe, 0, 0);
+		return gameInPlay(probabilityOfWinningPoint, 0, 0);
 	}
 
-	public static double gameInPlay(final double onServe, final int targetScore, final int opponentScore)
+	public static double gameInPlay(final double probabilityOfWinningPoint, final int targetScore, final int opponentScore)
 	{
-		final double p = onServe;
+		final double p = probabilityOfWinningPoint;
 		final int a = targetScore;
 		final int b = opponentScore;
 
@@ -75,43 +75,42 @@ public final class OMalley
 
 	public static double setInPlay(final double onServe, final double returnServe, final boolean servingNext)
 	{
-		return setInPlay(onServe, returnServe, 0, 0, servingNext);
+		return setInPlay(onServe, returnServe, 0, 0, 0, 0, servingNext);
 	}
 
-	public static double setInPlay(final double onServe, final double returnServe, final int targetScore, final int opponentScore, final boolean servingNext)
+	public static double setInPlay(final double onServe, final double returnServe, final int targetGames, final int opponentGames, final boolean servingNext)
+	{
+		return setInPlay(onServe, returnServe, targetGames, opponentGames, 0, 0, servingNext);
+	}
+
+	public static double setInPlay(final double onServe, final double returnServe,
+								   final int targetGames, final int opponentGames,
+								   final int targetPoints, final int opponentPoints,
+								   final boolean servingNext)
 	{
 		final double p = onServe;
 		final double q = returnServe;
-		final int a = targetScore;
-		final int b = opponentScore;
-		final double gp = game(p);
-		final double gq = game(q);
 
-		if (a == 7 || (a == 6 && b < 5)) // Target player has won
+		if (targetGames == 7 || (targetGames == 6 && opponentGames < 5)) // Target player has won
 		{
 			return 1.0;
 		}
-		if ((a < 5 && b == 6) || b == 7) // Opponent has won
+		if ((targetGames < 5 && opponentGames == 6) || opponentGames == 7) // Opponent has won
 		{
 			return 0.0;
 		}
-		if (a == 6 && b == 6)
+		if (targetGames == 6 && opponentGames == 6)
 		{
 			return tiebreak(p, q);
 		}
-		if (servingNext) // Otherwise, depends who is next to serve
-		{
-			return gp * setInPlay(p, q, a + 1, b, false) + (1 - gp) * setInPlay(p, q, a, b + 1, false);
-		}
-		else
-		{
-			return gq * setInPlay(p, q, a + 1, b, true) + (1 - gq) * setInPlay(p, q, a, b + 1, true);
-		}
+		final double g = (servingNext) ? gameInPlay(p, targetPoints, opponentPoints) : gameInPlay(q, targetPoints, opponentPoints);
+		return g * setInPlay(p, q, targetGames + 1, opponentGames, 0, 0, !servingNext) + (1 - g) * setInPlay(p, q, targetGames, opponentGames + 1, 0, 0, !servingNext);
 	}
 
 	public static double matchInPlay(final double onServe, final double returnServe,
 									 final int targetSets, final int opponentSets,
 									 final int targetGames, final int opponentGames,
+									 final int targetPoints, final int opponentPoints,
 									 final boolean servingNext, final int numSetsForWin)
 	{
 		final double p = onServe;
@@ -127,7 +126,7 @@ public final class OMalley
 		}
 		else // Doesn't matter who serves first the next set because you don't know who served at the end of the previous set
 		{
-			final double s = setInPlay(p, q, targetGames, opponentGames, servingNext);
+			final double s = setInPlay(p, q, targetGames, opponentGames, targetPoints, opponentPoints, servingNext);
 			return s * matchInPlay(p, q, targetSets + 1, opponentSets, numSetsForWin) + (1 - s) * matchInPlay(p, q, targetSets, opponentSets + 1, numSetsForWin);
 		}
 	}
@@ -136,7 +135,7 @@ public final class OMalley
 									 final int targetSets, final int opponentSets,
 									 final int numSetsForWin)
 	{
-		return matchInPlay(onServe, returnServe, targetSets, opponentSets, 0, 0, (Math.random() < 0.5) ? true : false, numSetsForWin);
+		return matchInPlay(onServe, returnServe, targetSets, opponentSets, 0, 0, 0, 0, (Math.random() < 0.5) ? true : false, numSetsForWin);
 	}
 
 	public static double matchInPlay(final double onServe, final double returnServe, final int numSetsForWin)

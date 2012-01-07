@@ -22,7 +22,7 @@ public class SetState implements Score
 	}
 
 	@Override
-	public boolean finished()
+	public boolean over()
 	{
 		return (Math.abs(targetGames - opponentGames) >= 2 && (targetGames == 6 || opponentGames == 6))
 				|| (targetGames == 7 || opponentGames == 7);
