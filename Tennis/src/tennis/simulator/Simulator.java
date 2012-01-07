@@ -2,32 +2,28 @@ package tennis.simulator;
 
 public class Simulator
 {
-	private final MatchState initialState;
-	private final boolean scenario;
-
-	public Simulator()
+	public SimulationOutcomes simulate(final double onServe, final double returnServe, final double runs)
 	{
-		this(new MatchState(), false);
+		return simulate(onServe, returnServe, new MatchState(), false, runs);
 	}
 
-	public Simulator(final int numSetsToWin)
+	public SimulationOutcomes simulate(final double onServe, final double returnServe, final int numSetsToWin, final double runs)
 	{
-		this(new MatchState(numSetsToWin), false);
+		return simulate(onServe, returnServe, new MatchState(numSetsToWin), false, runs);
 	}
 
-	public Simulator(final MatchState initialState, final boolean scenario)
+	public SimulationOutcomes simulate(final double onServe, final double returnServe, final MatchState initialState, final boolean scenario, final double runs)
 	{
-		this.initialState = initialState;
-		this.scenario = scenario;
-	}
-
-	public Outcomes simulate(final double onServe, final double returnServe, final double runs)
-	{
-		final Outcomes outcomes = new Outcomes(runs);
+		final SimulationOutcomes outcomes = new SimulationOutcomes(runs);
 		for (int i = 0; i < runs; i++)
 		{
-			final MatchState result = simulate(onServe, returnServe);
-			outcomes.incrementScore(result.getTargetSets(), result.getOpponentSets());
+			final MatchState result = new MatchState(initialState);
+			if (!scenario)
+			{
+				result.coinToss();
+			}
+			simulateMatch(onServe, returnServe, result);
+			outcomes.incrementFinalScore(result);
 			if (result.targetWon())
 			{
 				outcomes.incrementTargetMatchesWon();
@@ -36,25 +32,20 @@ public class Simulator
 		return outcomes;
 	}
 
-	public MatchState simulate(final double onServe, final double returnServe)
+	private MatchState simulateMatch(final double onServe, final double returnServe, final MatchState score)
 	{
 		final double p = onServe;
 		final double q = returnServe;
 
 		// When simulating a particular scenario, we want to replicate the starting conditions exactly
 		// Otherwise, start a fresh match with a random first server
-		final MatchState score = new MatchState(initialState);
-		if (!scenario)
+		while (!score.over())
 		{
-			score.coinToss();
-		}
-		while (!score.finished())
-		{
-			while (!score.setFinished())
+			while (!score.setOver())
 			{
-				while (!score.gameFinished())
+				while (!score.gameOver())
 				{
-					playPoint(p, q, score, score.isServingNext());
+					playPoint(p, q, score);
 				}
 				if (score.tiebreak()) // Assume tiebreaks are always used for now
 				{
@@ -79,10 +70,15 @@ public class Simulator
 		}
 	}
 
-	private void playPoint(final double p, final double q, final Score score, final boolean servingNext)
+	private void playPoint(final double p, final double q, final MatchState score)
+	{
+		playPoint(p, q, score, score.isServingNext());
+	}
+
+	private void playPoint(final double p, final double q, final MatchState score, final boolean serving)
 	{
 		final double playPoint = Math.random();
-		if ((servingNext && playPoint < p) || (!servingNext && playPoint < q))
+		if ((serving && playPoint < p) || (!serving && playPoint < q))
 		{
 			score.incrementTarget();
 		}

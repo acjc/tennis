@@ -52,9 +52,9 @@ public class MatchState implements Score
 		game.incrementOpponent();
 	}
 
-	public boolean setFinished()
+	public boolean setOver()
 	{
-		if (set.finished())
+		if (set.over())
 		{
 			if (set.targetWon())
 			{
@@ -90,9 +90,9 @@ public class MatchState implements Score
 		return false;
 	}
 
-	public boolean gameFinished()
+	public boolean gameOver()
 	{
-		if (game.finished())
+		if (game.over())
 		{
 			resetGame();
 			return true;
@@ -114,7 +114,7 @@ public class MatchState implements Score
 	}
 
 	@Override
-	public boolean finished()
+	public boolean over()
 	{
 		return targetSets == numSetsForWin || opponentSets == numSetsForWin;
 	}

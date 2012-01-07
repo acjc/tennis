@@ -24,6 +24,7 @@ public abstract class XYLineChart extends ApplicationFrame
 		this.title = title;
 		this.xLabel = xLabel;
 		this.yLabel = yLabel;
+
 		final ChartPanel chartPanel = new ChartPanel(createXYLineChart());
 	    chartPanel.setPreferredSize(new Dimension(500, 270));
 	    setContentPane(chartPanel);
