@@ -10,6 +10,7 @@ public class SimulationOutcomes
 	private double targetMatchesWon = 0;
 	private double tiebreaks = 0;
 	private double setsPlayed = 0;
+	private double simulationTime;
 
 	public SimulationOutcomes(final double runs)
 	{
@@ -71,13 +72,15 @@ public class SimulationOutcomes
 		return round(runs / (runs - targetMatchesWon));
 	}
 
-	public void updateResult(final MatchState matchState)
+	public void update(final MatchState matchState)
 	{
 		final int targetSets = matchState.getTargetSets();
 		final int opponentSets = matchState.getOpponentSets();
-		matchScores[targetSets][opponentSets]++;
-		tiebreaks += matchState.tiebreaks();
+
 		setsPlayed += targetSets + opponentSets;
+		tiebreaks += matchState.tiebreaks();
+
+		matchScores[targetSets][opponentSets]++;
 		for (int i = 0; i <= 7; i++)
 		{
 			for (int j = 0; j <= 7; j++)
@@ -85,11 +88,16 @@ public class SimulationOutcomes
 				setScores[i][j] += matchState.getSetScores(i, j);
 			}
 		}
+
+		if (matchState.targetWon())
+		{
+			targetMatchesWon++;
+		}
 	}
 
-	public void incrementTargetMatchesWon()
+	public void setSimulationTime(final double time)
 	{
-		targetMatchesWon++;
+		simulationTime = time;
 	}
 
 	private double round(final double value)
@@ -101,6 +109,7 @@ public class SimulationOutcomes
 	{
 		System.out.println("Simulator says: " + target + " = " + percentageMatchesWon() + "% (Odds = " + oddsOfTargetWin() + "), "
 						   + opponent + " = " + percentageMatchesLost() + "% (Odds = " + oddsOfOpponentWin() + ")");
+		System.out.println("Time to simulate " + runs + " runs = " + simulationTime + " seconds");
 		System.out.println("POSSIBLE MATCH SCORES:");
 		for (int i = 0; i <= numSetsToWin; i++)
 		{

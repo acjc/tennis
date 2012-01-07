@@ -63,8 +63,8 @@ public class DataDownloader
 		final URLConnection connection = myUrl.openConnection();
 		connection.connect();
 
-		String headerName = null;
-		for (int i=1; (headerName = connection.getHeaderFieldKey(i))!=null; i++)
+		String headerName;
+		for (int i = 1; (headerName = connection.getHeaderFieldKey(i)) != null; i++)
 		{
 		 	if (headerName.equals("Set-Cookie"))
 		 	{

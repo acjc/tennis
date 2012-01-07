@@ -15,6 +15,7 @@ public class Simulator
 	public SimulationOutcomes simulate(final double onServe, final double returnServe, final MatchState initialState, final boolean scenario, final double runs)
 	{
 		final SimulationOutcomes outcomes = new SimulationOutcomes(runs);
+		final long startTime = System.currentTimeMillis();
 		for (int i = 0; i < runs; i++)
 		{
 			// When simulating a particular scenario, we want to replicate the starting conditions exactly
@@ -25,12 +26,10 @@ public class Simulator
 				result.coinToss();
 			}
 			simulateMatch(onServe, returnServe, result);
-			outcomes.updateResult(result);
-			if (result.targetWon())
-			{
-				outcomes.incrementTargetMatchesWon();
-			}
+			outcomes.update(result);
 		}
+		final long endTime = System.currentTimeMillis();
+		outcomes.setSimulationTime((endTime - startTime) / 1000.0);
 		return outcomes;
 	}
 

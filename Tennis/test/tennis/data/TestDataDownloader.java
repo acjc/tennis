@@ -6,14 +6,12 @@ import static org.hamcrest.Matchers.containsString;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class TestDataDownloader
 {
 	private final DataDownloader downloader = new DataDownloader();
 
-	@Ignore
 	@Test
 	public void testPrintCookies() throws IOException
 	{
