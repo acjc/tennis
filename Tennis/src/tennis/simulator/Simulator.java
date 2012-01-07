@@ -17,6 +17,8 @@ public class Simulator
 		final SimulationOutcomes outcomes = new SimulationOutcomes(runs);
 		for (int i = 0; i < runs; i++)
 		{
+			// When simulating a particular scenario, we want to replicate the starting conditions exactly
+			// Otherwise, start a fresh match with a random first server
 			final MatchState result = new MatchState(initialState);
 			if (!scenario)
 			{
@@ -37,8 +39,6 @@ public class Simulator
 		final double p = onServe;
 		final double q = returnServe;
 
-		// When simulating a particular scenario, we want to replicate the starting conditions exactly
-		// Otherwise, start a fresh match with a random first server
 		while (!score.over())
 		{
 			while (!score.setOver())
