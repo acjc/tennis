@@ -24,15 +24,7 @@ public class Predictor
 		final double q = 1 - p2.servicePointsWonAgainst(p1);
 
 		// O'Malley
-		final double oMalley;
-		if (NUM_SETS_TO_WIN == 3)
-		{
-			oMalley = OMalley.bestOfFive(p, q) * 100;
-		}
-		else
-		{
-			oMalley = OMalley.bestOfThree(p, q) * 100;
-		}
+		final double oMalley = (NUM_SETS_TO_WIN == 3) ? OMalley.bestOfFive(p, q) * 100 : OMalley.bestOfThree(p, q) * 100;
 		System.out.println("O'Malley says: " + p1.name() + " = " + oMalley + "%, " + p2.name() + " = " + (100 - oMalley) + "%");
 
 		// Simulator

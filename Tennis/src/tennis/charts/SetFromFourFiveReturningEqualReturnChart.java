@@ -22,7 +22,7 @@ public class SetFromFourFiveReturningEqualReturnChart extends XYLineChart
 		final XYSeries series = new XYSeries("FourFiveOnServe");
 	    for(double i = 0; i < 1.0; i += 0.01)
 	    {
-			series.add(i, OMalley.setInPlay(i, 0.5, 4, 5, true));
+			series.add(i, OMalley.setInProgress(i, 0.5, 4, 5, true));
 	    }
 
 	    final XYSeriesCollection dataset = new XYSeriesCollection();

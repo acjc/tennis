@@ -44,12 +44,30 @@ public final class OMalley
 		return result;
 	}
 
-	public static double gameInPlay(final double probabilityOfWinningPoint)
+	public static double bestOfThree(final double onServe, final double returnServe)
 	{
-		return gameInPlay(probabilityOfWinningPoint, 0, 0);
+		final double p = onServe;
+		final double q = returnServe;
+		System.out.println("Three set match with p = " + p + " q = " + q);
+
+		return pow(set(p, q), 2) * (1 + 2 * (1 - set(p, q)));
 	}
 
-	public static double gameInPlay(final double probabilityOfWinningPoint, final int targetScore, final int opponentScore)
+	public static double bestOfFive(final double onServe, final double returnServe)
+	{
+		final double p = onServe;
+		final double q = returnServe;
+		System.out.println("Five set match with p = " + p + " q = " + q);
+
+		return pow(set(p, q), 3) * (1 + 3 * (1 - set(p, q)) + 6 * (pow(1 - set(p, q), 2)));
+	}
+
+	public static double gameInProgress(final double probabilityOfWinningPoint)
+	{
+		return gameInProgress(probabilityOfWinningPoint, 0, 0);
+	}
+
+	public static double gameInProgress(final double probabilityOfWinningPoint, final int targetScore, final int opponentScore)
 	{
 		final double p = probabilityOfWinningPoint;
 		final int a = targetScore;
@@ -69,33 +87,33 @@ public final class OMalley
 		}
 		else
 		{
-			return p * gameInPlay(p, a + 1, b) + (1 - p) * gameInPlay(p, a, b + 1);
+			return p * gameInProgress(p, a + 1, b) + (1 - p) * gameInProgress(p, a, b + 1);
 		}
 	}
 
-	public static double setInPlay(final double onServe, final double returnServe, final boolean servingNext)
+	public static double setInProgress(final double onServe, final double returnServe, final boolean servingNext)
 	{
-		return setInPlay(onServe, returnServe, 0, 0, 0, 0, servingNext);
+		return setInProgress(onServe, returnServe, 0, 0, 0, 0, servingNext);
 	}
 
-	public static double setInPlay(final double onServe, final double returnServe, final int targetGames, final int opponentGames, final boolean servingNext)
+	public static double setInProgress(final double onServe, final double returnServe, final int targetGames, final int opponentGames, final boolean servingNext)
 	{
-		return setInPlay(onServe, returnServe, targetGames, opponentGames, 0, 0, servingNext);
+		return setInProgress(onServe, returnServe, targetGames, opponentGames, 0, 0, servingNext);
 	}
 
-	public static double setInPlay(final double onServe, final double returnServe,
-								   final int targetGames, final int opponentGames,
-								   final int targetPoints, final int opponentPoints,
-								   final boolean servingNext)
+	public static double setInProgress(final double onServe, final double returnServe,
+								   	   final int targetGames, final int opponentGames,
+								   	   final int targetPoints, final int opponentPoints,
+								   	   final boolean servingNext)
 	{
 		final double p = onServe;
 		final double q = returnServe;
 
-		if (targetGames == 7 || (targetGames == 6 && opponentGames < 5)) // Target player has won
+		if (targetGames == 7 || (targetGames == 6 && opponentGames < 5))
 		{
 			return 1.0;
 		}
-		if ((targetGames < 5 && opponentGames == 6) || opponentGames == 7) // Opponent has won
+		if ((targetGames < 5 && opponentGames == 6) || opponentGames == 7)
 		{
 			return 0.0;
 		}
@@ -103,15 +121,15 @@ public final class OMalley
 		{
 			return tiebreak(p, q);
 		}
-		final double g = (servingNext) ? gameInPlay(p, targetPoints, opponentPoints) : gameInPlay(q, targetPoints, opponentPoints);
-		return g * setInPlay(p, q, targetGames + 1, opponentGames, 0, 0, !servingNext) + (1 - g) * setInPlay(p, q, targetGames, opponentGames + 1, 0, 0, !servingNext);
+		final double g = (servingNext) ? gameInProgress(p, targetPoints, opponentPoints) : gameInProgress(q, targetPoints, opponentPoints);
+		return g * setInProgress(p, q, targetGames + 1, opponentGames, 0, 0, !servingNext) + (1 - g) * setInProgress(p, q, targetGames, opponentGames + 1, 0, 0, !servingNext);
 	}
 
-	public static double matchInPlay(final double onServe, final double returnServe,
-									 final int targetSets, final int opponentSets,
-									 final int targetGames, final int opponentGames,
-									 final int targetPoints, final int opponentPoints,
-									 final boolean servingNext, final int numSetsForWin)
+	public static double matchInProgress(final double onServe, final double returnServe,
+								     	 final int targetSets, final int opponentSets,
+								     	 final int targetGames, final int opponentGames,
+								     	 final int targetPoints, final int opponentPoints,
+								     	 final boolean servingNext, final int numSetsForWin)
 	{
 		final double p = onServe;
 		final double q = returnServe;
@@ -126,38 +144,20 @@ public final class OMalley
 		}
 		else // Doesn't matter who serves first the next set because you don't know who served at the end of the previous set
 		{
-			final double s = setInPlay(p, q, targetGames, opponentGames, targetPoints, opponentPoints, servingNext);
-			return s * matchInPlay(p, q, targetSets + 1, opponentSets, numSetsForWin) + (1 - s) * matchInPlay(p, q, targetSets, opponentSets + 1, numSetsForWin);
+			final double s = setInProgress(p, q, targetGames, opponentGames, targetPoints, opponentPoints, servingNext);
+			return s * matchInProgress(p, q, targetSets + 1, opponentSets, numSetsForWin) + (1 - s) * matchInProgress(p, q, targetSets, opponentSets + 1, numSetsForWin);
 		}
 	}
 
-	public static double matchInPlay(final double onServe, final double returnServe,
-									 final int targetSets, final int opponentSets,
-									 final int numSetsForWin)
+	public static double matchInProgress(final double onServe, final double returnServe,
+									     final int targetSets, final int opponentSets,
+									     final int numSetsForWin)
 	{
-		return matchInPlay(onServe, returnServe, targetSets, opponentSets, 0, 0, 0, 0, (Math.random() < 0.5) ? true : false, numSetsForWin);
+		return matchInProgress(onServe, returnServe, targetSets, opponentSets, 0, 0, 0, 0, (Math.random() < 0.5) ? true : false, numSetsForWin);
 	}
 
-	public static double matchInPlay(final double onServe, final double returnServe, final int numSetsForWin)
+	public static double matchInProgress(final double onServe, final double returnServe, final int numSetsForWin)
 	{
-		return matchInPlay(onServe, returnServe, 0, 0, numSetsForWin);
-	}
-
-	public static double bestOfThree(final double onServe, final double returnServe)
-	{
-		final double p = onServe;
-		final double q = returnServe;
-		System.out.println("Three set match with p = " + p + " q = " + q);
-
-		return pow(set(p, q), 2) * (1 + 2 * (1 - set(p, q)));
-	}
-
-	public static double bestOfFive(final double onServe, final double returnServe)
-	{
-		final double p = onServe;
-		final double q = returnServe;
-		System.out.println("Five set match with p = " + p + " q = " + q);
-
-		return pow(set(p, q), 3) * (1 + 3 * (1 - set(p, q)) + 6 * (pow(1 - set(p, q), 2)));
+		return matchInProgress(onServe, returnServe, 0, 0, numSetsForWin);
 	}
 }

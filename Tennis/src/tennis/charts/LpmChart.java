@@ -23,42 +23,48 @@ import au.com.bytecode.opencsv.CSVReader;
 public class LpmChart extends ApplicationFrame
 {
 	private final String title;
-	private final String playerOneFile;
-	private final String playerTwoFile;
+	private final String matchOdds;
+	private final String threeNil;
+	private final String threeOne;
+	private final String threeTwo;
 
-	public LpmChart(final String title, final String playerOneFile, final String playerTwoFile) throws IOException
+	public LpmChart(final String title, final String matchOdds, final String threeNil, final String threeOne, final String threeTwo) throws IOException
 	{
 		super(title);
 		this.title = title;
-		this.playerOneFile = playerOneFile;
-		this.playerTwoFile = playerTwoFile;
+		this.matchOdds = matchOdds;
+		this.threeNil = threeNil;
+		this.threeOne = threeOne;
+		this.threeTwo = threeTwo;
 
 		final ChartPanel chartPanel = new ChartPanel(createTimeSeriesChart());
-	    chartPanel.setPreferredSize(new Dimension(500, 270));
+	    chartPanel.setPreferredSize(new Dimension(1000, 520));
 	    setContentPane(chartPanel);
 	}
 
 	protected XYDataset createDataset() throws IOException
 	{
 		final TimeSeriesCollection dataset = new TimeSeriesCollection();
-	    dataset.addSeries(createSeries(playerOneFile));
-	    dataset.addSeries(createSeries(playerTwoFile));
+	    dataset.addSeries(createSeries(matchOdds, "Match Odds"));
+	    dataset.addSeries(createSeries(threeNil, "3-0"));
+	    dataset.addSeries(createSeries(threeOne, "3-1"));
+	    dataset.addSeries(createSeries(threeTwo, "3-2"));
 	    return dataset;
 	}
 
-	private TimeSeries createSeries(final String playerFile) throws FileNotFoundException, IOException
+	private TimeSeries createSeries(final String file, final String name) throws FileNotFoundException, IOException
 	{
-		final TimeSeries playerOneLpm = new TimeSeries("LPM");
-		final CSVReader reader = new CSVReader(new FileReader(playerFile));
+		final TimeSeries series = new TimeSeries(name);
+		final CSVReader reader = new CSVReader(new FileReader(file));
 	    reader.readNext(); reader.readNext(); reader.readNext(); // header
 
 	    String [] nextLine;
 	    while ((nextLine = reader.readNext()) != null && Double.parseDouble(nextLine[10]) != -1)
 	    {
-    		playerOneLpm.add(new Second(new Date(Long.parseLong(nextLine[0]))), Double.parseDouble(nextLine[10]));
+    		series.add(new Second(new Date(Long.parseLong(nextLine[0]))), Double.parseDouble(nextLine[10]));
 	    }
 
-		return playerOneLpm;
+		return series;
 	}
 
 	private JFreeChart createTimeSeriesChart() throws IOException
@@ -68,7 +74,7 @@ public class LpmChart extends ApplicationFrame
 	    	"Time",
 	    	"LPM",
 	        createDataset(),
-	        false,                    			 // legend
+	        true,                    			 // legend
 	        true,                     			 // tooltips
 	        false                     			// urls
 	    );
@@ -79,13 +85,17 @@ public class LpmChart extends ApplicationFrame
 	    plot.setBackgroundPaint(Color.lightGray);
 	    plot.setDomainGridlinePaint(Color.white);
 	    plot.setRangeGridlinePaint(Color.white);
+	    plot.getRangeAxis().setRange(0, 8);
 
 	    return chart;
 	}
 
 	public static void main(final String[] args) throws IOException
 	{
-	    final LpmChart chart = new LpmChart("Sharapova vs Azarenka", "doc\\sharapova.csv", "doc\\azarenka.csv");
+	    final LpmChart chart = new LpmChart("Murray vs Berrer (French Open 2011 Third Round)",
+	    									"doc\\murrayberrer\\Andy Murray.csv", "doc\\murrayberrer\\A Murray 3 - 0.csv",
+	    																		  "doc\\murrayberrer\\A Murray 3 - 1.csv",
+	    																		  "doc\\murrayberrer\\A Murray 3 - 2.csv");
 	    chart.pack();
 	    RefineryUtilities.centerFrameOnScreen(chart);
 	    chart.setVisible(true);

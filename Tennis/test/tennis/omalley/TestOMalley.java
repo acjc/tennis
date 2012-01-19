@@ -22,53 +22,53 @@ public class TestOMalley {
 	@Test
 	public void testMatchInPlay()
 	{
-		assertThat(round(matchInPlay(0.67, 0.38, 3)), equalTo(round(bestOfFive(0.67, 0.38))));
-		assertThat(round(matchInPlay(0.67, 0.38, 2)), equalTo(round(bestOfThree(0.67, 0.38))));
+		assertThat(round(matchInProgress(0.67, 0.38, 3)), equalTo(round(bestOfFive(0.67, 0.38))));
+		assertThat(round(matchInProgress(0.67, 0.38, 2)), equalTo(round(bestOfThree(0.67, 0.38))));
 
-		assertThat(round(matchInPlay(0.55, 0.55, 3)), equalTo(0.953));
+		assertThat(round(matchInProgress(0.55, 0.55, 3)), equalTo(0.953));
 
-		assertThat(matchInPlay(0.5, 0.5, 3), equalTo(0.5));
+		assertThat(matchInProgress(0.5, 0.5, 3), equalTo(0.5));
 	}
 
 	@Test
 	public void testGameInPlay()
 	{
-		assertThat(round(gameInPlay(0.592)), equalTo(round(game(0.592))));
+		assertThat(round(gameInProgress(0.592)), equalTo(round(game(0.592))));
 
-		assertThat(gameInPlay(0.5), equalTo(0.5));
-		assertThat(round(gameInPlay(0.6)), equalTo(0.736));
-		assertThat(round(gameInPlay(0.7)), equalTo(0.901));
+		assertThat(gameInProgress(0.5), equalTo(0.5));
+		assertThat(round(gameInProgress(0.6)), equalTo(0.736));
+		assertThat(round(gameInProgress(0.7)), equalTo(0.901));
 	}
 
 	@Test
 	public void testSetInPlay()
 	{
-		assertThat(round(setInPlay(0.592, 0.435, 0, 0, false)), equalTo(round(set(0.592, 0.435))));
+		assertThat(round(setInProgress(0.592, 0.435, 0, 0, false)), equalTo(round(set(0.592, 0.435))));
 
-		assertThat(setInPlay(0.5, 0.5, 5, 5, true), equalTo(0.5));
-		assertThat(setInPlay(0.5, 0.5, 5, 5, false), equalTo(0.5));
+		assertThat(setInProgress(0.5, 0.5, 5, 5, true), equalTo(0.5));
+		assertThat(setInProgress(0.5, 0.5, 5, 5, false), equalTo(0.5));
 
-		assertThat(setInPlay(0.5, 0.5, 0, 0, true), equalTo(0.5));
-		assertThat(setInPlay(0.5, 0.5, 0, 0, false), equalTo(0.5));
+		assertThat(setInProgress(0.5, 0.5, 0, 0, true), equalTo(0.5));
+		assertThat(setInProgress(0.5, 0.5, 0, 0, false), equalTo(0.5));
 
-		assertThat(round(setInPlay(0.61, 0.37, 0, 0, true)), equalTo(round(setInPlay(0.61, 0.37, 0, 0, false))));
+		assertThat(round(setInProgress(0.61, 0.37, 0, 0, true)), equalTo(round(setInProgress(0.61, 0.37, 0, 0, false))));
 
-		assertThat(setInPlay(0.6, 0.4, 4, 5, true), greaterThan(setInPlay(0.6, 0.4, 4, 5, false)));
+		assertThat(setInProgress(0.6, 0.4, 4, 5, true), greaterThan(setInProgress(0.6, 0.4, 4, 5, false)));
 
-		assertThat(round(setInPlay(0.67, 0.38, 3, 5, false)), equalTo(round(0.116)));
-		assertThat(round(setInPlay(0.62, 0.33, 3, 5, true)), equalTo(round(0.043)));
+		assertThat(round(setInProgress(0.67, 0.38, 3, 5, false)), equalTo(round(0.116)));
+		assertThat(round(setInProgress(0.62, 0.33, 3, 5, true)), equalTo(round(0.043)));
 
-		assertThat(round(setInPlay(0.67, 0.38, 1, 4, true)), equalTo(0.175));
-		assertThat(round(setInPlay(0.62, 0.33, 1, 4, true)), equalTo(0.057));
+		assertThat(round(setInProgress(0.67, 0.38, 1, 4, true)), equalTo(0.175));
+		assertThat(round(setInProgress(0.62, 0.33, 1, 4, true)), equalTo(0.057));
 
-		assertThat(round(setInPlay(0.67, 0.38, 2, 3, false)), equalTo(0.287));
-		assertThat(round(setInPlay(0.62, 0.33, 2, 3, false)), equalTo(0.112));
+		assertThat(round(setInProgress(0.67, 0.38, 2, 3, false)), equalTo(0.287));
+		assertThat(round(setInProgress(0.62, 0.33, 2, 3, false)), equalTo(0.112));
 
-		assertThat(round(setInPlay(0.67, 0.38, 1, 3, false)), equalTo(0.255));
-		assertThat(round(setInPlay(0.62, 0.33, 1, 3, false)), equalTo(0.090));
+		assertThat(round(setInProgress(0.67, 0.38, 1, 3, false)), equalTo(0.255));
+		assertThat(round(setInProgress(0.62, 0.33, 1, 3, false)), equalTo(0.090));
 
-		assertThat(round(setInPlay(0.67, 0.38, 0, 3, true)), equalTo(0.220));
-		assertThat(round(setInPlay(0.62, 0.33, 0, 3, true)), equalTo(0.070));
+		assertThat(round(setInProgress(0.67, 0.38, 0, 3, true)), equalTo(0.220));
+		assertThat(round(setInProgress(0.62, 0.33, 0, 3, true)), equalTo(0.070));
 	}
 
 	private double round(final double value)

@@ -39,7 +39,7 @@ public class SimulatorRunsChart extends ApplicationFrame
 	        "Match-Winning Probability",
 	        createDataset(),
 	        PlotOrientation.VERTICAL,
-	        false,                    			 // legend
+	        true,                    			 // legend
 	        true,                     			 // tooltips
 	        false                     			// urls
 	    );
@@ -50,10 +50,10 @@ public class SimulatorRunsChart extends ApplicationFrame
 	    plot.setBackgroundPaint(Color.lightGray);
 	    plot.setDomainGridlinePaint(Color.white);
 	    plot.setRangeGridlinePaint(Color.white);
-	    plot.getRangeAxis().setRange(0.944, 0.956);
+	    plot.getRangeAxis().setRange(0.952, 0.954);
 
 	    final XYSplineRenderer renderer = new XYSplineRenderer();
-	    for (int i = 0; i < 6; i++)
+	    for (int i = 0; i < 4; i++)
 		{
 	    	renderer.setSeriesLinesVisible(i, true);
 	    	renderer.setSeriesShapesVisible(i, false);
@@ -67,10 +67,8 @@ public class SimulatorRunsChart extends ApplicationFrame
 	{
 		final XYSeries simulatorSeries = new XYSeries("Simulator");
 		final XYSeries solutionSeries = new XYSeries("Exact Solution");
-		final XYSeries upperSeries3 = new XYSeries("Upper Bound (3dp)");
-		final XYSeries lowerSeries3 = new XYSeries("Lower Bound (3dp)");
-		final XYSeries upperSeries2 = new XYSeries("Upper Bound (2dp)");
-		final XYSeries lowerSeries2 = new XYSeries("Lower Bound (2dp)");
+		final XYSeries upperSeries = new XYSeries("Upper Bound");
+		final XYSeries lowerSeries = new XYSeries("Lower Bound");
 	    for(double i = 10000; i <= 750000; i += 10000)
 	    {
 			final double mwp = new Simulator().simulate(0.55, 0.55, i).proportionMatchesWon();
@@ -78,19 +76,15 @@ public class SimulatorRunsChart extends ApplicationFrame
 			System.out.println("Runs = " + i + ", MWP = " + mwp);
 
 			solutionSeries.add(i, 0.953);
-			upperSeries3.add(i, 0.9535);
-			lowerSeries3.add(i, 0.9525);
-			upperSeries2.add(i, 0.955);
-			lowerSeries2.add(i, 0.945);
+			upperSeries.add(i, 0.9535);
+			lowerSeries.add(i, 0.9525);
 	    }
 
 	    final XYSeriesCollection dataset = new XYSeriesCollection();
 	    dataset.addSeries(simulatorSeries);
 	    dataset.addSeries(solutionSeries);
-	    dataset.addSeries(upperSeries3);
-	    dataset.addSeries(lowerSeries3);
-	    dataset.addSeries(upperSeries2);
-	    dataset.addSeries(lowerSeries2);
+	    dataset.addSeries(upperSeries);
+	    dataset.addSeries(lowerSeries);
 
 	    return dataset;
 	}
