@@ -21,22 +21,20 @@ import org.jfree.ui.ApplicationFrame;
 
 import au.com.bytecode.opencsv.CSVReader;
 
-public class FiveSetLpmChart extends ApplicationFrame
+public class ThreeSetLpmChart extends ApplicationFrame
 {
 	private final String title;
 	private final String matchOdds;
-	private final String threeNil;
-	private final String threeOne;
-	private final String threeTwo;
+	private final String twoNil;
+	private final String twoOne;
 
-	public FiveSetLpmChart(final String title, final String matchOdds, final String threeNil, final String threeOne, final String threeTwo) throws IOException
+	public ThreeSetLpmChart(final String title, final String matchOdds, final String twoNil, final String twoOne) throws IOException
 	{
 		super(title);
 		this.title = title;
 		this.matchOdds = matchOdds;
-		this.threeNil = threeNil;
-		this.threeOne = threeOne;
-		this.threeTwo = threeTwo;
+		this.twoNil = twoNil;
+		this.twoOne = twoOne;
 
 		final ChartPanel chartPanel = new ChartPanel(createTimeSeriesChart());
 	    chartPanel.setPreferredSize(new Dimension(1000, 520));
@@ -51,9 +49,8 @@ public class FiveSetLpmChart extends ApplicationFrame
 		final CSVReader matchOddsReader = new CSVReader(new FileReader(matchOdds));
 
 		final TimeSeries setBettingSeries = new TimeSeries("Set Betting");
-		final CSVReader threeNilReader = new CSVReader(new FileReader(threeNil));
-		final CSVReader threeOneReader = new CSVReader(new FileReader(threeOne));
-		final CSVReader threeTwoReader = new CSVReader(new FileReader(threeTwo));
+		final CSVReader twoNilReader = new CSVReader(new FileReader(twoNil));
+		final CSVReader twoOneReader = new CSVReader(new FileReader(twoOne));
 
 		final TimeSeries oddsDifferenceSeries = new TimeSeries("Odds Difference");
 
@@ -62,11 +59,10 @@ public class FiveSetLpmChart extends ApplicationFrame
 	    String [] matchOddsNextLine;
 	    while ((matchOddsNextLine = matchOddsReader.readNext()) != null)
 	    {
-	    	final String[] threeNilNextLine = threeNilReader.readNext();
-	    	final String[] threeOneNextLine = threeOneReader.readNext();
-	    	final String[] threeTwoNextLine = threeTwoReader.readNext();
+	    	final String[] twoNilNextLine = twoNilReader.readNext();
+	    	final String[] twoOneNextLine = twoOneReader.readNext();
 	    	// Check match hasn't finished yet
-	    	if(matchOddsNextLine[6].equals("-1") || threeNilNextLine[6].equals("-1") || threeOneNextLine[6].equals("-1") || threeTwoNextLine[6].equals("-1"))
+	    	if(matchOddsNextLine[6].equals("-1") || twoNilNextLine[6].equals("-1") || twoOneNextLine[6].equals("-1"))
 	    	{
 	    		break;
 	    	}
@@ -74,10 +70,9 @@ public class FiveSetLpmChart extends ApplicationFrame
 	    	final double matchOddsPercentage = 100.0 / Double.parseDouble(matchOddsNextLine[6]);
 			matchOddsSeries.add(new Second(new Date(Long.parseLong(matchOddsNextLine[0]))), matchOddsPercentage);
 
-	    	final double threeNilPercentage = 100.0 / Double.parseDouble(threeNilNextLine[6]);
-	    	final double threeOnePercentage = 100.0 / Double.parseDouble(threeOneNextLine[6]);
-			final double threeTwoPercentage = 100.0 / Double.parseDouble(threeTwoNextLine[6]);
-	    	final double setBettingPercentage = threeNilPercentage + threeOnePercentage + threeTwoPercentage;
+			final double twoNilPercentage = 100.0 / Double.parseDouble(twoNilNextLine[6]);
+			final double threeOnePercentage = 100.0 / Double.parseDouble(twoOneNextLine[6]);
+	    	final double setBettingPercentage = twoNilPercentage + threeOnePercentage;
     		setBettingSeries.add(new Second(new Date(Long.parseLong(matchOddsNextLine[0]))), setBettingPercentage);
 
     		final double oddsDifference = Math.abs(matchOddsPercentage - setBettingPercentage);
