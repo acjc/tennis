@@ -19,7 +19,7 @@ public class DataDownloader
 
 	public String downloadPlayerProfile(final String name) throws IOException
 	{
-		final File file = new File("doc\\player.html");
+		final File file = new File("doc\\data\\player.html");
 		downloadFile(new URL("http://www.tennisinsight.com/player_search_action.php?player_search=" + name.replace(" ", "%20")), file);
 		return readFileToString(file);
 	}
@@ -27,21 +27,21 @@ public class DataDownloader
 	public String downloadTournamentData(final int id) throws MalformedURLException, IOException
 	{
 		System.out.println("Downloading data for tournament: " + id);
-		final File file = new File("doc\\tournament-" + id + ".html");
+		final File file = new File("doc\\data\\tournament-" + id + ".html");
 		downloadFile(new URL("http://www.tennisinsight.com/tournamentid" + id + ".htm"), file);
 		return readFileToString(file);
 	}
 
 	public String downloadPlayerOverview(final int id, final Surface surface) throws IOException
 	{
-		final File file = new File("doc\\player.html");
+		final File file = new File("doc\\data\\player.html");
 		downloadFile(new URL("http://www.tennisinsight.com/player_overview.php?player_id=" + id + "&surface=" + surface.getValue() + "&duration=380"), file);
 		return readFileToString(file);
 	}
 
 	public String downloadPlayerActivity(final int id, final ActivitySurface surface) throws MalformedURLException, IOException
 	{
-		final File file = new File("doc\\activity.html");
+		final File file = new File("doc\\data\\activity.html");
 		downloadFile(new URL("http://www.tennisinsight.com/player_activity.php?player_id="+ id + "&activity=" + surface.getValue()), file);
 		return readFileToString(file);
 	}
@@ -49,7 +49,7 @@ public class DataDownloader
 	public String downloadMatchData(final int id) throws MalformedURLException, IOException
 	{
 		System.out.println("Downloading statistics for match: " + id);
-		final File file = new File("doc\\match-" + id + ".html");
+		final File file = new File("doc\\data\\match-" + id + ".html");
 		if (!file.isFile())
 		{
 			downloadFile(new URL("http://www.tennisinsight.com/match_stats_popup.php?matchID=" + id), file);

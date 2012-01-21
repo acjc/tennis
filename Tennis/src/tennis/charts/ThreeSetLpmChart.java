@@ -2,6 +2,7 @@ package tennis.charts;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -11,6 +12,7 @@ import java.util.Date;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
+import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.time.Second;
@@ -37,7 +39,7 @@ public class ThreeSetLpmChart extends ApplicationFrame
 		this.twoOne = twoOne;
 
 		final ChartPanel chartPanel = new ChartPanel(createTimeSeriesChart());
-	    chartPanel.setPreferredSize(new Dimension(1000, 520));
+	    chartPanel.setPreferredSize(new Dimension(1000, 570));
 	    setContentPane(chartPanel);
 	}
 
@@ -106,6 +108,8 @@ public class ThreeSetLpmChart extends ApplicationFrame
 	    plot.setBackgroundPaint(Color.lightGray);
 	    plot.setDomainGridlinePaint(Color.white);
 	    plot.setRangeGridlinePaint(Color.white);
+
+	    ChartUtilities.saveChartAsPNG(new File("doc\\" + title + ".png"), chart, 1000, 570);
 
 	    return chart;
 	}

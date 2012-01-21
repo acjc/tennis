@@ -1,4 +1,4 @@
-package tennis.charts.treatment;
+package tennis.charts.retires;
 
 import java.io.IOException;
 
