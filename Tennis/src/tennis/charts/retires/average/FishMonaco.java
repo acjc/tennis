@@ -1,4 +1,4 @@
-package tennis.charts.retires;
+package tennis.charts.retires.average;
 
 import java.io.IOException;
 

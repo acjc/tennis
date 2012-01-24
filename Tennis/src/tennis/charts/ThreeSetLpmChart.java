@@ -108,6 +108,7 @@ public class ThreeSetLpmChart extends ApplicationFrame
 	    plot.setBackgroundPaint(Color.lightGray);
 	    plot.setDomainGridlinePaint(Color.white);
 	    plot.setRangeGridlinePaint(Color.white);
+	    plot.getRangeAxis().setRange(0.0, 125.0);
 
 	    ChartUtilities.saveChartAsPNG(new File("doc\\" + title + ".png"), chart, 1000, 570);
 

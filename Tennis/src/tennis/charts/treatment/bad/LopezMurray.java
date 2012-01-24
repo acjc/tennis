@@ -1,4 +1,4 @@
-package tennis.charts.treatment;
+package tennis.charts.treatment.bad;
 
 import java.io.IOException;
 
