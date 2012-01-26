@@ -1,4 +1,4 @@
-package tennis.charts.treatment.average;
+package tennis.charts.treatment;
 
 import java.io.IOException;
 

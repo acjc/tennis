@@ -6,13 +6,13 @@ import org.jfree.ui.RefineryUtilities;
 
 import tennis.charts.ThreeSetLpmChart;
 
-public class JankovicDokic
+public class NadalDjokovic
 {
 	public static void main(final String[] args) throws IOException
 	{
-		final ThreeSetLpmChart chart = new ThreeSetLpmChart("Jankovic vs Dokic (US Open 2011 Second Round)",
-															"doc\\jankovic_dokic\\Jelena Jankovic.csv", "doc\\jankovic_dokic\\Jankovic 2 - 0.csv",
-																				   					    "doc\\jankovic_dokic\\Jankovic 2 - 1.csv");
+		final ThreeSetLpmChart chart = new ThreeSetLpmChart("Nadal vs Djokovic (Madrid Masters 2009 Semi Final)",
+															"doc\\nadal_djokovic\\Rafael Nadal.csv", "doc\\nadal_djokovic\\Nadal 2 - 0.csv",
+																				   					 "doc\\nadal_djokovic\\Nadal 2 - 1.csv");
 		chart.pack();
 		RefineryUtilities.centerFrameOnScreen(chart);
 		chart.setVisible(true);

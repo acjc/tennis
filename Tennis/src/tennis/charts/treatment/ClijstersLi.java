@@ -6,13 +6,13 @@ import org.jfree.ui.RefineryUtilities;
 
 import tennis.charts.ThreeSetLpmChart;
 
-public class JankovicDokic
+public class ClijstersLi
 {
 	public static void main(final String[] args) throws IOException
 	{
-		final ThreeSetLpmChart chart = new ThreeSetLpmChart("Jankovic vs Dokic (US Open 2011 Second Round)",
-															"doc\\jankovic_dokic\\Jelena Jankovic.csv", "doc\\jankovic_dokic\\Jankovic 2 - 0.csv",
-																				   					    "doc\\jankovic_dokic\\Jankovic 2 - 1.csv");
+		final ThreeSetLpmChart chart = new ThreeSetLpmChart("Clijsters vs Li (Australian Open 2012 Fourth Round)",
+															"doc\\clijsters_li\\Kim Clijsters.csv", "doc\\clijsters_li\\Clijsters 2 - 0.csv",
+																				   				    "doc\\clijsters_li\\Clijsters 2 - 1.csv");
 		chart.pack();
 		RefineryUtilities.centerFrameOnScreen(chart);
 		chart.setVisible(true);
