@@ -1,4 +1,4 @@
-package tennis.charts;
+package tennis.charts.lpm;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -21,11 +21,11 @@ public abstract class FiveSetLpmChart extends ApplicationFrame
 	protected final String title;
 	protected final PlayerOdds player;
 
-	public FiveSetLpmChart(final PlayerOdds player) throws IOException
+	public FiveSetLpmChart(final String targetPlayer, final PlayerOdds playerOdds) throws IOException
 	{
-		super(player.getTitle());
-		this.title = player.getTitle();
-		this.player = player;
+		super(playerOdds.getTitle());
+		this.title = playerOdds.getTitle() + " (" + targetPlayer + ")";
+		this.player = playerOdds;
 
 		final ChartPanel chartPanel = new ChartPanel(createTimeSeriesChart());
 	    chartPanel.setPreferredSize(new Dimension(1000, 570));

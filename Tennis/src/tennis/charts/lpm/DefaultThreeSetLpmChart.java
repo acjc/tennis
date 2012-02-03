@@ -1,4 +1,4 @@
-package tennis.charts;
+package tennis.charts.lpm;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -25,9 +25,9 @@ import au.com.bytecode.opencsv.CSVReader;
 
 public class DefaultThreeSetLpmChart extends ThreeSetLpmChart
 {
-	public DefaultThreeSetLpmChart(final PlayerOdds player) throws IOException
+	public DefaultThreeSetLpmChart(final String targetPlayer, final PlayerOdds playerOdds) throws IOException
 	{
-		super(player);
+		super(targetPlayer, playerOdds);
 
 		final ChartPanel chartPanel = new ChartPanel(createTimeSeriesChart());
 	    chartPanel.setPreferredSize(new Dimension(1000, 570));

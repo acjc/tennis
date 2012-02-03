@@ -1,4 +1,4 @@
-package tennis.charts;
+package tennis.charts.lpm;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -23,17 +23,18 @@ import org.jfree.data.xy.XYDataset;
 import tennis.charts.helper.PlayerOdds;
 import au.com.bytecode.opencsv.CSVReader;
 
-public class DefaultFiveSetLpmChart extends FiveSetLpmChart
+public class CrossMatchFiveSetLpmChart extends FiveSetLpmChart
 {
-	public DefaultFiveSetLpmChart(final PlayerOdds player) throws IOException
+	public CrossMatchFiveSetLpmChart(final String targetPlayer, final PlayerOdds playerOdds) throws IOException
 	{
-		super(player);
+		super(targetPlayer, playerOdds);
 
 		final ChartPanel chartPanel = new ChartPanel(createTimeSeriesChart());
 	    chartPanel.setPreferredSize(new Dimension(1000, 570));
 	    setContentPane(chartPanel);
 	}
 
+	@Override
 	protected XYDataset createDataset() throws FileNotFoundException, IOException
 	{
 		final TimeSeriesCollection dataset = new TimeSeriesCollection();
@@ -62,7 +63,8 @@ public class DefaultFiveSetLpmChart extends FiveSetLpmChart
 	    		break;
 	    	}
 
-	    	final double matchOddsPercentage = 100.0 / Double.parseDouble(matchOddsNextLine[6]);
+	    	final double crossMatchedOdds = 1.0 / (1.0 - (1.0 / Double.parseDouble(matchOddsNextLine[6])));
+	    	final double matchOddsPercentage = 100.0 / crossMatchedOdds;
 			matchOddsSeries.add(new Second(new Date(Long.parseLong(matchOddsNextLine[0]))), matchOddsPercentage);
 
 	    	final double threeNilPercentage = 100.0 / Double.parseDouble(threeNilNextLine[6]);

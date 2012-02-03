@@ -6,24 +6,25 @@ import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
 
-import tennis.charts.CrossMatchFiveSetLpmChart;
-import tennis.charts.CrossMatchThreeSetLpmChart;
-import tennis.charts.DefaultFiveSetLpmChart;
-import tennis.charts.DefaultThreeSetLpmChart;
+import tennis.charts.lpm.CrossMatchFiveSetLpmChart;
+import tennis.charts.lpm.CrossMatchThreeSetLpmChart;
+import tennis.charts.lpm.DefaultFiveSetLpmChart;
+import tennis.charts.lpm.DefaultThreeSetLpmChart;
 import au.com.bytecode.opencsv.CSVReader;
 
-public class Evaluate
+public class GraphGenerator
 {
 	public static void main(final String[] args) throws IOException
 	{
+		System.out.println("Starting Graph Generator...");
+		final MatchOddsFilter filter = new MatchOddsFilter();
+
 		String matchType = "retirements\\three";
+		System.out.println(matchType);
 		final File [] retirementsThreeSets = new File("doc\\" + matchType).listFiles();
 		for (final File match : retirementsThreeSets)
 		{
-			final File [] matchOdds = new File("doc\\" + matchType + File.separator + match.getName()).listFiles(new MatchOddsFilter());
-
-			System.out.println(matchOdds[0].getName());
-			System.out.println(matchOdds[1].getName());
+			final File [] matchOdds = new File("doc\\" + matchType + File.separator + match.getName()).listFiles(filter);
 
 			final String playerOneName = matchOdds[0].getName().split("\\.")[0];
 			final String playerTwoName = matchOdds[1].getName().split("\\.")[0];
@@ -35,10 +36,11 @@ public class Evaluate
 		}
 
 		matchType = "retirements\\five";
+		System.out.println(matchType);
 		final File [] retirementsFiveSets = new File("doc\\" + matchType).listFiles();
 		for (final File match : retirementsFiveSets)
 		{
-			final File [] matchOdds = new File("doc\\" + matchType + File.separator + match.getName()).listFiles(new MatchOddsFilter());
+			final File [] matchOdds = new File("doc\\" + matchType + File.separator + match.getName()).listFiles(filter);
 
 			final String playerOneName = matchOdds[0].getName().split("\\.")[0];
 			final String playerTwoName = matchOdds[1].getName().split("\\.")[0];
@@ -50,10 +52,11 @@ public class Evaluate
 		}
 
 		matchType = "treatment\\three";
+		System.out.println(matchType);
 		final File [] treatmentThreeSets = new File("doc\\" + matchType).listFiles();
 		for (final File match : treatmentThreeSets)
 		{
-			final File [] matchOdds = new File("doc\\" + matchType + File.separator + match.getName()).listFiles(new MatchOddsFilter());
+			final File [] matchOdds = new File("doc\\" + matchType + File.separator + match.getName()).listFiles(filter);
 
 			final String playerOneName = matchOdds[0].getName().split("\\.")[0];
 			final String playerTwoName = matchOdds[1].getName().split("\\.")[0];
@@ -65,10 +68,11 @@ public class Evaluate
 		}
 
 		matchType = "treatment\\five";
+		System.out.println(matchType);
 		final File [] treatmentFiveSets = new File("doc\\" + matchType).listFiles();
 		for (final File match : treatmentFiveSets)
 		{
-			final File [] matchOdds = new File("doc\\" + matchType + File.separator + match.getName()).listFiles(new MatchOddsFilter());
+			final File [] matchOdds = new File("doc\\" + matchType + File.separator + match.getName()).listFiles(filter);
 
 			final String playerOneName = matchOdds[0].getName().split("\\.")[0];
 			final String playerTwoName = matchOdds[1].getName().split("\\.")[0];
@@ -78,6 +82,8 @@ public class Evaluate
 
 			createCharts(playerOne, playerTwo, false);
 		}
+
+		System.out.println("Stopping Graph Generator");
 	}
 
 	private static void createCharts(final PlayerOdds playerOne, final PlayerOdds playerTwo, final boolean threeSets) throws FileNotFoundException, IOException
@@ -88,26 +94,26 @@ public class Evaluate
 		{
 			if (threeSets)
 			{
-				new DefaultThreeSetLpmChart(playerOne);
-				new CrossMatchThreeSetLpmChart(playerTwo);
+				new DefaultThreeSetLpmChart(playerOne.getSurname(), playerOne);
+				new CrossMatchThreeSetLpmChart(playerTwo.getSurname(), playerOne);
 			}
 			else
 			{
-				new DefaultFiveSetLpmChart(playerOne);
-				new CrossMatchFiveSetLpmChart(playerTwo);
+				new DefaultFiveSetLpmChart(playerOne.getSurname(), playerOne);
+				new CrossMatchFiveSetLpmChart(playerTwo.getSurname(), playerOne);
 			}
 		}
 		else
 		{
 			if (threeSets)
 			{
-				new DefaultThreeSetLpmChart(playerTwo);
-				new CrossMatchThreeSetLpmChart(playerOne);
+				new DefaultThreeSetLpmChart(playerTwo.getSurname(), playerTwo);
+				new CrossMatchThreeSetLpmChart(playerOne.getSurname(), playerTwo);
 			}
 			else
 			{
-				new DefaultFiveSetLpmChart(playerTwo);
-				new CrossMatchFiveSetLpmChart(playerOne);
+				new DefaultFiveSetLpmChart(playerTwo.getSurname(), playerTwo);
+				new CrossMatchFiveSetLpmChart(playerOne.getSurname(), playerTwo);
 			}
 		}
 	}

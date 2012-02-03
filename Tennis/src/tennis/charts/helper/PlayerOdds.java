@@ -20,7 +20,7 @@ public class PlayerOdds
 
 	public String getTitle()
 	{
-		return title + " (" + surname + " Odds)";
+		return title;
 	}
 
 	private String getFolderName()
@@ -31,6 +31,11 @@ public class PlayerOdds
 	private String getName()
 	{
 		return firstName + " " + surname;
+	}
+
+	public String getSurname()
+	{
+		return surname;
 	}
 
 	public File getMatchOdds()
