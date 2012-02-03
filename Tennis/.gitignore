@@ -1,5 +1,3 @@
 /bin
-/doc/player.html
-/doc/activity.html
-/doc/match-*
-/doc/tournament-*
+/doc/data
+/doc/*.png

@@ -4,13 +4,13 @@ import java.io.IOException;
 
 import org.jfree.ui.RefineryUtilities;
 
-import tennis.charts.FiveSetLpmChart;
+import tennis.charts.DefaultFiveSetLpmChart;
 
 public class HewittRoddick
 {
 	public static void main(final String[] args) throws IOException
 	{
-	    final FiveSetLpmChart chart = new FiveSetLpmChart("Hewitt vs Roddick (Wimbledon 2009 Quarter Final)",
+	    final DefaultFiveSetLpmChart chart = new DefaultFiveSetLpmChart("Hewitt vs Roddick - Wimbledon 2009 Quarter Final",
 	    												  "doc\\hewitt_roddick\\Lleyton Hewitt.csv", "doc\\hewitt_roddick\\Hewitt 3 - 0.csv",
 	    												  										     "doc\\hewitt_roddick\\Hewitt 3 - 1.csv",
 	    																						     "doc\\hewitt_roddick\\Hewitt 3 - 2.csv");
