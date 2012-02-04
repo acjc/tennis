@@ -4,13 +4,13 @@ import java.io.IOException;
 
 import org.jfree.ui.RefineryUtilities;
 
-import tennis.charts.lpm.ThreeSetLpmChart;
+import tennis.charts.lpm.LpmChart;
 
 public class BartoliPeng
 {
 	public static void main(final String[] args) throws IOException
 	{
-		final ThreeSetLpmChart chart = new ThreeSetLpmChart("Bartoli vs Peng - Family Circle Cup 2010 Second Round",
+		final LpmChart chart = new LpmChart("Bartoli vs Peng - Family Circle Cup 2010 Second Round",
 															"doc\\bartoli_peng\\Marion Bartoli.csv", "doc\\bartoli_peng\\Bartoli 2 - 0.csv",
 																				   					 "doc\\bartoli_peng\\Bartoli 2 - 1.csv");
 		chart.pack();

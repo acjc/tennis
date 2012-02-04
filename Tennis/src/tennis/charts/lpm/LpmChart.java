@@ -1,40 +1,30 @@
 package tennis.charts.lpm;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.ui.ApplicationFrame;
 
-import tennis.charts.helper.PlayerOdds;
-
-public abstract class ThreeSetLpmChart extends ApplicationFrame
+public abstract class LpmChart extends ApplicationFrame
 {
 	protected final String title;
-	protected final PlayerOdds player;
 
-	public ThreeSetLpmChart(final String targetPlayer, final PlayerOdds playerOdds) throws IOException
+	public LpmChart(final String title) throws IOException
 	{
-		super(playerOdds.getTitle());
-		this.title = playerOdds.getTitle() + " (" + targetPlayer + ")";
-		this.player = playerOdds;
-
-		final ChartPanel chartPanel = new ChartPanel(createTimeSeriesChart());
-	    chartPanel.setPreferredSize(new Dimension(1000, 570));
-	    setContentPane(chartPanel);
+		super(title);
+		this.title = title;
 	}
 
 	protected abstract XYDataset createDataset() throws FileNotFoundException, IOException;
 
-	private JFreeChart createTimeSeriesChart() throws IOException
+	protected JFreeChart createTimeSeriesChart() throws IOException
 	{
 	    final JFreeChart chart = ChartFactory.createTimeSeriesChart(
 	    	title,

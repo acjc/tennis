@@ -1,8 +1,6 @@
 package tennis.charts.lpm;
 
-import java.awt.Color;
 import java.awt.Dimension;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -10,11 +8,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Date;
 
-import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
-import org.jfree.chart.ChartUtilities;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.time.Second;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
@@ -23,11 +17,16 @@ import org.jfree.data.xy.XYDataset;
 import tennis.charts.helper.PlayerOdds;
 import au.com.bytecode.opencsv.CSVReader;
 
-public class CrossMatchThreeSetLpmChart extends ThreeSetLpmChart
+public class CrossMatchThreeSetLpmChart extends LpmChart
 {
-	public CrossMatchThreeSetLpmChart(final String targetPlayer, final PlayerOdds playerOdds) throws IOException
+	private final PlayerOdds favourite;
+	private final PlayerOdds underdog;
+
+	public CrossMatchThreeSetLpmChart(final String targetPlayer, final PlayerOdds favourite, final PlayerOdds underdog) throws IOException
 	{
-		super(targetPlayer, playerOdds);
+		super(underdog.getTitle() + " (" + underdog.getSurname() + ")");
+		this.favourite = favourite;
+		this.underdog = underdog;
 
 		final ChartPanel chartPanel = new ChartPanel(createTimeSeriesChart());
 	    chartPanel.setPreferredSize(new Dimension(1000, 570));
@@ -40,11 +39,13 @@ public class CrossMatchThreeSetLpmChart extends ThreeSetLpmChart
 		final TimeSeriesCollection dataset = new TimeSeriesCollection();
 
 		final TimeSeries matchOddsSeries = new TimeSeries("Match Odds");
-		final CSVReader favouriteMatchOddsReader = new CSVReader(new FileReader(player.getMatchOdds()));
+		final CSVReader favouriteMatchOddsReader = new CSVReader(new FileReader(favourite.getMatchOdds()));
 
 		final TimeSeries setBettingSeries = new TimeSeries("Set Betting");
-		final CSVReader twoNilReader = new CSVReader(new FileReader(player.getTwoNil()));
-		final CSVReader twoOneReader = new CSVReader(new FileReader(player.getTwoOne()));
+		final CSVReader favouriteTwoNilReader = new CSVReader(new FileReader(favourite.getTwoNil()));
+		final CSVReader favouriteTwoOneReader = new CSVReader(new FileReader(favourite.getTwoOne()));
+		final CSVReader underdogTwoNilReader = new CSVReader(new FileReader(underdog.getTwoNil()));
+		final CSVReader underdogTwoOneReader = new CSVReader(new FileReader(underdog.getTwoOne()));
 
 		final TimeSeries oddsDifferenceSeries = new TimeSeries("Odds Difference");
 
@@ -53,24 +54,27 @@ public class CrossMatchThreeSetLpmChart extends ThreeSetLpmChart
 	    String [] matchOddsNextLine;
 	    while ((matchOddsNextLine = favouriteMatchOddsReader.readNext()) != null)
 	    {
-	    	final String[] twoNilNextLine = twoNilReader.readNext();
-	    	final String[] twoOneNextLine = twoOneReader.readNext();
-	    	// Check match hasn't finished yet
-	    	if(matchOddsNextLine[6].equals("-1") || twoNilNextLine[6].equals("-1") || twoOneNextLine[6].equals("-1"))
+	    	final String[] favouriteTwoNilNextLine = favouriteTwoNilReader.readNext();
+	    	final String[] favouriteTwoOneNextLine = favouriteTwoOneReader.readNext();
+	    	final String[] underdogTwoNilNextLine = underdogTwoNilReader.readNext();
+	    	final String[] underdogTwoOneNextLine = underdogTwoOneReader.readNext();
+
+	    	if(matchOddsNextLine[6].equals("-1") || favouriteTwoNilNextLine[6].equals("-1") || favouriteTwoOneNextLine[6].equals("-1")
+	    	   || underdogTwoNilNextLine[6].equals("-1") || underdogTwoOneNextLine[6].equals("-1"))
 	    	{
-	    		break;
+	    		break; // Stop if match over
 	    	}
 
-	    	final double crossMatchedOdds = 1.0 / (1.0 - (1.0 / Double.parseDouble(matchOddsNextLine[6])));
-			final double matchOddsPercentage = 100.0 / crossMatchedOdds;
-			matchOddsSeries.add(new Second(new Date(Long.parseLong(matchOddsNextLine[0]))), matchOddsPercentage);
+	    	final double crossMatchedMatchOddsPercentage = crossMatchMatchOddsPercentage(Double.parseDouble(matchOddsNextLine[6]));
+			matchOddsSeries.add(new Second(new Date(Long.parseLong(matchOddsNextLine[0]))), crossMatchedMatchOddsPercentage);
 
-			final double twoNilPercentage = 100.0 / Double.parseDouble(twoNilNextLine[6]);
-			final double twoOnePercentage = 100.0 / Double.parseDouble(twoOneNextLine[6]);
-	    	final double setBettingPercentage = twoNilPercentage + twoOnePercentage;
-    		setBettingSeries.add(new Second(new Date(Long.parseLong(matchOddsNextLine[0]))), setBettingPercentage);
+			final double crossMatchedSetBettingPercentage = crossMatchSetBettingPercentage(Double.parseDouble(favouriteTwoNilNextLine[6]),
+																					 	   Double.parseDouble(favouriteTwoOneNextLine[6]),
+																					 	   Double.parseDouble(underdogTwoNilNextLine[6]),
+																					 	   Double.parseDouble(underdogTwoOneNextLine[6]));
+    		setBettingSeries.add(new Second(new Date(Long.parseLong(matchOddsNextLine[0]))), crossMatchedSetBettingPercentage);
 
-    		final double oddsDifference = Math.abs(matchOddsPercentage - setBettingPercentage);
+    		final double oddsDifference = Math.abs(crossMatchedMatchOddsPercentage - crossMatchedSetBettingPercentage);
     		oddsDifferenceSeries.add(new Second(new Date(Long.parseLong(matchOddsNextLine[0]))), oddsDifference);
 
 			new PrintStream(fout).println(matchOddsNextLine[1] + ": " + oddsDifference);
@@ -83,28 +87,20 @@ public class CrossMatchThreeSetLpmChart extends ThreeSetLpmChart
 		return dataset;
 	}
 
-	private JFreeChart createTimeSeriesChart() throws IOException
+	private double crossMatchSetBettingPercentage(final double favouriteTwoNil, final double favouriteTwoOne, final double underdogTwoNil, final double underdogTwoOne)
 	{
-	    final JFreeChart chart = ChartFactory.createTimeSeriesChart(
-	    	title,
-	    	"Time",
-	    	"Implied Probability",
-	        createDataset(),
-	        true,                    			 // legend
-	        true,                     			 // tooltips
-	        false                     			// urls
-	    );
+		double favouriteSum = (1 / favouriteTwoNil) + (1 / favouriteTwoOne);
+		double sum = favouriteSum + (1 / underdogTwoOne);
+		final double underdogTwoNilPercentage = 100 / (1 / (1 - sum));
 
-	    chart.setBackgroundPaint(Color.white);
+		sum = favouriteSum + (1 / underdogTwoNil);
+		final double underdogTwoOnePercentage = 100 / (1 / (1 - sum));
 
-	    final XYPlot plot = chart.getXYPlot();
-	    plot.setBackgroundPaint(Color.lightGray);
-	    plot.setDomainGridlinePaint(Color.white);
-	    plot.setRangeGridlinePaint(Color.white);
-	    plot.getRangeAxis().setRange(0.0, 125.0);
+		return underdogTwoNilPercentage + underdogTwoOnePercentage;
+	}
 
-	    ChartUtilities.saveChartAsPNG(new File("doc\\" + title + ".png"), chart, 1000, 570);
-
-	    return chart;
+	private double crossMatchMatchOddsPercentage(final double matchOdds)
+	{
+		return 100.0 / (1.0 / (1.0 - (1.0 / matchOdds)));
 	}
 }

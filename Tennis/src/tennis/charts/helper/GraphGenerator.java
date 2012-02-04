@@ -94,26 +94,26 @@ public class GraphGenerator
 		{
 			if (threeSets)
 			{
-				new DefaultThreeSetLpmChart(playerOne.getSurname(), playerOne);
-				new CrossMatchThreeSetLpmChart(playerTwo.getSurname(), playerOne);
+				new DefaultThreeSetLpmChart(playerOne, playerTwo);
+				new CrossMatchThreeSetLpmChart(playerTwo.getSurname(), playerOne, playerTwo);
 			}
 			else
 			{
-				new DefaultFiveSetLpmChart(playerOne.getSurname(), playerOne);
-				new CrossMatchFiveSetLpmChart(playerTwo.getSurname(), playerOne);
+				new DefaultFiveSetLpmChart(playerOne, playerTwo);
+				new CrossMatchFiveSetLpmChart(playerTwo.getSurname(), playerOne, playerTwo);
 			}
 		}
 		else
 		{
 			if (threeSets)
 			{
-				new DefaultThreeSetLpmChart(playerTwo.getSurname(), playerTwo);
-				new CrossMatchThreeSetLpmChart(playerOne.getSurname(), playerTwo);
+				new DefaultThreeSetLpmChart(playerTwo, playerOne);
+				new CrossMatchThreeSetLpmChart(playerOne.getSurname(), playerTwo, playerOne);
 			}
 			else
 			{
-				new DefaultFiveSetLpmChart(playerTwo.getSurname(), playerTwo);
-				new CrossMatchFiveSetLpmChart(playerOne.getSurname(), playerTwo);
+				new DefaultFiveSetLpmChart(playerTwo, playerOne);
+				new CrossMatchFiveSetLpmChart(playerOne.getSurname(), playerTwo, playerOne);
 			}
 		}
 	}

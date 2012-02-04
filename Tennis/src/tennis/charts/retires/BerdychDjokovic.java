@@ -4,13 +4,13 @@ import java.io.IOException;
 
 import org.jfree.ui.RefineryUtilities;
 
-import tennis.charts.lpm.ThreeSetLpmChart;
+import tennis.charts.lpm.LpmChart;
 
 public class BerdychDjokovic
 {
 	public static void main(final String[] args) throws IOException
 	{
-		final ThreeSetLpmChart chart = new ThreeSetLpmChart("Berdych vs Djokovic - Dubai Championships 2011 Semi Final",
+		final LpmChart chart = new LpmChart("Berdych vs Djokovic - Dubai Championships 2011 Semi Final",
 															"doc\\berdych_djokovic\\Tomas Berdych.csv", "doc\\berdych_djokovic\\Berdych 2 - 0.csv",
 																				   					    "doc\\berdych_djokovic\\Berdych 2 - 1.csv");
 		chart.pack();

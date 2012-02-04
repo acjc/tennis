@@ -13,16 +13,17 @@ public class CilicMurray
 {
 	public static void main(final String[] args) throws IOException
 	{
+		final FiveSetLpmChart chart1 = new DefaultFiveSetLpmChart(new PlayerOdds("Marin Cilic", "treatment\\five", "Cilic vs Murray - French Open 2009 Fourth Round"));
+		chart1.pack();
+		RefineryUtilities.centerFrameOnScreen(chart1);
+		chart1.setVisible(true);
+
 	    final FiveSetLpmChart chart = new CrossMatchFiveSetLpmChart("Cilic",
-	    														    new PlayerOdds("Andy Murray", "treatment\\five", "Cilic vs Murray - French Open 2009 Fourth Round"));
+	    														    new PlayerOdds("Andy Murray", "treatment\\five", "Cilic vs Murray - French Open 2009 Fourth Round"),
+	    														    new PlayerOdds("Marin Cilic", "treatment\\five", "Cilic vs Murray - French Open 2009 Fourth Round"));
 	    chart.pack();
 	    RefineryUtilities.centerFrameOnScreen(chart);
 	    chart.setVisible(true);
 
-	    final FiveSetLpmChart chart1 = new DefaultFiveSetLpmChart("CilicOld",
-				  												  new PlayerOdds("Marin Cilic", "treatment\\five", "Cilic vs Murray - French Open 2009 Fourth Round"));
-	    chart1.pack();
-		RefineryUtilities.centerFrameOnScreen(chart1);
-		chart1.setVisible(true);
 	}
 }
