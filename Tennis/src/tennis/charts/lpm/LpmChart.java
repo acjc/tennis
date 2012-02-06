@@ -1,25 +1,41 @@
 package tennis.charts.lpm;
 
+import static tennis.charts.helper.PlayerOdds.LPM_INDEX;
+
 import java.awt.Color;
+import java.awt.Dimension;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
 
 import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.ui.ApplicationFrame;
 
+import tennis.charts.helper.PlayerOdds;
+import au.com.bytecode.opencsv.CSVReader;
+
 public abstract class LpmChart extends ApplicationFrame
 {
 	protected final String title;
+	protected final PlayerOdds favourite;
+	protected final PlayerOdds underdog;
 
-	public LpmChart(final String title) throws IOException
+	public LpmChart(final String title, final PlayerOdds favourite, final PlayerOdds underdog) throws IOException
 	{
 		super(title);
 		this.title = title;
+		this.favourite = favourite;
+		this.underdog = underdog;
+
+		final ChartPanel chartPanel = new ChartPanel(createTimeSeriesChart());
+	    chartPanel.setPreferredSize(new Dimension(1000, 570));
+	    setContentPane(chartPanel);
 	}
 
 	protected abstract XYDataset createDataset() throws FileNotFoundException, IOException;
@@ -47,5 +63,65 @@ public abstract class LpmChart extends ApplicationFrame
 	    ChartUtilities.saveChartAsPNG(new File("doc\\" + title + ".png"), chart, 1000, 570);
 
 	    return chart;
+	}
+
+	protected boolean updateOdds(final List<CSVReader> matchOddsReaders, final List<CSVReader> setOddsReaders, final List<String []> matchOdds, final List<String []> setOdds) throws IOException
+	{
+		matchOdds.clear();
+		for (int i = 0; i < matchOddsReaders.size(); i++)
+		{
+			matchOdds.add(matchOddsReaders.get(i).readNext());
+		}
+
+		setOdds.clear();
+		for (int i = 0; i < setOddsReaders.size(); i++)
+		{
+			setOdds.add(setOddsReaders.get(i).readNext());
+		}
+
+		for (int i = 0; i < matchOddsReaders.size(); i++)
+		{
+			if (matchOdds.get(i)[LPM_INDEX].equals("-1"))
+			{
+				return false;
+			}
+		}
+		for (int i = 0; i < setOddsReaders.size(); i++)
+		{
+			if (setOdds.get(i)[LPM_INDEX].equals("-1"))
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	protected double getCorrectedMatchOddsPercentage(final List<String[]> matchOdds)
+	{
+		double overround = 0;
+		for (int i = 0; i < matchOdds.size(); i++)
+		{
+			overround += 1 / Double.parseDouble(matchOdds.get(i)[LPM_INDEX]);
+		}
+
+		return 100 / (Double.parseDouble(matchOdds.get(0)[LPM_INDEX]) * overround);
+	}
+
+	protected double getCorrectedSetBettingPercentage(final List<String[]> setOdds)
+	{
+		double overround = 0;
+		for (int i = 0; i < setOdds.size(); i++)
+		{
+			overround += 1 / Double.parseDouble(setOdds.get(i)[LPM_INDEX]);
+		}
+
+		double result = 0;
+		for (int i = 0; i < setOdds.size() / 2; i++)
+		{
+			result += 100 / (Double.parseDouble(setOdds.get(i)[LPM_INDEX]) * overround);
+		}
+
+		return result;
 	}
 }

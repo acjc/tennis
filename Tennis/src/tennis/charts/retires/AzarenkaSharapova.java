@@ -7,7 +7,7 @@ import org.jfree.ui.RefineryUtilities;
 
 import tennis.charts.helper.PlayerOdds;
 import tennis.charts.lpm.CrossMatchThreeSetLpmChart;
-import tennis.charts.lpm.DefaultThreeSetLpmChart;
+import tennis.charts.lpm.DefaultLpmChart;
 import tennis.charts.lpm.LpmChart;
 import au.com.bytecode.opencsv.CSVReader;
 
@@ -26,12 +26,12 @@ public class AzarenkaSharapova
 		final CSVReader oddsReader2 = new CSVReader(new FileReader(playerTwo.getMatchOdds()));
 		if (Double.parseDouble(oddsReader1.readNext()[6]) < Double.parseDouble(oddsReader2.readNext()[6]))
 		{
-			favouriteChart = new DefaultThreeSetLpmChart(playerOne);
+			favouriteChart = new DefaultLpmChart(playerOne);
 			underdogChart = new CrossMatchThreeSetLpmChart(playerTwo);
 		}
 		else
 		{
-			favouriteChart = new DefaultThreeSetLpmChart(playerTwo);
+			favouriteChart = new DefaultLpmChart(playerTwo);
 			underdogChart = new CrossMatchThreeSetLpmChart(playerOne);
 		}
 

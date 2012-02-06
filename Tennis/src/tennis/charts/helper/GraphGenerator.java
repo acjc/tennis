@@ -2,14 +2,11 @@ package tennis.charts.helper;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
 
-import tennis.charts.lpm.CrossMatchFiveSetLpmChart;
-import tennis.charts.lpm.CrossMatchThreeSetLpmChart;
-import tennis.charts.lpm.DefaultFiveSetLpmChart;
-import tennis.charts.lpm.DefaultThreeSetLpmChart;
+import tennis.charts.lpm.CrossMatchLpmChart;
+import tennis.charts.lpm.DefaultLpmChart;
 import au.com.bytecode.opencsv.CSVReader;
 
 public class GraphGenerator
@@ -88,32 +85,32 @@ public class GraphGenerator
 
 	private static void createCharts(final PlayerOdds playerOne, final PlayerOdds playerTwo, final boolean threeSets) throws FileNotFoundException, IOException
 	{
-		final CSVReader oddsReader1 = new CSVReader(new FileReader(playerOne.getMatchOdds()));
-		final CSVReader oddsReader2 = new CSVReader(new FileReader(playerTwo.getMatchOdds()));
+		final CSVReader oddsReader1 = playerOne.getMatchOdds();
+		final CSVReader oddsReader2 = playerTwo.getMatchOdds();
 		if (Double.parseDouble(oddsReader1.readNext()[6]) < Double.parseDouble(oddsReader2.readNext()[6]))
 		{
 			if (threeSets)
 			{
-				new DefaultThreeSetLpmChart(playerOne, playerTwo);
-				new CrossMatchThreeSetLpmChart(playerTwo.getSurname(), playerOne, playerTwo);
+				new DefaultLpmChart(playerOne, playerTwo);
+				new CrossMatchLpmChart(playerOne, playerTwo);
 			}
 			else
 			{
-				new DefaultFiveSetLpmChart(playerOne, playerTwo);
-				new CrossMatchFiveSetLpmChart(playerTwo.getSurname(), playerOne, playerTwo);
+				new DefaultLpmChart(playerOne, playerTwo);
+				new CrossMatchLpmChart(playerOne, playerTwo);
 			}
 		}
 		else
 		{
 			if (threeSets)
 			{
-				new DefaultThreeSetLpmChart(playerTwo, playerOne);
-				new CrossMatchThreeSetLpmChart(playerOne.getSurname(), playerTwo, playerOne);
+				new DefaultLpmChart(playerTwo, playerOne);
+				new CrossMatchLpmChart(playerTwo, playerOne);
 			}
 			else
 			{
-				new DefaultFiveSetLpmChart(playerTwo, playerOne);
-				new CrossMatchFiveSetLpmChart(playerOne.getSurname(), playerTwo, playerOne);
+				new DefaultLpmChart(playerTwo, playerOne);
+				new CrossMatchLpmChart(playerTwo, playerOne);
 			}
 		}
 	}

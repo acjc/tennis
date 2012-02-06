@@ -1,9 +1,19 @@
 package tennis.charts.helper;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.List;
+
+import au.com.bytecode.opencsv.CSVReader;
 
 public class PlayerOdds
 {
+	public static final int TIME_INDEX = 0;
+	public static final int DATE_INDEX = 1;
+	public static final int LPM_INDEX = 6;
+
 	private final String title;
 	private final String firstName;
 	private final String surname;
@@ -38,33 +48,50 @@ public class PlayerOdds
 		return surname;
 	}
 
-	public File getMatchOdds()
+	public CSVReader getMatchOdds() throws FileNotFoundException
 	{
-		return new File(getFolderName() + File.separator + getName() + ".csv");
+		return new CSVReader(new FileReader(new File(getFolderName() + File.separator + getName() + ".csv")));
 	}
 
-	public File getTwoNil()
+	private File getTwoNil()
 	{
 		return new File(getFolderName() + File.separator + surname + " " + "2 - 0.csv");
 	}
 
-	public File getTwoOne()
+	private File getTwoOne()
 	{
 		return new File(getFolderName() + File.separator + surname + " " + "2 - 1.csv");
 	}
 
-	public File getThreeNil()
+	private File getThreeNil()
 	{
 		return new File(getFolderName() + File.separator + surname + " " + "3 - 0.csv");
 	}
 
-	public File getThreeOne()
+	private File getThreeOne()
 	{
 		return new File(getFolderName() + File.separator + surname + " " + "3 - 1.csv");
 	}
 
-	public File getThreeTwo()
+	private File getThreeTwo()
 	{
 		return new File(getFolderName() + File.separator + surname + " " + "3 - 2.csv");
+	}
+
+	public List<CSVReader> getSetOdds() throws FileNotFoundException
+	{
+		final List<CSVReader> setOdds = new ArrayList<CSVReader>();
+		if (getThreeOne().isFile())
+		{
+			setOdds.add(new CSVReader(new FileReader(getThreeNil())));
+			setOdds.add(new CSVReader(new FileReader(getThreeOne())));
+			setOdds.add(new CSVReader(new FileReader(getThreeTwo())));
+		}
+		else
+		{
+			setOdds.add(new CSVReader(new FileReader(getTwoNil())));
+			setOdds.add(new CSVReader(new FileReader(getTwoOne())));
+		}
+		return setOdds;
 	}
 }

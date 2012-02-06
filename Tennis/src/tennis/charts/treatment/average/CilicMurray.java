@@ -5,25 +5,24 @@ import java.io.IOException;
 import org.jfree.ui.RefineryUtilities;
 
 import tennis.charts.helper.PlayerOdds;
-import tennis.charts.lpm.CrossMatchFiveSetLpmChart;
-import tennis.charts.lpm.DefaultFiveSetLpmChart;
-import tennis.charts.lpm.FiveSetLpmChart;
+import tennis.charts.lpm.CrossMatchLpmChart;
+import tennis.charts.lpm.DefaultLpmChart;
+import tennis.charts.lpm.LpmChart;
 
 public class CilicMurray
 {
 	public static void main(final String[] args) throws IOException
 	{
-		final FiveSetLpmChart chart1 = new DefaultFiveSetLpmChart(new PlayerOdds("Marin Cilic", "treatment\\five", "Cilic vs Murray - French Open 2009 Fourth Round"));
+		final LpmChart chart1 = new DefaultLpmChart(new PlayerOdds("Marin Cilic", "treatment\\five", "Cilic vs Murray - French Open 2009 Fourth Round"),
+													new PlayerOdds("Andy Murray", "treatment\\five", "Cilic vs Murray - French Open 2009 Fourth Round"));
 		chart1.pack();
 		RefineryUtilities.centerFrameOnScreen(chart1);
 		chart1.setVisible(true);
 
-	    final FiveSetLpmChart chart = new CrossMatchFiveSetLpmChart("Cilic",
-	    														    new PlayerOdds("Andy Murray", "treatment\\five", "Cilic vs Murray - French Open 2009 Fourth Round"),
-	    														    new PlayerOdds("Marin Cilic", "treatment\\five", "Cilic vs Murray - French Open 2009 Fourth Round"));
+	    final LpmChart chart = new CrossMatchLpmChart(new PlayerOdds("Andy Murray", "treatment\\five", "Cilic vs Murray - French Open 2009 Fourth Round"),
+	    													 new PlayerOdds("Marin Cilic", "treatment\\five", "Cilic vs Murray - French Open 2009 Fourth Round"));
 	    chart.pack();
 	    RefineryUtilities.centerFrameOnScreen(chart);
 	    chart.setVisible(true);
-
 	}
 }
