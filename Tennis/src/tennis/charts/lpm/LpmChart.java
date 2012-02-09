@@ -97,7 +97,7 @@ public abstract class LpmChart extends ApplicationFrame
 		return true;
 	}
 
-	protected double getCorrectedMatchOddsPercentage(final List<String[]> matchOdds)
+	protected double [] getCorrectedMatchOdds(final List<String[]> matchOdds)
 	{
 		double overround = 0;
 		for (int i = 0; i < matchOdds.size(); i++)
@@ -105,10 +105,15 @@ public abstract class LpmChart extends ApplicationFrame
 			overround += 1 / Double.parseDouble(matchOdds.get(i)[LPM_INDEX]);
 		}
 
-		return 100 / (Double.parseDouble(matchOdds.get(0)[LPM_INDEX]) * overround);
+		final double [] result = new double[matchOdds.size()];
+		for (int i = 0; i < result.length; i++)
+		{
+			result[i] = Double.parseDouble(matchOdds.get(i)[LPM_INDEX]) * overround;
+		}
+		return result;
 	}
 
-	protected double getCorrectedSetBettingPercentage(final List<String[]> setOdds)
+	protected double [] getCorrectedSetOdds(final List<String[]> setOdds)
 	{
 		double overround = 0;
 		for (int i = 0; i < setOdds.size(); i++)
@@ -116,12 +121,11 @@ public abstract class LpmChart extends ApplicationFrame
 			overround += 1 / Double.parseDouble(setOdds.get(i)[LPM_INDEX]);
 		}
 
-		double result = 0;
-		for (int i = 0; i < setOdds.size() / 2; i++)
+		final double [] result = new double[setOdds.size()];
+		for (int i = 0; i < result.length; i++)
 		{
-			result += 100 / (Double.parseDouble(setOdds.get(i)[LPM_INDEX]) * overround);
+			result[i] = Double.parseDouble(setOdds.get(i)[LPM_INDEX]) * overround;
 		}
-
 		return result;
 	}
 }

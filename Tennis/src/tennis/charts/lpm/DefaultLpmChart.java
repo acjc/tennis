@@ -52,13 +52,18 @@ public class DefaultLpmChart extends LpmChart
 	    {
 	    	final Second time = new Second(new Date(Long.parseLong(matchOdds.get(0)[TIME_INDEX])));
 
-	    	final double matchOddsPercentage = getCorrectedMatchOddsPercentage(matchOdds);
+	    	final double matchOddsPercentage = 100 / getCorrectedMatchOdds(matchOdds)[0];
 			matchOddsSeries.add(time, matchOddsPercentage);
 
-	    	final double setBettingPercentage = getCorrectedSetBettingPercentage(setOdds);
-    		setBettingSeries.add(time, setBettingPercentage);
+	    	final double [] correctedSetOdds = getCorrectedSetOdds(setOdds);
+	    	double setOddsPercentage = 0;
+	    	for (int i = 0; i < correctedSetOdds.length / 2; i++)
+			{
+				setOddsPercentage += 100 / correctedSetOdds[i];
+			}
+    		setBettingSeries.add(time, setOddsPercentage);
 
-    		final double oddsDifference = Math.abs(matchOddsPercentage - setBettingPercentage);
+    		final double oddsDifference = Math.abs(matchOddsPercentage - setOddsPercentage);
     		oddsDifferenceSeries.add(time, oddsDifference);
 
 			new PrintStream(fout).println(matchOdds.get(0)[DATE_INDEX] + ": " + oddsDifference);

@@ -1,6 +1,7 @@
 package tennis.charts.lpm;
 
-import static tennis.charts.helper.PlayerOdds.*;
+import static tennis.charts.helper.PlayerOdds.DATE_INDEX;
+import static tennis.charts.helper.PlayerOdds.TIME_INDEX;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -51,10 +52,10 @@ public class CrossMatchLpmChart extends LpmChart
 	    {
 	    	final Second time = new Second(new Date(Long.parseLong(matchOdds.get(0)[TIME_INDEX])));
 
-	    	final double matchOddsPercentage = getCrossMatchedMatchOddsPercentage(matchOdds);
+	    	final double matchOddsPercentage = getCrossMatchedMatchOddsPercentage(getCorrectedMatchOdds(matchOdds));
 			matchOddsSeries.add(time, matchOddsPercentage);
 
-	    	final double setBettingPercentage = getCrossMatchedSetBettingPercentage(setOdds);
+	    	final double setBettingPercentage = getCrossMatchedSetBettingPercentage(getCorrectedSetOdds(setOdds));
     		setBettingSeries.add(time, setBettingPercentage);
 
     		final double oddsDifference = Math.abs(matchOddsPercentage - setBettingPercentage);
@@ -70,23 +71,23 @@ public class CrossMatchLpmChart extends LpmChart
 		return dataset;
 	}
 
-	private double getCrossMatchedSetBettingPercentage(final List<String []> setOdds)
+	private double getCrossMatchedSetBettingPercentage(final double[] setOdds)
 	{
 		double favouriteSum = 0;
-		for (int i = 0; i < setOdds.size() / 2; i++)
+		for (int i = 0; i < setOdds.length / 2; i++)
 		{
-			favouriteSum += 1 / Double.parseDouble(setOdds.get(i)[LPM_INDEX]);
+			favouriteSum += 1 / setOdds[i];
 		}
 
 		double result = 0;
-		for (int i = setOdds.size() / 2; i < setOdds.size(); i++)
+		for (int i = setOdds.length / 2; i < setOdds.length; i++)
 		{
 			double sum = favouriteSum;
-			for (int j = setOdds.size() / 2; j < setOdds.size(); j++)
+			for (int j = setOdds.length / 2; j < setOdds.length; j++)
 			{
 				if (i != j)
 				{
-					sum += 1 / Double.parseDouble(setOdds.get(i)[LPM_INDEX]);
+					sum += 1 / setOdds[i];
 				}
 			}
 			result += 100 / (1 / (1 - sum));
@@ -95,8 +96,8 @@ public class CrossMatchLpmChart extends LpmChart
 		return result;
 	}
 
-	private double getCrossMatchedMatchOddsPercentage(final List<String []> matchOdds)
+	private double getCrossMatchedMatchOddsPercentage(final double[] matchOdds)
 	{
-		return 100.0 / (1.0 / (1.0 - (1.0 / Double.parseDouble(matchOdds.get(0)[LPM_INDEX]))));
+		return 100.0 / (1.0 / (1.0 - (1.0 / matchOdds[0])));
 	}
 }
