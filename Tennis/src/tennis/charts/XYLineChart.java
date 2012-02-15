@@ -2,9 +2,12 @@ package tennis.charts;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.io.File;
+import java.io.IOException;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
+import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
@@ -18,7 +21,7 @@ public abstract class XYLineChart extends ApplicationFrame
 	private final String xLabel;
 	private final String yLabel;
 
-	public XYLineChart(final String title, final String xLabel, final String yLabel)
+	public XYLineChart(final String title, final String xLabel, final String yLabel) throws IOException
 	{
 	    super(title);
 		this.title = title;
@@ -32,7 +35,7 @@ public abstract class XYLineChart extends ApplicationFrame
 
 	protected abstract XYDataset createDataset();
 
-	private JFreeChart createXYLineChart()
+	private JFreeChart createXYLineChart() throws IOException
 	{
 	    final JFreeChart chart = ChartFactory.createXYLineChart(
 	        title,
@@ -56,6 +59,8 @@ public abstract class XYLineChart extends ApplicationFrame
 	    renderer.setSeriesLinesVisible(0, true);
 	    renderer.setSeriesShapesVisible(0, false);
 	    plot.setRenderer(renderer);
+
+	    ChartUtilities.saveChartAsPNG(new File("graphs\\" + title + ".png"), chart, 1000, 570);
 
 	    return chart;
 	}
