@@ -8,9 +8,8 @@ import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.RefineryUtilities;
 
 import tennis.charts.XYLineChart;
-import tennis.simulator.BoundedParetoDistribution;
 
-public class BoundedParetoCdfChart extends XYLineChart
+public class BoundedParetoCdfChart extends BoundedParetoChart
 {
 	public BoundedParetoCdfChart() throws IOException
 	{
@@ -21,9 +20,6 @@ public class BoundedParetoCdfChart extends XYLineChart
 	protected XYDataset createDataset()
 	{
 		final XYSeries series = new XYSeries("Bounded Pareto CDF");
-		final double lowerBound = 0.01;
-		final double upperBound = 1.0;
-		final BoundedParetoDistribution pareto = new BoundedParetoDistribution(0.3, lowerBound, upperBound);
 	    for(double x = lowerBound; x <= upperBound; x += 0.01)
 	    {
 			series.add(x, pareto.F(x));
