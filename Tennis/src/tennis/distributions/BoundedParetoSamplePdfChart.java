@@ -1,4 +1,4 @@
-package tennis.charts.distributions;
+package tennis.distributions;
 
 import java.io.IOException;
 
@@ -11,6 +11,7 @@ import tennis.charts.XYLineChart;
 
 public class BoundedParetoSamplePdfChart extends BoundedParetoChart
 {
+
 	public BoundedParetoSamplePdfChart() throws IOException
 	{
 		super("Bounded Pareto PDF", "x", "f(x)");
@@ -20,6 +21,7 @@ public class BoundedParetoSamplePdfChart extends BoundedParetoChart
 	protected XYDataset createDataset()
 	{
 		final XYSeries series = new XYSeries("Bounded Pareto PDF");
+		final BoundedParetoDistribution pareto = new BoundedParetoDistribution(alpha, lowerBound, upperBound);
 	    for(double x = 0; x < 1000; x++)
 	    {
 			final double sample = pareto.sample();

@@ -1,4 +1,4 @@
-package tennis.simulator;
+package tennis.distributions;
 
 import static java.lang.Math.pow;
 

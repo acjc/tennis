@@ -20,6 +20,7 @@ public abstract class XYLineChart extends ApplicationFrame
 	private final String title;
 	private final String xLabel;
 	private final String yLabel;
+	private JFreeChart chart;
 
 	public XYLineChart(final String title, final String xLabel, final String yLabel) throws IOException
 	{
@@ -62,6 +63,12 @@ public abstract class XYLineChart extends ApplicationFrame
 
 	    ChartUtilities.saveChartAsPNG(new File("graphs\\" + title + ".png"), chart, 1000, 570);
 
+	    this.chart = chart;
 	    return chart;
+	}
+
+	public void setRange(final double l, final double u)
+	{
+		((XYPlot) chart.getPlot()).getRangeAxis().setRange(l, u);
 	}
 }
