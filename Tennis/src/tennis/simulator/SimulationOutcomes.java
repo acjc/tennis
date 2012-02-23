@@ -1,6 +1,11 @@
 package tennis.simulator;
 
+import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+
+import tennis.charts.PredictionChart;
 
 public class SimulationOutcomes
 {
@@ -11,6 +16,8 @@ public class SimulationOutcomes
 	private double tiebreaks = 0;
 	private double setsPlayed = 0;
 	private double simulationTime;
+
+	private final List<Double> targetPrediction = new ArrayList<Double>();
 
 	public SimulationOutcomes(final double runs)
 	{
@@ -93,6 +100,16 @@ public class SimulationOutcomes
 		{
 			targetMatchesWon++;
 		}
+	}
+
+	public void addPrediction(final double p, final double q, final boolean serving, final MatchState matchState) throws IOException
+	{
+		targetPrediction.add(matchState.getTargetPrediction(p, q, serving));
+	}
+
+	public PredictionChart targetPredictionChart() throws IOException
+	{
+		return new PredictionChart(targetPrediction);
 	}
 
 	public void setSimulationTime(final double time)

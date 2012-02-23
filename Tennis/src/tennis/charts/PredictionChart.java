@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -13,36 +14,48 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYSplineRenderer;
 import org.jfree.data.xy.XYDataset;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.ApplicationFrame;
+import org.jfree.ui.RefineryUtilities;
 
-public abstract class XYLineChart extends ApplicationFrame
+import tennis.simulator.Simulator;
+
+public class PredictionChart extends ApplicationFrame
 {
 	private final String title;
-	private final String xLabel;
-	private final String yLabel;
-	private JFreeChart chart;
 
-	public XYLineChart(final String title, final String xLabel, final String yLabel) throws IOException
+	public PredictionChart(final List<Double> predictions) throws IOException
 	{
-	    super(title);
-		this.title = title;
-		this.xLabel = xLabel;
-		this.yLabel = yLabel;
+	    super("Match Model");
+		this.title = "Match Model";
 
-		final ChartPanel chartPanel = new ChartPanel(createXYLineChart());
+		final ChartPanel chartPanel = new ChartPanel(createXYLineChart(createDataset(predictions)));
 	    chartPanel.setPreferredSize(new Dimension(500, 270));
 	    setContentPane(chartPanel);
 	}
 
-	protected abstract XYDataset createDataset();
-
-	private JFreeChart createXYLineChart() throws IOException
+	private XYDataset createDataset(final List<Double> predictions)
 	{
-	    chart = ChartFactory.createXYLineChart(
-			title,
-	        xLabel,
-	        yLabel,
-	        createDataset(),
+		final XYSeries series = new XYSeries(title);
+	    for(int i = 0; i < predictions.size(); i++)
+	    {
+			series.add(i, predictions.get(i));
+	    }
+
+	    final XYSeriesCollection dataset = new XYSeriesCollection();
+	    dataset.addSeries(series);
+
+	    return dataset;
+	}
+
+	private JFreeChart createXYLineChart(final XYDataset dataset) throws IOException
+	{
+	    final JFreeChart chart = ChartFactory.createXYLineChart(
+	        title,
+	        "Points",
+	        "Match-winning Probability",
+	        dataset,
 	        PlotOrientation.VERTICAL,
 	        false,                    			 // legend
 	        true,                     			 // tooltips
@@ -66,8 +79,11 @@ public abstract class XYLineChart extends ApplicationFrame
 	    return chart;
 	}
 
-	public void setRange(final double l, final double u)
+	public static void main(final String[] args) throws IOException
 	{
-		((XYPlot) chart.getPlot()).getRangeAxis().setRange(l, u);
+		final PredictionChart chart = new Simulator().simulate(0.6, 0.4, 1).targetPredictionChart();
+		chart.pack();
+	    RefineryUtilities.centerFrameOnScreen(chart);
+	    chart.setVisible(true);
 	}
 }

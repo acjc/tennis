@@ -31,7 +31,7 @@ public class SimulatorRunsChart extends ApplicationFrame
 	    setContentPane(chartPanel);
 	}
 
-	private JFreeChart createXYLineChart()
+	private JFreeChart createXYLineChart() throws IOException
 	{
 	    final JFreeChart chart = ChartFactory.createXYLineChart(
 	        title,
@@ -63,7 +63,7 @@ public class SimulatorRunsChart extends ApplicationFrame
 	    return chart;
 	}
 
-	private XYDataset createDataset()
+	private XYDataset createDataset() throws IOException
 	{
 		final XYSeries simulatorSeries = new XYSeries("Simulator");
 		final XYSeries solutionSeries = new XYSeries("Exact Solution");

@@ -81,7 +81,7 @@ public final class OMalley
 		{
 			return 0.0;
 		}
-		if (a == 3 && b == 3) // Deuce (sum of an infinite geometric series)
+		if (a == b && a >= 3) // Deuce (sum of an infinite geometric series)
 		{
 			return Math.pow(p, 2) / (1 - 2 * p * (1 - p));
 		}

@@ -1,5 +1,9 @@
 package tennis.simulator;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import tennis.omalley.OMalley;
 
 public class MatchState implements Score
 {
@@ -12,6 +16,8 @@ public class MatchState implements Score
 
 	private int tiebreaks = 0;
 	private final double[][] setScores = new double[8][8];
+
+	private final List<Double> targetPrediction;
 
 	public MatchState()
 	{
@@ -31,6 +37,7 @@ public class MatchState implements Score
 		this.set = set;
 		this.game = game;
 		this.numSetsForWin = numSetsForWin;
+		targetPrediction = new ArrayList<Double>();
 	}
 
 	public MatchState(final int numSetsToWin)
@@ -168,5 +175,12 @@ public class MatchState implements Score
 	public double getSetScores(final int i, final int j)
 	{
 		return setScores[i][j];
+	}
+
+	public double getTargetPrediction(final double p, final double q, final boolean serving)
+	{
+		return OMalley.matchInProgress(p, q, targetSets, opponentSets, set.getTargetGames(), set.getOpponentGames(),
+				  					  	     game.getTargetPoints(), game.getOpponentPoints(), isServingNext(),
+											 numSetsForWin);
 	}
 }
