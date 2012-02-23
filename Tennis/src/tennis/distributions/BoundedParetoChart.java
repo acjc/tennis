@@ -13,5 +13,6 @@ public abstract class BoundedParetoChart extends XYLineChart
 	public BoundedParetoChart(final String title, final String xLabel, final String yLabel) throws IOException
 	{
 		super(title, xLabel, yLabel);
+		buildChart();
 	}
 }

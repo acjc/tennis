@@ -21,7 +21,7 @@ public class RetirementRiskChart extends XYLineChart
 	}
 
 	@Override
-	protected void drawChart() throws IOException
+	protected void buildChart() throws IOException
 	{
 		final JFreeChart chart = createXYLineChart(createDataset());
 		((XYPlot) chart.getPlot()).getRangeAxis().setRange(0, 100);
@@ -52,8 +52,9 @@ public class RetirementRiskChart extends XYLineChart
 
 	public static void main(final String[] args) throws IOException
 	{
-	    final XYLineChart chart = new RetirementRiskChart();
+	    final RetirementRiskChart chart = new RetirementRiskChart();
 	    chart.pack();
+	    chart.buildChart();
 	    RefineryUtilities.centerFrameOnScreen(chart);
 	    chart.setVisible(true);
 	}

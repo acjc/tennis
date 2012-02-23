@@ -35,6 +35,7 @@ public class BestOfThreeEqualReturnChart extends XYLineChart
 	{
 	    final XYLineChart chart = new BestOfThreeEqualReturnChart();
 	    chart.pack();
+	    chart.buildChart();
 	    RefineryUtilities.centerFrameOnScreen(chart);
 	    chart.setVisible(true);
 	}

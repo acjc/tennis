@@ -35,6 +35,7 @@ public class BestOfFiveEqualReturnChart extends XYLineChart
 	{
 	    final XYLineChart chart = new BestOfFiveEqualReturnChart();
 	    chart.pack();
+	    chart.buildChart();
 	    RefineryUtilities.centerFrameOnScreen(chart);
 	    chart.setVisible(true);
 	}

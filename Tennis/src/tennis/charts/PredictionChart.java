@@ -26,7 +26,7 @@ public class PredictionChart extends XYLineChart
 	}
 
 	@Override
-	protected void drawChart() throws IOException
+	protected void buildChart() throws IOException
 	{
 		final ChartPanel chartPanel = new ChartPanel(createXYLineChart(createDataset()));
 	    chartPanel.setPreferredSize(new Dimension(500, 270));
@@ -51,6 +51,7 @@ public class PredictionChart extends XYLineChart
 	public static void main(final String[] args) throws IOException
 	{
 		final PredictionChart chart = new Simulator().simulate(0.6, 0.4, 1).targetPredictionChart();
+		chart.buildChart();
 		chart.pack();
 	    RefineryUtilities.centerFrameOnScreen(chart);
 	    chart.setVisible(true);

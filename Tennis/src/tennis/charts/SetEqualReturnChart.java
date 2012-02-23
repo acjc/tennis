@@ -35,6 +35,7 @@ public class SetEqualReturnChart extends XYLineChart
 	{
 	    final XYLineChart chart = new SetEqualReturnChart();
 	    chart.pack();
+	    chart.buildChart();
 	    RefineryUtilities.centerFrameOnScreen(chart);
 	    chart.setVisible(true);
 	}

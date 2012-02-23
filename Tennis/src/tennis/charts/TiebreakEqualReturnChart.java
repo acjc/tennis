@@ -35,6 +35,7 @@ public class TiebreakEqualReturnChart extends XYLineChart{
 	{
 	    final XYLineChart chart = new TiebreakEqualReturnChart();
 	    chart.pack();
+	    chart.buildChart();
 	    RefineryUtilities.centerFrameOnScreen(chart);
 	    chart.setVisible(true);
 	}

@@ -35,6 +35,7 @@ public class SingleGameChart extends XYLineChart
 	{
 	    final XYLineChart chart = new SingleGameChart();
 	    chart.pack();
+	    chart.buildChart();
 	    RefineryUtilities.centerFrameOnScreen(chart);
 	    chart.setVisible(true);
 	}

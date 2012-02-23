@@ -28,11 +28,9 @@ public abstract class XYLineChart extends ApplicationFrame
 		this.title = title;
 		this.xLabel = xLabel;
 		this.yLabel = yLabel;
-
-		drawChart();
 	}
 
-	protected void drawChart() throws IOException
+	protected void buildChart() throws IOException
 	{
 		final ChartPanel chartPanel = new ChartPanel(createXYLineChart(createDataset()));
 	    chartPanel.setPreferredSize(new Dimension(500, 270));

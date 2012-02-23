@@ -35,6 +35,7 @@ public class SetFromThreeAllOnServeEqualReturnChart extends XYLineChart
 	{
 	    final XYLineChart chart = new SetFromThreeAllOnServeEqualReturnChart();
 	    chart.pack();
+	    chart.buildChart();
 	    RefineryUtilities.centerFrameOnScreen(chart);
 	    chart.setVisible(true);
 	}
