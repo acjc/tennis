@@ -29,20 +29,25 @@ public abstract class XYLineChart extends ApplicationFrame
 		this.xLabel = xLabel;
 		this.yLabel = yLabel;
 
-		final ChartPanel chartPanel = new ChartPanel(createXYLineChart());
+		drawChart();
+	}
+
+	protected void drawChart() throws IOException
+	{
+		final ChartPanel chartPanel = new ChartPanel(createXYLineChart(createDataset()));
 	    chartPanel.setPreferredSize(new Dimension(500, 270));
 	    setContentPane(chartPanel);
 	}
 
 	protected abstract XYDataset createDataset();
 
-	private JFreeChart createXYLineChart() throws IOException
+	protected JFreeChart createXYLineChart(final XYDataset dataset) throws IOException
 	{
 	    chart = ChartFactory.createXYLineChart(
 			title,
 	        xLabel,
 	        yLabel,
-	        createDataset(),
+	        dataset,
 	        PlotOrientation.VERTICAL,
 	        false,                    			 // legend
 	        true,                     			 // tooltips
@@ -64,10 +69,5 @@ public abstract class XYLineChart extends ApplicationFrame
 	    ChartUtilities.saveChartAsPNG(new File("graphs\\" + title + ".png"), chart, 1000, 570);
 
 	    return chart;
-	}
-
-	public void setRange(final double l, final double u)
-	{
-		((XYPlot) chart.getPlot()).getRangeAxis().setRange(l, u);
 	}
 }
