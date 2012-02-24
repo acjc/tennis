@@ -55,7 +55,6 @@ public class SimulatorRunsChart extends ApplicationFrame
 	    final XYSplineRenderer renderer = new XYSplineRenderer();
 	    for (int i = 0; i < 4; i++)
 		{
-	    	renderer.setSeriesLinesVisible(i, true);
 	    	renderer.setSeriesShapesVisible(i, false);
 		}
 	    plot.setRenderer(renderer);
