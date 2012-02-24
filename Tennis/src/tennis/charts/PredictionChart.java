@@ -10,6 +10,7 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.RefineryUtilities;
 
+import tennis.simulator.SimulationOutcomes;
 import tennis.simulator.Simulator;
 
 public class PredictionChart extends XYLineChart
@@ -50,10 +51,12 @@ public class PredictionChart extends XYLineChart
 
 	public static void main(final String[] args) throws IOException
 	{
-		final PredictionChart chart = new Simulator().simulate(0.6, 0.4, 1).targetPredictionChart();
+		final SimulationOutcomes outcomes = new Simulator().simulate(0.55, 0.55, 1);
+		final PredictionChart chart = outcomes.targetPredictionChart();
 		chart.buildChart();
 		chart.pack();
 	    RefineryUtilities.centerFrameOnScreen(chart);
 	    chart.setVisible(true);
+	    outcomes.print("Target", "Opponent", 3);
 	}
 }

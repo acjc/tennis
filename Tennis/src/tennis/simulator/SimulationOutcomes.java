@@ -26,7 +26,7 @@ public class SimulationOutcomes
 
 	public double oddsOfMatchScore(final int i, final int j)
 	{
-		return round(runs / matchScores[i][j]);
+		return matchScores[i][j] == 0 ? 0 : round(runs / matchScores[i][j]);
 	}
 
 	public double percentageWithMatchScore(final int i, final int j)
@@ -66,17 +66,18 @@ public class SimulationOutcomes
 
 	public double oddsOfTiebreak()
 	{
-		return round(setsPlayed / tiebreaks);
+		return tiebreaks == 0 ? 0 : round(setsPlayed / tiebreaks);
 	}
 
 	public double oddsOfTargetWin()
 	{
-		return round(runs / targetMatchesWon);
+		return targetMatchesWon == 0 ? 0 : round(runs / targetMatchesWon);
 	}
 
 	public double oddsOfOpponentWin()
 	{
-		return round(runs / (runs - targetMatchesWon));
+		final double opponentMatchesWon = runs - targetMatchesWon;
+		return opponentMatchesWon == 0 ? 0 : round(runs / opponentMatchesWon);
 	}
 
 	public void update(final MatchState matchState)
