@@ -94,6 +94,7 @@ public class Simulator
 		if (runs == 1)
 		{
 			outcomes.addPrediction(p, q, serving, score);
+			outcomes.addInjuryPrediction(p, q, serving, score);
 		}
 	}
 }

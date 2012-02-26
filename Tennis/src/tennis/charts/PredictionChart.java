@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.List;
 
 import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -15,43 +17,50 @@ import tennis.simulator.Simulator;
 
 public class PredictionChart extends XYLineChart
 {
-	private final String title;
-
 	private final List<Double> predictions;
+	private final List<Double> predictionsWithInjury;
 
-	public PredictionChart(final List<Double> predictions) throws IOException
+	public PredictionChart(final List<Double> predictions, final List<Double> predictionsWithInjury) throws IOException
 	{
 	    super("Match Model", "Points", "Match-winning Probability");
-	    this.title = "Match Model";
 		this.predictions = predictions;
+		this.predictionsWithInjury = predictionsWithInjury;
 	}
 
 	@Override
 	protected void buildChart() throws IOException
 	{
-		final ChartPanel chartPanel = new ChartPanel(createXYLineChart(createDataset()));
-	    chartPanel.setPreferredSize(new Dimension(500, 270));
+		final JFreeChart chart = createXYLineChart(createDataset());
+		((XYPlot) chart.getPlot()).getRangeAxis().setRange(0, 1);
+		final ChartPanel chartPanel = new ChartPanel(chart);
+	    chartPanel.setPreferredSize(new Dimension(800, 400));
 	    setContentPane(chartPanel);
 	}
 
 	@Override
 	protected XYDataset createDataset()
 	{
-		final XYSeries series = new XYSeries(title);
+		final XYSeries unbiasedMwp = new XYSeries("Unbiased MWP");
+		final XYSeries injuryBiasedMwp = new XYSeries("Injury-biased MWP");
+		final XYSeries mwpDifference = new XYSeries("MWP Difference");
 	    for(int i = 0; i < predictions.size(); i++)
 	    {
-			series.add(i, predictions.get(i));
+			unbiasedMwp.add(i, predictions.get(i));
+			injuryBiasedMwp.add(i, predictionsWithInjury.get(i));
+			mwpDifference.add(i, predictions.get(i) - predictionsWithInjury.get(i));
 	    }
 
 	    final XYSeriesCollection dataset = new XYSeriesCollection();
-	    dataset.addSeries(series);
+	    dataset.addSeries(unbiasedMwp);
+	    dataset.addSeries(injuryBiasedMwp);
+	    dataset.addSeries(mwpDifference);
 
 	    return dataset;
 	}
 
 	public static void main(final String[] args) throws IOException
 	{
-		final SimulationOutcomes outcomes = new Simulator().simulate(0.55, 0.55, 1);
+		final SimulationOutcomes outcomes = new Simulator().simulate(0.62, 0.40, 1);
 		final PredictionChart chart = outcomes.targetPredictionChart();
 		chart.buildChart();
 		chart.pack();

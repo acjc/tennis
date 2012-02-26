@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tennis.charts.PredictionChart;
+import tennis.distributions.BoundedParetoDistribution;
 
 public class SimulationOutcomes
 {
@@ -18,6 +19,8 @@ public class SimulationOutcomes
 	private double simulationTime;
 
 	private final List<Double> targetPrediction = new ArrayList<Double>();
+	private final List<Double> targetInjuryPrediction = new ArrayList<Double>();
+	final BoundedParetoDistribution pareto = new BoundedParetoDistribution(0.85, 0.01, 100, 0.95);
 
 	public SimulationOutcomes(final double runs)
 	{
@@ -108,9 +111,16 @@ public class SimulationOutcomes
 		targetPrediction.add(matchState.getTargetPrediction(p, q, serving));
 	}
 
+	public void addInjuryPrediction(final double p, final double q, final boolean serving, final MatchState matchState)
+	{
+		targetInjuryPrediction.add(matchState.getTargetInjuryPrediction(p, q, pareto.getCurrentRisk(), serving));
+		pareto.spike();
+		pareto.decay();
+	}
+
 	public PredictionChart targetPredictionChart() throws IOException
 	{
-		return new PredictionChart(targetPrediction);
+		return new PredictionChart(targetPrediction, targetInjuryPrediction);
 	}
 
 	public void setSimulationTime(final double time)

@@ -183,4 +183,10 @@ public class MatchState implements Score
 				  					  	     game.getTargetPoints(), game.getOpponentPoints(), isServingNext(),
 											 numSetsForWin);
 	}
+
+	public Double getTargetInjuryPrediction(final double p, final double q, final double risk, final boolean serving)
+	{
+		final double targetInjuryPrediction = getTargetPrediction(p, q, serving) - risk;
+		return targetInjuryPrediction < 0 ? 0 : targetInjuryPrediction;
+	}
 }

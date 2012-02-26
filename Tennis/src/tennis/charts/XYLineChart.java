@@ -17,10 +17,9 @@ import org.jfree.ui.ApplicationFrame;
 
 public abstract class XYLineChart extends ApplicationFrame
 {
-	private final String title;
-	private final String xLabel;
-	private final String yLabel;
-	private JFreeChart chart;
+	protected final String title;
+	protected final String xLabel;
+	protected final String yLabel;
 
 	public XYLineChart(final String title, final String xLabel, final String yLabel) throws IOException
 	{
@@ -37,17 +36,17 @@ public abstract class XYLineChart extends ApplicationFrame
 	    setContentPane(chartPanel);
 	}
 
-	protected abstract XYDataset createDataset();
+	protected abstract XYDataset createDataset() throws IOException;
 
 	protected JFreeChart createXYLineChart(final XYDataset dataset) throws IOException
 	{
-	    chart = ChartFactory.createXYLineChart(
+		final JFreeChart chart = ChartFactory.createXYLineChart(
 			title,
 	        xLabel,
 	        yLabel,
 	        dataset,
 	        PlotOrientation.VERTICAL,
-	        false,                    			 // legend
+	        true,                    			 // legend
 	        true,                     			 // tooltips
 	        false                     			// urls
 	    );
@@ -60,7 +59,7 @@ public abstract class XYLineChart extends ApplicationFrame
 	    plot.setRangeGridlinePaint(Color.white);
 
 	    final XYSplineRenderer renderer = new XYSplineRenderer();
-	    renderer.setSeriesShapesVisible(0, false);
+	    renderer.setBaseShapesVisible(false);
 	    plot.setRenderer(renderer);
 
 	    ChartUtilities.saveChartAsPNG(new File("graphs\\" + title + ".png"), chart, 1000, 570);

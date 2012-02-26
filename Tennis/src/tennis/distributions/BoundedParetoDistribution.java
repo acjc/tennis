@@ -7,12 +7,35 @@ public class BoundedParetoDistribution
 	private final double alpha;
 	private final double lowerBound;
 	private final double upperBound;
+	private final double decay;
+	private double currentRisk = 0;
 
-	public BoundedParetoDistribution(final double alpha, final double lowerBound, final double upperBound)
+	public BoundedParetoDistribution(final double alpha, final double lowerBound, final double upperBound, final double decay)
 	{
 		this.alpha = alpha;
 		this.lowerBound = lowerBound;
 		this.upperBound = upperBound;
+		this.decay = decay;
+	}
+
+	public double getDecay()
+	{
+		return decay;
+	}
+
+	public double getCurrentRisk()
+	{
+		return currentRisk;
+	}
+
+	public void spike()
+	{
+		currentRisk += sample() / 100.0;
+	}
+
+	public void decay()
+	{
+		currentRisk *= decay;
 	}
 
 	public double f(final double x)
