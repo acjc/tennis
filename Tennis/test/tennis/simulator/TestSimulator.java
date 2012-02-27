@@ -17,7 +17,7 @@ public class TestSimulator
 	@Test
 	public void testPrediction() throws IOException
 	{
-		new Simulator().simulate(0.6, 0.4, 1).targetPredictionChart();
+		new Simulator().simulate(0.6, 0.4, 1).targetOneBallPredictionChart();
 	}
 
 	@Test

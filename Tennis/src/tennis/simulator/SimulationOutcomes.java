@@ -19,7 +19,9 @@ public class SimulationOutcomes
 	private double simulationTime;
 
 	private final List<Double> targetPrediction = new ArrayList<Double>();
-	private final List<Double> targetInjuryPrediction = new ArrayList<Double>();
+	private final List<Double> oneBallTargetInjuryPrediction = new ArrayList<Double>();
+	private final List<Double> oneSetTargetInjuryPrediction = new ArrayList<Double>();
+	private final List<Double> twoSetsTargetInjuryPrediction = new ArrayList<Double>();
 	final BoundedParetoDistribution pareto = new BoundedParetoDistribution(0.85, 0.01, 100, 0.95);
 
 	public SimulationOutcomes(final double runs)
@@ -113,14 +115,40 @@ public class SimulationOutcomes
 
 	public void addInjuryPrediction(final double p, final double q, final boolean serving, final MatchState matchState)
 	{
-		targetInjuryPrediction.add(matchState.getTargetInjuryPrediction(p, q, pareto.getCurrentRisk(), serving));
+		oneBallTargetInjuryPrediction.add(matchState.getTargetInjuryPrediction(p, q, pareto.getCurrentRisk(), serving));
+		if (matchState.setsPlayed() >= 1)
+		{
+			oneSetTargetInjuryPrediction.add(matchState.getTargetInjuryPrediction(p, q, pareto.getCurrentRisk(), serving));
+		}
+		else
+		{
+			oneSetTargetInjuryPrediction.add(matchState.getTargetPrediction(p, q, serving));
+		}
+		if (matchState.setsPlayed() >= 2)
+		{
+			twoSetsTargetInjuryPrediction.add(matchState.getTargetInjuryPrediction(p, q, pareto.getCurrentRisk(), serving));
+		}
+		else
+		{
+			twoSetsTargetInjuryPrediction.add(matchState.getTargetPrediction(p, q, serving));
+		}
 		pareto.spike();
 		pareto.decay();
 	}
 
-	public PredictionChart targetPredictionChart() throws IOException
+	public PredictionChart targetOneBallPredictionChart() throws IOException
 	{
-		return new PredictionChart(targetPrediction, targetInjuryPrediction);
+		return new PredictionChart("One Ball Match Model", targetPrediction, oneBallTargetInjuryPrediction);
+	}
+
+	public PredictionChart targetOneSetPredictionChart() throws IOException
+	{
+		return new PredictionChart("One Set Match Model", targetPrediction, oneSetTargetInjuryPrediction);
+	}
+
+	public PredictionChart targetTwoSetsPredictionChart() throws IOException
+	{
+		return new PredictionChart("Two Set Match Model", targetPrediction, twoSetsTargetInjuryPrediction);
 	}
 
 	public void setSimulationTime(final double time)

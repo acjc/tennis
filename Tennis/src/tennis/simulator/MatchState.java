@@ -147,6 +147,11 @@ public class MatchState implements Score
 		return opponentSets;
 	}
 
+	public int setsPlayed()
+	{
+		return targetSets + opponentSets;
+	}
+
 	private int getNumSetsForWin()
 	{
 		return numSetsForWin;

@@ -20,9 +20,9 @@ public class PredictionChart extends XYLineChart
 	private final List<Double> predictions;
 	private final List<Double> predictionsWithInjury;
 
-	public PredictionChart(final List<Double> predictions, final List<Double> predictionsWithInjury) throws IOException
+	public PredictionChart(final String title, final List<Double> predictions, final List<Double> predictionsWithInjury) throws IOException
 	{
-	    super("Match Model", "Points", "Match-winning Probability");
+	    super(title, "Points", "Match-winning Probability");
 		this.predictions = predictions;
 		this.predictionsWithInjury = predictionsWithInjury;
 	}
@@ -61,11 +61,23 @@ public class PredictionChart extends XYLineChart
 	public static void main(final String[] args) throws IOException
 	{
 		final SimulationOutcomes outcomes = new Simulator().simulate(0.62, 0.40, 1);
-		final PredictionChart chart = outcomes.targetPredictionChart();
-		chart.buildChart();
-		chart.pack();
-	    RefineryUtilities.centerFrameOnScreen(chart);
-	    chart.setVisible(true);
+		final PredictionChart oneBallChart = outcomes.targetOneBallPredictionChart();
+		oneBallChart.buildChart();
+		oneBallChart.pack();
+	    RefineryUtilities.centerFrameOnScreen(oneBallChart);
+	    oneBallChart.setVisible(true);
 	    outcomes.print("Target", "Opponent", 3);
+
+	    final PredictionChart oneSetChart = outcomes.targetOneSetPredictionChart();
+		oneSetChart.buildChart();
+		oneSetChart.pack();
+	    RefineryUtilities.centerFrameOnScreen(oneSetChart);
+	    oneSetChart.setVisible(true);
+
+	    final PredictionChart twoSetsChart = outcomes.targetTwoSetsPredictionChart();
+		twoSetsChart.buildChart();
+		twoSetsChart.pack();
+	    RefineryUtilities.centerFrameOnScreen(twoSetsChart);
+	    twoSetsChart.setVisible(true);
 	}
 }

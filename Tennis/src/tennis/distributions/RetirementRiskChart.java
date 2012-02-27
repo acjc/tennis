@@ -35,7 +35,7 @@ public class RetirementRiskChart extends XYLineChart
 	{
 		final XYSeries series = new XYSeries("Retirement Risk Model");
 		final BoundedParetoDistribution pareto = new BoundedParetoDistribution(0.85, 0.01, 100, 0.9);
-	    for(double t = 0; t <= 200; t++)
+	    for(double t = 0; t <= 300; t++)
 	    {
 			series.add(t, pareto.getCurrentRisk());
 			pareto.spike();
