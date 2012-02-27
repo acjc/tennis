@@ -17,10 +17,9 @@ import org.jfree.ui.ApplicationFrame;
 
 public abstract class XYLineChart extends ApplicationFrame
 {
-	private final String title;
-	private final String xLabel;
-	private final String yLabel;
-	private JFreeChart chart;
+	protected final String title;
+	protected final String xLabel;
+	protected final String yLabel;
 
 	public XYLineChart(final String title, final String xLabel, final String yLabel) throws IOException
 	{
@@ -28,23 +27,26 @@ public abstract class XYLineChart extends ApplicationFrame
 		this.title = title;
 		this.xLabel = xLabel;
 		this.yLabel = yLabel;
+	}
 
-		final ChartPanel chartPanel = new ChartPanel(createXYLineChart());
+	protected void buildChart() throws IOException
+	{
+		final ChartPanel chartPanel = new ChartPanel(createXYLineChart(createDataset()));
 	    chartPanel.setPreferredSize(new Dimension(500, 270));
 	    setContentPane(chartPanel);
 	}
 
-	protected abstract XYDataset createDataset();
+	protected abstract XYDataset createDataset() throws IOException;
 
-	private JFreeChart createXYLineChart() throws IOException
+	protected JFreeChart createXYLineChart(final XYDataset dataset) throws IOException
 	{
-	    final JFreeChart chart = ChartFactory.createXYLineChart(
-	        title,
+		final JFreeChart chart = ChartFactory.createXYLineChart(
+			title,
 	        xLabel,
 	        yLabel,
-	        createDataset(),
+	        dataset,
 	        PlotOrientation.VERTICAL,
-	        false,                    			 // legend
+	        true,                    			 // legend
 	        true,                     			 // tooltips
 	        false                     			// urls
 	    );
@@ -57,18 +59,11 @@ public abstract class XYLineChart extends ApplicationFrame
 	    plot.setRangeGridlinePaint(Color.white);
 
 	    final XYSplineRenderer renderer = new XYSplineRenderer();
-	    renderer.setSeriesLinesVisible(0, true);
-	    renderer.setSeriesShapesVisible(0, false);
+	    renderer.setBaseShapesVisible(false);
 	    plot.setRenderer(renderer);
 
 	    ChartUtilities.saveChartAsPNG(new File("graphs\\" + title + ".png"), chart, 1000, 570);
 
-	    this.chart = chart;
 	    return chart;
-	}
-
-	public void setRange(final double l, final double u)
-	{
-		((XYPlot) chart.getPlot()).getRangeAxis().setRange(l, u);
 	}
 }

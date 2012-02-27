@@ -35,6 +35,7 @@ public class SetFromFourFiveOnServeEqualReturnChart extends XYLineChart
 	{
 	    final XYLineChart chart = new SetFromFourFiveOnServeEqualReturnChart();
 	    chart.pack();
+	    chart.buildChart();
 	    RefineryUtilities.centerFrameOnScreen(chart);
 	    chart.setVisible(true);
 	}

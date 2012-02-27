@@ -80,12 +80,12 @@ public class GameState implements Score
 		changeServer();
 	}
 
-	private int getTargetPoints()
+	public int getTargetPoints()
 	{
 		return targetPoints;
 	}
 
-	private int getOpponentPoints()
+	public int getOpponentPoints()
 	{
 		return opponentPoints;
 	}

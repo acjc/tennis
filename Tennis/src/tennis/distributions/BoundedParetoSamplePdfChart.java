@@ -11,7 +11,6 @@ import tennis.charts.XYLineChart;
 
 public class BoundedParetoSamplePdfChart extends BoundedParetoChart
 {
-
 	public BoundedParetoSamplePdfChart() throws IOException
 	{
 		super("Bounded Pareto PDF", "x", "f(x)");
@@ -21,7 +20,7 @@ public class BoundedParetoSamplePdfChart extends BoundedParetoChart
 	protected XYDataset createDataset()
 	{
 		final XYSeries series = new XYSeries("Bounded Pareto PDF");
-		final BoundedParetoDistribution pareto = new BoundedParetoDistribution(alpha, lowerBound, upperBound);
+		final BoundedParetoDistribution pareto = new BoundedParetoDistribution(alpha, lowerBound, upperBound, decay);
 	    for(double x = 0; x < 1000; x++)
 	    {
 			final double sample = pareto.sample();

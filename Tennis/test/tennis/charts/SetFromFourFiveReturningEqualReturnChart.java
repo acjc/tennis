@@ -9,20 +9,20 @@ import org.jfree.ui.RefineryUtilities;
 
 import tennis.omalley.OMalley;
 
-public class BestOfThreeEqualReturnChart extends XYLineChart
+public class SetFromFourFiveReturningEqualReturnChart extends XYLineChart
 {
-	public BestOfThreeEqualReturnChart() throws IOException
+	public SetFromFourFiveReturningEqualReturnChart() throws IOException
 	{
-	    super("Probability of winning a best-of-3 set match", "p", "bestOfThree(p, 0.5)");
+	    super("Probability of winning the set when on serve at 4-5", "p", "setInPlay(p, 0.5, 4, 5, true)");
 	}
 
 	@Override
 	protected XYDataset createDataset()
 	{
-		final XYSeries series = new XYSeries("BestOfThree");
+		final XYSeries series = new XYSeries("FourFiveOnServe");
 	    for(double i = 0; i < 1.0; i += 0.01)
 	    {
-			series.add(i, OMalley.bestOfThree(i, 0.5));
+			series.add(i, OMalley.setInProgress(i, 0.5, 4, 5, true));
 	    }
 
 	    final XYSeriesCollection dataset = new XYSeriesCollection();
@@ -33,8 +33,9 @@ public class BestOfThreeEqualReturnChart extends XYLineChart
 
 	public static void main(final String[] args) throws IOException
 	{
-	    final XYLineChart chart = new BestOfThreeEqualReturnChart();
+	    final XYLineChart chart = new SetFromFourFiveReturningEqualReturnChart();
 	    chart.pack();
+	    chart.buildChart();
 	    RefineryUtilities.centerFrameOnScreen(chart);
 	    chart.setVisible(true);
 	}

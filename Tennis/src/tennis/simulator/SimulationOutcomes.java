@@ -1,6 +1,12 @@
 package tennis.simulator;
 
+import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+
+import tennis.charts.PredictionChart;
+import tennis.distributions.BoundedParetoDistribution;
 
 public class SimulationOutcomes
 {
@@ -12,6 +18,12 @@ public class SimulationOutcomes
 	private double setsPlayed = 0;
 	private double simulationTime;
 
+	private final List<Double> targetPrediction = new ArrayList<Double>();
+	private final List<Double> oneBallTargetInjuryPrediction = new ArrayList<Double>();
+	private final List<Double> oneSetTargetInjuryPrediction = new ArrayList<Double>();
+	private final List<Double> twoSetsTargetInjuryPrediction = new ArrayList<Double>();
+	final BoundedParetoDistribution pareto = new BoundedParetoDistribution(0.85, 0.01, 100, 0.95);
+
 	public SimulationOutcomes(final double runs)
 	{
 		this.runs = runs;
@@ -19,7 +31,7 @@ public class SimulationOutcomes
 
 	public double oddsOfMatchScore(final int i, final int j)
 	{
-		return round(runs / matchScores[i][j]);
+		return matchScores[i][j] == 0 ? 0 : round(runs / matchScores[i][j]);
 	}
 
 	public double percentageWithMatchScore(final int i, final int j)
@@ -59,17 +71,18 @@ public class SimulationOutcomes
 
 	public double oddsOfTiebreak()
 	{
-		return round(setsPlayed / tiebreaks);
+		return tiebreaks == 0 ? 0 : round(setsPlayed / tiebreaks);
 	}
 
 	public double oddsOfTargetWin()
 	{
-		return round(runs / targetMatchesWon);
+		return targetMatchesWon == 0 ? 0 : round(runs / targetMatchesWon);
 	}
 
 	public double oddsOfOpponentWin()
 	{
-		return round(runs / (runs - targetMatchesWon));
+		final double opponentMatchesWon = runs - targetMatchesWon;
+		return opponentMatchesWon == 0 ? 0 : round(runs / opponentMatchesWon);
 	}
 
 	public void update(final MatchState matchState)
@@ -93,6 +106,49 @@ public class SimulationOutcomes
 		{
 			targetMatchesWon++;
 		}
+	}
+
+	public void addPrediction(final double p, final double q, final boolean serving, final MatchState matchState) throws IOException
+	{
+		targetPrediction.add(matchState.getTargetPrediction(p, q, serving));
+	}
+
+	public void addInjuryPrediction(final double p, final double q, final boolean serving, final MatchState matchState)
+	{
+		oneBallTargetInjuryPrediction.add(matchState.getTargetInjuryPrediction(p, q, pareto.getCurrentRisk(), serving));
+		if (matchState.setsPlayed() >= 1)
+		{
+			oneSetTargetInjuryPrediction.add(matchState.getTargetInjuryPrediction(p, q, pareto.getCurrentRisk(), serving));
+		}
+		else
+		{
+			oneSetTargetInjuryPrediction.add(matchState.getTargetPrediction(p, q, serving));
+		}
+		if (matchState.setsPlayed() >= 2)
+		{
+			twoSetsTargetInjuryPrediction.add(matchState.getTargetInjuryPrediction(p, q, pareto.getCurrentRisk(), serving));
+		}
+		else
+		{
+			twoSetsTargetInjuryPrediction.add(matchState.getTargetPrediction(p, q, serving));
+		}
+		pareto.spike();
+		pareto.decay();
+	}
+
+	public PredictionChart targetOneBallPredictionChart() throws IOException
+	{
+		return new PredictionChart("One Ball Match Model", targetPrediction, oneBallTargetInjuryPrediction);
+	}
+
+	public PredictionChart targetOneSetPredictionChart() throws IOException
+	{
+		return new PredictionChart("One Set Match Model", targetPrediction, oneSetTargetInjuryPrediction);
+	}
+
+	public PredictionChart targetTwoSetsPredictionChart() throws IOException
+	{
+		return new PredictionChart("Two Set Match Model", targetPrediction, twoSetsTargetInjuryPrediction);
 	}
 
 	public void setSimulationTime(final double time)
