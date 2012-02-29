@@ -74,21 +74,21 @@ public abstract class LpmChart extends ApplicationFrame
 		}
 
 		setOdds.clear();
-		for (int i = 0; i < setOddsReaders.size(); i++)
+		for (int i = 0; i < matchOdds.size(); i++)
 		{
 			setOdds.add(setOddsReaders.get(i).readNext());
 		}
 
 		for (int i = 0; i < matchOddsReaders.size(); i++)
 		{
-			if (matchOdds.get(i)[LPM_INDEX].equals("-1"))
+			if (matchOdds.get(i) == null || matchOdds.get(i)[LPM_INDEX].equals("-1"))
 			{
 				return false;
 			}
 		}
-		for (int i = 0; i < setOddsReaders.size(); i++)
+		for (int i = 0; i < setOdds.size(); i++)
 		{
-			if (setOdds.get(i)[LPM_INDEX].equals("-1"))
+			if (matchOdds.get(i) == null || setOdds.get(i)[LPM_INDEX].equals("-1"))
 			{
 				return false;
 			}

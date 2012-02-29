@@ -21,6 +21,7 @@ public class GraphGenerator
 		final File [] retirementsThreeSets = new File("doc\\" + matchType).listFiles();
 		for (final File match : retirementsThreeSets)
 		{
+			System.out.println(match.getName());
 			final File [] matchOdds = new File("doc\\" + matchType + File.separator + match.getName()).listFiles(filter);
 
 			final String playerOneName = matchOdds[0].getName().split("\\.")[0];
@@ -37,6 +38,7 @@ public class GraphGenerator
 		final File [] retirementsFiveSets = new File("doc\\" + matchType).listFiles();
 		for (final File match : retirementsFiveSets)
 		{
+			System.out.println(match.getName());
 			final File [] matchOdds = new File("doc\\" + matchType + File.separator + match.getName()).listFiles(filter);
 
 			final String playerOneName = matchOdds[0].getName().split("\\.")[0];
@@ -53,6 +55,7 @@ public class GraphGenerator
 		final File [] treatmentThreeSets = new File("doc\\" + matchType).listFiles();
 		for (final File match : treatmentThreeSets)
 		{
+			System.out.println(match.getName());
 			final File [] matchOdds = new File("doc\\" + matchType + File.separator + match.getName()).listFiles(filter);
 
 			final String playerOneName = matchOdds[0].getName().split("\\.")[0];
@@ -69,6 +72,7 @@ public class GraphGenerator
 		final File [] treatmentFiveSets = new File("doc\\" + matchType).listFiles();
 		for (final File match : treatmentFiveSets)
 		{
+			System.out.println(match.getName());
 			final File [] matchOdds = new File("doc\\" + matchType + File.separator + match.getName()).listFiles(filter);
 
 			final String playerOneName = matchOdds[0].getName().split("\\.")[0];
