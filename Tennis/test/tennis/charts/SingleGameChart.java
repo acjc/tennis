@@ -7,7 +7,10 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.RefineryUtilities;
 
+<<<<<<< HEAD
 import tennis.graphs.XYLineChart;
+=======
+>>>>>>> refs/remotes/pull/master
 import tennis.omalley.OMalley;
 
 public class SingleGameChart extends XYLineChart

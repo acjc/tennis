@@ -3,11 +3,21 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+<<<<<<< HEAD
 	<classpathentry kind="lib" path="C:/Users/Adam/eclipse/custom/opencsv-2.3.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Adam/eclipse/custom/jfreechart-1.0.14/lib/jcommon-1.0.17.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Adam/eclipse/custom/jfreechart-1.0.14/lib/jfreechart-1.0.14.jar"/>
+=======
+	<classpathentry kind="lib" path="C:/Users/Home/eclipse/custom/opencsv-2.3/deploy/opencsv-2.3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Home/eclipse/custom/jfreechart-1.0.14/lib/jcommon-1.0.17.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Home/eclipse/custom/jfreechart-1.0.14/lib/jfreechart-1.0.14.jar"/>
+>>>>>>> refs/remotes/pull/master
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+<<<<<<< HEAD
 	<classpathentry kind="lib" path="C:/Users/Adam/eclipse/custom/commons-io-2.1/commons-io-2.1.jar"/>
+=======
+	<classpathentry kind="lib" path="C:/Users/Home/eclipse/custom/commons-io-2.1/commons-io-2.1.jar"/>
+>>>>>>> refs/remotes/pull/master
 	<classpathentry kind="output" path="bin"/>
 </classpath>
