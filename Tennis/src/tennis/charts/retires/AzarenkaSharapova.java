@@ -5,10 +5,10 @@ import java.io.IOException;
 
 import org.jfree.ui.RefineryUtilities;
 
-import tennis.charts.helper.PlayerOdds;
-import tennis.charts.lpm.CrossMatchThreeSetLpmChart;
-import tennis.charts.lpm.DefaultLpmChart;
-import tennis.charts.lpm.LpmChart;
+import tennis.graphs.helper.PlayerOdds;
+import tennis.graphs.lpm.CrossMatchThreeSetLpmChart;
+import tennis.graphs.lpm.DefaultLpmChart;
+import tennis.graphs.lpm.LpmChart;
 import au.com.bytecode.opencsv.CSVReader;
 
 public class AzarenkaSharapova

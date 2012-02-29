@@ -1,4 +1,4 @@
-package tennis.charts;
+package tennis.graphs;
 
 import java.awt.Color;
 import java.awt.Dimension;

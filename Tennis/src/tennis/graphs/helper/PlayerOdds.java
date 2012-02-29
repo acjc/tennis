@@ -1,4 +1,4 @@
-package tennis.charts.helper;
+package tennis.graphs.helper;
 
 import java.io.File;
 import java.io.FileNotFoundException;

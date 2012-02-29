@@ -1,6 +1,6 @@
-package tennis.charts.lpm;
+package tennis.graphs.lpm;
 
-import static tennis.charts.helper.PlayerOdds.LPM_INDEX;
+import static tennis.graphs.helper.PlayerOdds.LPM_INDEX;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -17,7 +17,7 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.ui.ApplicationFrame;
 
-import tennis.charts.helper.PlayerOdds;
+import tennis.graphs.helper.PlayerOdds;
 import au.com.bytecode.opencsv.CSVReader;
 
 public abstract class LpmChart extends ApplicationFrame
@@ -60,7 +60,7 @@ public abstract class LpmChart extends ApplicationFrame
 	    plot.setRangeGridlinePaint(Color.white);
 	    plot.getRangeAxis().setRange(0.0, 125.0);
 
-	    ChartUtilities.saveChartAsPNG(new File("doc\\" + title + ".png"), chart, 1000, 570);
+	    ChartUtilities.saveChartAsPNG(new File("graphs\\matches\\" + title + ".png"), chart, 1000, 570);
 
 	    return chart;
 	}
@@ -79,7 +79,12 @@ public abstract class LpmChart extends ApplicationFrame
 			setOdds.add(setOddsReaders.get(i).readNext());
 		}
 
-		for (int i = 0; i < matchOddsReaders.size(); i++)
+		return endOfData(matchOdds, setOdds);
+	}
+
+	private boolean endOfData(final List<String[]> matchOdds, final List<String[]> setOdds)
+	{
+		for (int i = 0; i < matchOdds.size(); i++)
 		{
 			if (matchOdds.get(i) == null || matchOdds.get(i)[LPM_INDEX].equals("-1"))
 			{

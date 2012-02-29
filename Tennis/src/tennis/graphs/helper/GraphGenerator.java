@@ -1,12 +1,12 @@
-package tennis.charts.helper;
+package tennis.graphs.helper;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
 
-import tennis.charts.lpm.CrossMatchLpmChart;
-import tennis.charts.lpm.DefaultLpmChart;
+import tennis.graphs.lpm.CrossMatchLpmChart;
+import tennis.graphs.lpm.DefaultLpmChart;
 import au.com.bytecode.opencsv.CSVReader;
 
 public class GraphGenerator

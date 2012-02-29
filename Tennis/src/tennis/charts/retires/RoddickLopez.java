@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import org.jfree.ui.RefineryUtilities;
 
-import tennis.charts.lpm.LpmChart;
+import tennis.graphs.lpm.LpmChart;
 
 public class RoddickLopez
 {

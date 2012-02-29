@@ -1,4 +1,4 @@
-package tennis.charts;
+package tennis.graphs;
 
 import java.awt.Dimension;
 import java.io.IOException;

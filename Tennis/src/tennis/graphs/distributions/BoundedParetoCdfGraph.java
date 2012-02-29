@@ -1,4 +1,4 @@
-package tennis.distributions;
+package tennis.graphs.distributions;
 
 import java.io.IOException;
 
@@ -7,12 +7,12 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.RefineryUtilities;
 
-import tennis.charts.XYLineChart;
+import tennis.graphs.XYLineChart;
 
-public class BoundedParetoCdfChart extends BoundedParetoChart
+public class BoundedParetoCdfGraph extends BoundedParetoGraph
 {
 
-	public BoundedParetoCdfChart() throws IOException
+	public BoundedParetoCdfGraph() throws IOException
 	{
 		super("Bounded Pareto CDF", "x", "f(x)");
 	}
@@ -35,7 +35,7 @@ public class BoundedParetoCdfChart extends BoundedParetoChart
 
 	public static void main(final String[] args) throws IOException
 	{
-	    final XYLineChart chart = new BoundedParetoCdfChart();
+	    final XYLineChart chart = new BoundedParetoCdfGraph();
 	    chart.pack();
 	    RefineryUtilities.centerFrameOnScreen(chart);
 	    chart.setVisible(true);

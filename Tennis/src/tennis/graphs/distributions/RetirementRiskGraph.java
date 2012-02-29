@@ -1,4 +1,4 @@
-package tennis.distributions;
+package tennis.graphs.distributions;
 
 import java.awt.Dimension;
 import java.io.IOException;
@@ -11,11 +11,11 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.RefineryUtilities;
 
-import tennis.charts.XYLineChart;
+import tennis.graphs.XYLineChart;
 
-public class RetirementRiskChart extends XYLineChart
+public class RetirementRiskGraph extends XYLineChart
 {
-	public RetirementRiskChart() throws IOException
+	public RetirementRiskGraph() throws IOException
 	{
 		super("Retirement Risk Model", "Time", "Retirement Risk");
 	}
@@ -50,7 +50,7 @@ public class RetirementRiskChart extends XYLineChart
 
 	public static void main(final String[] args) throws IOException
 	{
-	    final RetirementRiskChart chart = new RetirementRiskChart();
+	    final RetirementRiskGraph chart = new RetirementRiskGraph();
 	    chart.buildChart();
 	    chart.pack();
 	    RefineryUtilities.centerFrameOnScreen(chart);

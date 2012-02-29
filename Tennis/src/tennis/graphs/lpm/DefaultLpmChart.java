@@ -1,7 +1,7 @@
-package tennis.charts.lpm;
+package tennis.graphs.lpm;
 
-import static tennis.charts.helper.PlayerOdds.DATE_INDEX;
-import static tennis.charts.helper.PlayerOdds.TIME_INDEX;
+import static tennis.graphs.helper.PlayerOdds.DATE_INDEX;
+import static tennis.graphs.helper.PlayerOdds.TIME_INDEX;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -16,14 +16,14 @@ import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.XYDataset;
 
-import tennis.charts.helper.PlayerOdds;
+import tennis.graphs.helper.PlayerOdds;
 import au.com.bytecode.opencsv.CSVReader;
 
-public class CrossMatchLpmChart extends LpmChart
+public class DefaultLpmChart extends LpmChart
 {
-	public CrossMatchLpmChart(final PlayerOdds favourite, final PlayerOdds underdog) throws IOException
+	public DefaultLpmChart(final PlayerOdds favourite, final PlayerOdds underdog) throws IOException
 	{
-		super(favourite.getTitle() + " (" + underdog.getSurname() + ")", favourite, underdog);
+		super(favourite.getTitle() + " (" + favourite.getSurname() + ")", favourite, underdog);
 	}
 
 	@Override
@@ -52,13 +52,18 @@ public class CrossMatchLpmChart extends LpmChart
 	    {
 	    	final Second time = new Second(new Date(Long.parseLong(matchOdds.get(0)[TIME_INDEX])));
 
-	    	final double matchOddsPercentage = getCrossMatchedMatchOddsPercentage(getCorrectedMatchOdds(matchOdds));
+	    	final double matchOddsPercentage = 100 / getCorrectedMatchOdds(matchOdds)[0];
 			matchOddsSeries.add(time, matchOddsPercentage);
 
-	    	final double setBettingPercentage = getCrossMatchedSetBettingPercentage(getCorrectedSetOdds(setOdds));
-    		setBettingSeries.add(time, setBettingPercentage);
+	    	final double [] correctedSetOdds = getCorrectedSetOdds(setOdds);
+	    	double setOddsPercentage = 0;
+	    	for (int i = 0; i < correctedSetOdds.length / 2; i++)
+			{
+				setOddsPercentage += 100 / correctedSetOdds[i];
+			}
+    		setBettingSeries.add(time, setOddsPercentage);
 
-    		final double oddsDifference = Math.abs(matchOddsPercentage - setBettingPercentage);
+    		final double oddsDifference = Math.abs(matchOddsPercentage - setOddsPercentage);
     		oddsDifferenceSeries.add(time, oddsDifference);
 
 			new PrintStream(fout).println(matchOdds.get(0)[DATE_INDEX] + ": " + oddsDifference);
@@ -69,35 +74,5 @@ public class CrossMatchLpmChart extends LpmChart
 	    dataset.addSeries(oddsDifferenceSeries);
 
 		return dataset;
-	}
-
-	private double getCrossMatchedSetBettingPercentage(final double[] setOdds)
-	{
-		double favouriteSum = 0;
-		for (int i = 0; i < setOdds.length / 2; i++)
-		{
-			favouriteSum += 1 / setOdds[i];
-		}
-
-		double result = 0;
-		for (int i = setOdds.length / 2; i < setOdds.length; i++)
-		{
-			double sum = favouriteSum;
-			for (int j = setOdds.length / 2; j < setOdds.length; j++)
-			{
-				if (i != j)
-				{
-					sum += 1 / setOdds[i];
-				}
-			}
-			result += 100 / (1 / (1 - sum));
-		}
-
-		return result;
-	}
-
-	private double getCrossMatchedMatchOddsPercentage(final double[] matchOdds)
-	{
-		return 100.0 / (1.0 / (1.0 - (1.0 / matchOdds[0])));
 	}
 }

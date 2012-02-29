@@ -1,4 +1,4 @@
-package tennis.distributions;
+package tennis.graphs.distributions;
 
 import static java.lang.Math.pow;
 

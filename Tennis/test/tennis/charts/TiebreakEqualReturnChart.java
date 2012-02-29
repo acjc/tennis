@@ -7,6 +7,7 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.RefineryUtilities;
 
+import tennis.graphs.XYLineChart;
 import tennis.omalley.OMalley;
 
 public class TiebreakEqualReturnChart extends XYLineChart{

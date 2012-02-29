@@ -4,10 +4,10 @@ import java.io.IOException;
 
 import org.jfree.ui.RefineryUtilities;
 
-import tennis.charts.helper.PlayerOdds;
-import tennis.charts.lpm.CrossMatchLpmChart;
-import tennis.charts.lpm.DefaultLpmChart;
-import tennis.charts.lpm.LpmChart;
+import tennis.graphs.helper.PlayerOdds;
+import tennis.graphs.lpm.CrossMatchLpmChart;
+import tennis.graphs.lpm.DefaultLpmChart;
+import tennis.graphs.lpm.LpmChart;
 
 public class NiculescuKerber
 {

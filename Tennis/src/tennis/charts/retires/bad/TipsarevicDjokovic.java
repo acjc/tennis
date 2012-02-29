@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import org.jfree.ui.RefineryUtilities;
 
-import tennis.charts.lpm.DefaultFiveSetLpmChart;
+import tennis.graphs.lpm.DefaultFiveSetLpmChart;
 
 public class TipsarevicDjokovic
 {

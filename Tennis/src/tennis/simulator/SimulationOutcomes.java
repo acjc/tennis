@@ -5,8 +5,8 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import tennis.charts.PredictionChart;
-import tennis.distributions.BoundedParetoDistribution;
+import tennis.graphs.PredictionChart;
+import tennis.graphs.distributions.BoundedParetoDistribution;
 
 public class SimulationOutcomes
 {
