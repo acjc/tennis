@@ -74,7 +74,7 @@ public abstract class LpmChart extends ApplicationFrame
 		}
 
 		setOdds.clear();
-		for (int i = 0; i < matchOdds.size(); i++)
+		for (int i = 0; i < setOddsReaders.size(); i++)
 		{
 			setOdds.add(setOddsReaders.get(i).readNext());
 		}
@@ -93,7 +93,7 @@ public abstract class LpmChart extends ApplicationFrame
 		}
 		for (int i = 0; i < setOdds.size(); i++)
 		{
-			if (matchOdds.get(i) == null || setOdds.get(i)[LPM_INDEX].equals("-1"))
+			if (setOdds.get(i) == null || setOdds.get(i)[LPM_INDEX].equals("-1"))
 			{
 				return false;
 			}
@@ -102,34 +102,54 @@ public abstract class LpmChart extends ApplicationFrame
 		return true;
 	}
 
-	protected double [] getCorrectedMatchOdds(final List<String[]> matchOdds)
+	protected double [] getCorrectedMatchOdds(final List<String[]> matchOddsData)
 	{
 		double overround = 0;
-		for (int i = 0; i < matchOdds.size(); i++)
+		for (int i = 0; i < matchOddsData.size(); i++)
 		{
-			overround += 1 / Double.parseDouble(matchOdds.get(i)[LPM_INDEX]);
+			overround += 1 / Double.parseDouble(matchOddsData.get(i)[LPM_INDEX]);
 		}
 
-		final double [] result = new double[matchOdds.size()];
+		final double [] result = new double[matchOddsData.size()];
 		for (int i = 0; i < result.length; i++)
 		{
-			result[i] = Double.parseDouble(matchOdds.get(i)[LPM_INDEX]) * overround;
+			result[i] = Double.parseDouble(matchOddsData.get(i)[LPM_INDEX]) * overround;
 		}
 		return result;
 	}
 
-	protected double [] getCorrectedSetOdds(final List<String[]> setOdds)
+	protected double [] parseMatchOdds(final List<String []> matchOddsData)
 	{
-		double overround = 0;
-		for (int i = 0; i < setOdds.size(); i++)
-		{
-			overround += 1 / Double.parseDouble(setOdds.get(i)[LPM_INDEX]);
-		}
-
-		final double [] result = new double[setOdds.size()];
+		final double [] result = new double[matchOddsData.size()];
 		for (int i = 0; i < result.length; i++)
 		{
-			result[i] = Double.parseDouble(setOdds.get(i)[LPM_INDEX]) * overround;
+			result[i] = Double.parseDouble(matchOddsData.get(i)[LPM_INDEX]);
+		}
+		return result;
+	}
+
+	protected double [] getCorrectedSetOdds(final List<String[]> setOddsData)
+	{
+		double overround = 0;
+		for (int i = 0; i < setOddsData.size(); i++)
+		{
+			overround += 1 / Double.parseDouble(setOddsData.get(i)[LPM_INDEX]);
+		}
+
+		final double [] result = new double[setOddsData.size()];
+		for (int i = 0; i < result.length; i++)
+		{
+			result[i] = Double.parseDouble(setOddsData.get(i)[LPM_INDEX]) * overround;
+		}
+		return result;
+	}
+
+	protected double [] parseSetOdds(final List<String[]> setOddsData)
+	{
+		final double [] result = new double[setOddsData.size()];
+		for (int i = 0; i < result.length; i++)
+		{
+			result[i] = Double.parseDouble(setOddsData.get(i)[LPM_INDEX]);
 		}
 		return result;
 	}

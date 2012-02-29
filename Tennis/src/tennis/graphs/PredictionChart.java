@@ -60,7 +60,7 @@ public class PredictionChart extends XYLineChart
 
 	public static void main(final String[] args) throws IOException
 	{
-		final SimulationOutcomes outcomes = new Simulator().simulate(0.62, 0.40, 1);
+		final SimulationOutcomes outcomes = new Simulator().simulate(0.62, 0.39, 1);
 		final PredictionChart oneBallChart = outcomes.targetOneBallPredictionChart();
 		oneBallChart.buildChart();
 		oneBallChart.pack();

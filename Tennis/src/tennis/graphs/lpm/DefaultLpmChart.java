@@ -36,7 +36,7 @@ public class DefaultLpmChart extends LpmChart
 		matchOddsReaders.add(favourite.getMatchOdds());
 		matchOddsReaders.add(underdog.getMatchOdds());
 
-		final TimeSeries setBettingSeries = new TimeSeries("Set Betting");
+		final TimeSeries setBettingSeries = new TimeSeries("Set Odds");
 		final List<CSVReader> setOddsReaders = new ArrayList<CSVReader>();
 		setOddsReaders.addAll(favourite.getSetOdds());
 		setOddsReaders.addAll(underdog.getSetOdds());
@@ -45,28 +45,28 @@ public class DefaultLpmChart extends LpmChart
 
 		final FileOutputStream fout = new FileOutputStream ("doc\\adam.txt");
 
-		final List<String []> matchOdds = new ArrayList<String []>();
-		final List<String []> setOdds = new ArrayList<String []>();
+		final List<String []> matchOddsData = new ArrayList<String []>();
+		final List<String []> setOddsData = new ArrayList<String []>();
 
-	    while (updateOdds(matchOddsReaders, setOddsReaders, matchOdds, setOdds))
+	    while (updateOdds(matchOddsReaders, setOddsReaders, matchOddsData, setOddsData))
 	    {
-	    	final Second time = new Second(new Date(Long.parseLong(matchOdds.get(0)[TIME_INDEX])));
+	    	final Second time = new Second(new Date(Long.parseLong(matchOddsData.get(0)[TIME_INDEX])));
 
-	    	final double matchOddsPercentage = 100 / getCorrectedMatchOdds(matchOdds)[0];
+	    	final double matchOddsPercentage = 100 / parseMatchOdds(matchOddsData)[0];
 			matchOddsSeries.add(time, matchOddsPercentage);
 
-	    	final double [] correctedSetOdds = getCorrectedSetOdds(setOdds);
+	    	final double [] parsedSetOdds = parseSetOdds(setOddsData);
 	    	double setOddsPercentage = 0;
-	    	for (int i = 0; i < correctedSetOdds.length / 2; i++)
+	    	for (int i = 0; i < parsedSetOdds.length / 2; i++)
 			{
-				setOddsPercentage += 100 / correctedSetOdds[i];
+				setOddsPercentage += 100 / parsedSetOdds[i];
 			}
     		setBettingSeries.add(time, setOddsPercentage);
 
     		final double oddsDifference = Math.abs(matchOddsPercentage - setOddsPercentage);
     		oddsDifferenceSeries.add(time, oddsDifference);
 
-			new PrintStream(fout).println(matchOdds.get(0)[DATE_INDEX] + ": " + oddsDifference);
+			new PrintStream(fout).println(matchOddsData.get(0)[DATE_INDEX] + ": " + oddsDifference);
 	    }
 
 	    dataset.addSeries(matchOddsSeries);
