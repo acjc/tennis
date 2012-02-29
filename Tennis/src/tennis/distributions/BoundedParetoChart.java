@@ -2,7 +2,7 @@ package tennis.distributions;
 
 import java.io.IOException;
 
-import tennis.charts.XYLineChart;
+import tennis.graphs.XYLineChart;
 
 public abstract class BoundedParetoChart extends XYLineChart
 {

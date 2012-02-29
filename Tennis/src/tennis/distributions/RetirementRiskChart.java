@@ -11,7 +11,7 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.RefineryUtilities;
 
-import tennis.charts.XYLineChart;
+import tennis.graphs.XYLineChart;
 
 public class RetirementRiskChart extends XYLineChart
 {
