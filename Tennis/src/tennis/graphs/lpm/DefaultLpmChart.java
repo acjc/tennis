@@ -1,22 +1,18 @@
 package tennis.graphs.lpm;
 
-import static tennis.graphs.helper.PlayerOdds.DATE_INDEX;
-import static tennis.graphs.helper.PlayerOdds.TIME_INDEX;
-
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import org.jfree.data.time.Second;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.XYDataset;
 
+import tennis.graphs.helper.MatchOdds;
 import tennis.graphs.helper.PlayerOdds;
+import tennis.graphs.helper.SetOdds;
 import au.com.bytecode.opencsv.CSVReader;
 
 public class DefaultLpmChart extends LpmChart
@@ -32,42 +28,38 @@ public class DefaultLpmChart extends LpmChart
 		final TimeSeriesCollection dataset = new TimeSeriesCollection();
 
 		final TimeSeries matchOddsSeries = new TimeSeries("Match Odds");
-		final List<CSVReader> matchOddsReaders = new ArrayList<CSVReader>();
-		matchOddsReaders.add(favourite.getMatchOdds());
-		matchOddsReaders.add(underdog.getMatchOdds());
+		final CSVReader favouriteMatchOddsReader = favourite.getMatchOdds();
+		final CSVReader underdogMatchOddsReader = underdog.getMatchOdds();
 
 		final TimeSeries setBettingSeries = new TimeSeries("Set Odds");
-		final List<CSVReader> setOddsReaders = new ArrayList<CSVReader>();
-		setOddsReaders.addAll(favourite.getSetOdds());
-		setOddsReaders.addAll(underdog.getSetOdds());
+		final List<CSVReader> favouriteSetOddsReaders = new ArrayList<CSVReader>();
+		final List<CSVReader> underdogSetOddsReaders = new ArrayList<CSVReader>();
+		favouriteSetOddsReaders.addAll(favourite.getSetOdds());
+		underdogSetOddsReaders.addAll(underdog.getSetOdds());
 
 		final TimeSeries oddsDifferenceSeries = new TimeSeries("Odds Difference");
 
 		final FileOutputStream fout = new FileOutputStream ("doc\\adam.txt");
 
-		final List<String []> matchOddsData = new ArrayList<String []>();
-		final List<String []> setOddsData = new ArrayList<String []>();
+		final List<MatchOdds> favouriteMatchOdds = parseMatchOdds(favouriteMatchOddsReader);
+		final List<MatchOdds> underdogMatchOdds = parseMatchOdds(underdogMatchOddsReader);
+		final List<SetOdds> favouriteSetOdds = parseSetOdds(favouriteSetOddsReaders);
+		final List<SetOdds> underdogSetOdds = parseSetOdds(underdogSetOddsReaders);
 
-	    while (updateOdds(matchOddsReaders, setOddsReaders, matchOddsData, setOddsData))
+	    for (int i = 0; i < favouriteMatchOdds.size(); i++)
 	    {
-	    	final Second time = new Second(new Date(Long.parseLong(matchOddsData.get(0)[TIME_INDEX])));
+	    	matchOddsSeries.add(favouriteMatchOdds.get(i).getTime(), favouriteMatchOdds.get(i).getOddsPercentage());
 
-	    	final double matchOddsPercentage = 100 / parseMatchOdds(matchOddsData)[0];
-			matchOddsSeries.add(time, matchOddsPercentage);
+//    		final double oddsDifference = Math.abs(matchOddsPercentage - setOddsPercentage);
+//    		oddsDifferenceSeries.add(time, oddsDifference);
 
-	    	final double [] parsedSetOdds = parseSetOdds(setOddsData);
-	    	double setOddsPercentage = 0;
-	    	for (int i = 0; i < parsedSetOdds.length / 2; i++)
-			{
-				setOddsPercentage += 100 / parsedSetOdds[i];
-			}
-    		setBettingSeries.add(time, setOddsPercentage);
-
-    		final double oddsDifference = Math.abs(matchOddsPercentage - setOddsPercentage);
-    		oddsDifferenceSeries.add(time, oddsDifference);
-
-			new PrintStream(fout).println(matchOddsData.get(0)[DATE_INDEX] + ": " + oddsDifference);
+//			new PrintStream(fout).println(favouriteMatchOddsData.get(0)[DATE_INDEX] + ", " + favouriteMatchOddsData.get(0)[LPM_INDEX]);
 	    }
+
+    	for (int i = 0; i < favouriteSetOdds.size(); i++)
+		{
+			setBettingSeries.add(favouriteSetOdds.get(i).getTime(), favouriteSetOdds.get(i).getOddsPercentage());
+		}
 
 	    dataset.addSeries(matchOddsSeries);
 	    dataset.addSeries(setBettingSeries);
