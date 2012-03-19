@@ -49,7 +49,7 @@ public class SetOdds
 
 	public double getLayPrice()
 	{
-		return layPrice;
+		return layPrice == -1 ? 1000 : layPrice;
 	}
 
 	public boolean isMatchedBet()
