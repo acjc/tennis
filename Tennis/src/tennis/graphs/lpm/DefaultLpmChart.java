@@ -4,8 +4,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import org.jfree.data.time.Second;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.XYDataset;
@@ -43,23 +45,24 @@ public class DefaultLpmChart extends LpmChart
 
 		final List<MatchOdds> favouriteMatchOdds = parseMatchOdds(favouriteMatchOddsReader);
 		final List<MatchOdds> underdogMatchOdds = parseMatchOdds(underdogMatchOddsReader);
-		final List<SetOdds> favouriteSetOdds = parseSetOdds(favouriteSetOddsReaders);
-		final List<SetOdds> underdogSetOdds = parseSetOdds(underdogSetOddsReaders);
+		final List<List<SetOdds>> favouriteSetOdds = parseSetOdds(favouriteSetOddsReaders);
+		final List<List<SetOdds>> underdogSetOdds = parseSetOdds(underdogSetOddsReaders);
 
 	    for (int i = 0; i < favouriteMatchOdds.size(); i++)
 	    {
-	    	matchOddsSeries.add(favouriteMatchOdds.get(i).getTime(), favouriteMatchOdds.get(i).getOddsPercentage());
+	    	final long time = favouriteMatchOdds.get(i).getTime();
+			final Second second = new Second(new Date(time));
+			final double matchOddsPercentage = favouriteMatchOdds.get(i).getOddsPercentage();
+			final double setOddsPercentage = calculateSetOddsPercentage(favouriteSetOdds, underdogSetOdds, time);
 
-//    		final double oddsDifference = Math.abs(matchOddsPercentage - setOddsPercentage);
-//    		oddsDifferenceSeries.add(time, oddsDifference);
+			matchOddsSeries.add(second, matchOddsPercentage);
+			setBettingSeries.add(second, setOddsPercentage);
+
+    		final double oddsDifference = Math.abs(matchOddsPercentage - setOddsPercentage);
+    		oddsDifferenceSeries.add(second, oddsDifference);
 
 //			new PrintStream(fout).println(favouriteMatchOddsData.get(0)[DATE_INDEX] + ", " + favouriteMatchOddsData.get(0)[LPM_INDEX]);
 	    }
-
-    	for (int i = 0; i < favouriteSetOdds.size(); i++)
-		{
-			setBettingSeries.add(favouriteSetOdds.get(i).getTime(), favouriteSetOdds.get(i).getOddsPercentage());
-		}
 
 	    dataset.addSeries(matchOddsSeries);
 	    dataset.addSeries(setBettingSeries);

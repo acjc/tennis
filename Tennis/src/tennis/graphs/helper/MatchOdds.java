@@ -1,8 +1,5 @@
 package tennis.graphs.helper;
 
-import java.util.Date;
-
-import org.jfree.data.time.Second;
 
 public class MatchOdds
 {
@@ -15,9 +12,9 @@ public class MatchOdds
 		this.odds = odds;
 	}
 
-	public Second getTime()
+	public long getTime()
 	{
-		return new Second(new Date(time));
+		return time;
 	}
 
 	public double getOddsPercentage()

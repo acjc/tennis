@@ -12,8 +12,8 @@ public class PlayerOdds
 {
 	public static final int TIME_INDEX = 0;
 	public static final int DATE_INDEX = 1;
-	public static final int BACK_INDEX = 3;
-	public static final int LPM_INDEX = 6;
+	public static final int BACK_INDEX = 2;
+	public static final int LPM_INDEX = 4;
 
 	private final String title;
 	private final String firstName;

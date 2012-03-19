@@ -1,7 +1,6 @@
 package tennis.graphs.lpm;
 
-import static tennis.graphs.helper.PlayerOdds.LPM_INDEX;
-import static tennis.graphs.helper.PlayerOdds.TIME_INDEX;
+import static tennis.graphs.helper.PlayerOdds.*;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -9,7 +8,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.jfree.chart.ChartFactory;
@@ -17,7 +15,6 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.data.time.Second;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.ui.ApplicationFrame;
 
@@ -73,18 +70,18 @@ public abstract class LpmChart extends ApplicationFrame
 
 	protected boolean updateOdds(final List<CSVReader> matchOddsReaders, final List<CSVReader> setOddsReaders, final List<String []> matchOdds, final List<String []> setOdds) throws IOException
 	{
-		matchOdds.clear();
-		for (int i = 0; i < matchOddsReaders.size(); i++)
-		{
-			matchOdds.add(matchOddsReaders.get(i).readNext());
-		}
-		final Second matchOddsTime = new Second(new Date(Long.parseLong(matchOdds.get(0)[TIME_INDEX])));
-
-		for (int i = 0; i < setOddsReaders.size(); i++)
-		{
-			setOdds.add(setOddsReaders.get(i).readNext());
-		}
-		final Second setOddsTime = new Second(new Date(Long.parseLong(setOdds.get(0)[TIME_INDEX])));
+//		matchOdds.clear();
+//		for (int i = 0; i < matchOddsReaders.size(); i++)
+//		{
+//			matchOdds.add(matchOddsReaders.get(i).readNext());
+//		}
+//		final Second matchOddsTime = new Second(new Date(Long.parseLong(matchOdds.get(0)[TIME_INDEX])));
+//
+//		for (int i = 0; i < setOddsReaders.size(); i++)
+//		{
+//			setOdds.add(setOddsReaders.get(i).readNext());
+//		}
+//		final Second setOddsTime = new Second(new Date(Long.parseLong(setOdds.get(0)[TIME_INDEX])));
 
 		return true;
 	}
@@ -120,23 +117,31 @@ public abstract class LpmChart extends ApplicationFrame
 		return result;
 	}
 
-	protected List<SetOdds> parseSetOdds(final List<CSVReader> setOddsReaders) throws IOException
+	protected List<List<SetOdds>> parseSetOdds(final List<CSVReader> setOddsReaders) throws IOException
 	{
-		final List<SetOdds> result = new ArrayList<SetOdds>();
+		final List<List<SetOdds>> result = new ArrayList<List<SetOdds>>();
+		for (int i = 0; i < setOddsReaders.size(); i++)
+		{
+			result.add(new ArrayList<SetOdds>());
+		}
+
 		final List<String []> currentLines = new ArrayList<String []>();
 		for (final CSVReader reader : setOddsReaders)
 		{
 			currentLines.add(reader.readNext());
 		}
-		final double [] odds = new double[setOddsReaders.size()];
+
 		while (!endOfData(currentLines))
 		{
-			for (int i = 0; i < odds.length; i++)
+			for (int i = 0; i < currentLines.size(); i++)
 			{
-				odds[i] = Double.parseDouble(currentLines.get(i)[LPM_INDEX]);
+				final String[] line = currentLines.get(i);
+				result.get(i).add(new SetOdds(Long.parseLong(line[TIME_INDEX]),
+											  line[DATE_INDEX],
+											  Double.parseDouble(line[LPM_INDEX]),
+											  Double.parseDouble(line[BACK_INDEX]),
+											  false));
 			}
-
-			result.add(new SetOdds(Long.parseLong(currentLines.get(0)[TIME_INDEX]), odds));
 
 			currentLines.clear();
 			for (final CSVReader reader : setOddsReaders)
@@ -146,6 +151,123 @@ public abstract class LpmChart extends ApplicationFrame
 		}
 
 		return result;
+	}
+
+	protected double calculateSetOddsPercentage(final List<List<SetOdds>> favouriteSetOdds, final List<List<SetOdds>> underdogSetOdds, final long time)
+	{
+		final List<SetOdds> bets = findMatchingBets(favouriteSetOdds, underdogSetOdds, time);
+		final int numSetsToWin = bets.size() / 2;
+
+		double normalisedProbability = 1.0;
+		for (int i = 0; i < numSetsToWin; i++)
+		{
+			if (bets.get(i).isMatchedBet())
+			{
+				normalisedProbability -= bets.get(i).getOddsProbability();
+			}
+		}
+
+		double crossmatchedPercentage = 0;
+		for (int i = 0; i < numSetsToWin; i++)
+		{
+			if (!bets.get(i).isMatchedBet())
+			{
+				double sum = 0;
+				for (int j = 0; j < bets.size(); j++)
+				{
+					if (i != j && !bets.get(j).isMatchedBet())
+					{
+						sum += 1 / bets.get(j).getLayPrice();
+					}
+				}
+				crossmatchedPercentage += 100 / (1 / (normalisedProbability - sum));
+			}
+		}
+
+		final double result = crossmatchedPercentage + (100 * (1 - normalisedProbability));
+		return result;
+	}
+
+	private List<SetOdds> findMatchingBets(final List<List<SetOdds>> favouriteSetOdds, final List<List<SetOdds>> underdogSetOdds, final long time)
+	{
+		// Ideally want a recent (compared to the time of the given match odds bet) matched bet for each possible scoreline
+		final List<List<SetOdds>> lpmSetBets = getLpmSetBets(favouriteSetOdds);
+		final List<SetOdds> matchingBets = new ArrayList<SetOdds>();
+		for (int i = 0; i < favouriteSetOdds.size(); i++)
+		{
+			SetOdds candidateBet = null;
+			for (final SetOdds bet : lpmSetBets.get(i))
+			{
+				// We want the bet made closest in time to the given match odds bet...
+				if (isCandidateBet(bet, time) && (candidateBet == null || Math.abs(time - bet.getTime()) < Math.abs(time - candidateBet.getTime())))
+				{
+					candidateBet = bet;
+				}
+			}
+			if (candidateBet != null)
+			{
+				matchingBets.add(candidateBet);
+			}
+			else // Otherwise, find the best lay price at the given time
+			{
+				matchingBets.add(findMatchingLayOffer(favouriteSetOdds.get(i), time));
+			}
+		}
+
+		for (final List<SetOdds> odds : underdogSetOdds)
+		{
+			matchingBets.add(findMatchingLayOffer(odds, time));
+		}
+
+		return matchingBets;
+	}
+
+	private List<List<SetOdds>> getLpmSetBets(final List<List<SetOdds>> setOdds)
+	{
+		final List<List<SetOdds>> result = new ArrayList<List<SetOdds>>();
+		for (int i = 0; i < setOdds.size(); i++)
+		{
+			result.add(new ArrayList<SetOdds>());
+		}
+
+		for (int i = 0; i < setOdds.size(); i++)
+		{
+			SetOdds currentBet = setOdds.get(i).get(0);
+			for (final SetOdds bet : setOdds.get(i))
+			{
+				if (bet.getOdds() != currentBet.getOdds())
+				{
+					result.get(i).add(new SetOdds(bet.getTime(), bet.getDate(), bet.getOdds(), bet.getLayPrice(), true));
+				}
+				currentBet = bet;
+			}
+		}
+
+		return result;
+	}
+
+	private boolean isCandidateBet(final SetOdds bet, final long time)
+	{
+		final long interval = 300000; // 5 minutes
+		return Math.abs(time - bet.getTime()) <= interval || (bet.getTime() < time && bet.getOdds() == 1000);
+	}
+
+	private SetOdds findMatchingLayOffer(final List<SetOdds> setOdds, final long time)
+	{
+		SetOdds candidateBet = null;
+		for (final SetOdds bet : setOdds)
+		{
+			if (candidateBet == null || Math.abs(time - bet.getTime()) < Math.abs(time - candidateBet.getTime()))
+			{
+				candidateBet = bet;
+			}
+			if (candidateBet != null && bet.getTime() - time > Math.abs(time - candidateBet.getTime()))
+			{
+				return candidateBet;
+			}
+		}
+
+		return candidateBet;
 	}
 
 	protected double [] getCorrectedMatchOdds(final List<String[]> matchOddsData)

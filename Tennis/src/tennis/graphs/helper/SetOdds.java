@@ -1,33 +1,59 @@
 package tennis.graphs.helper;
 
-import java.util.Date;
-
-import org.jfree.data.time.Second;
-
 public class SetOdds
 {
-	long time;
-	double [] odds;
+	private final long time;
+	private final String date;
+	private final double lpm;
+	private final double layPrice;
+	private final boolean matchedBet;
 
-	public SetOdds(final long time, final double [] odds)
+	public SetOdds(final long time, final String date, final double lpm, final double layPrice, final boolean matchedBet)
 	{
 		this.time = time;
-		this.odds = odds;
+		this.date = date;
+		this.lpm = lpm;
+		this.layPrice = layPrice;
+		this.matchedBet = matchedBet;
 	}
 
-	public Second getTime()
+	public void printDate()
 	{
-		return new Second(new Date(time));
+		System.out.println(date);
+	}
+
+	public String getDate()
+	{
+		return date;
+	}
+
+	public long getTime()
+	{
+		return time;
 	}
 
 	public double getOddsPercentage()
 	{
-		double result = 0.0;
-		for (int i = 0; i < odds.length; i++)
-		{
-			result += 100 / odds[i];
-		}
+		return 100 / lpm;
+	}
 
-		return result;
+	public double getOddsProbability()
+	{
+		return 1 / lpm;
+	}
+
+	public double getOdds()
+	{
+		return lpm;
+	}
+
+	public double getLayPrice()
+	{
+		return layPrice;
+	}
+
+	public boolean isMatchedBet()
+	{
+		return matchedBet;
 	}
 }
