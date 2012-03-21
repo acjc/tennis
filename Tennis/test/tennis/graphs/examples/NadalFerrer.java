@@ -8,12 +8,12 @@ import tennis.graphs.helper.PlayerOdds;
 import tennis.graphs.lpm.DefaultOddsChart;
 import tennis.graphs.lpm.OddsChart;
 
-public class MurrayBerrer
+public class NadalFerrer
 {
 	public static void main(final String[] args) throws IOException
 	{
-		final OddsChart chart = new DefaultOddsChart(new PlayerOdds("Andy Murray", "treatment\\five", "Murray vs Berrer - French Open 2011 Third Round"),
-													new PlayerOdds("Michael Berrer", "treatment\\five", "Murray vs Berrer - French Open 2011 Third Round"));
+		final OddsChart chart = new DefaultOddsChart(new PlayerOdds("Rafael Nadal", "examples\\treatment", "Nadal vs Ferrer - Australian Open 2011 Quarter Final"),
+												     new PlayerOdds("David Ferrer", "examples\\treatment", "Nadal vs Ferrer - Australian Open 2011 Quarter Final"));
 		chart.pack();
 		RefineryUtilities.centerFrameOnScreen(chart);
 		chart.setVisible(true);

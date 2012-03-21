@@ -136,56 +136,73 @@ public abstract class OddsChart extends ApplicationFrame
 		return result;
 	}
 
-	protected double calculateCorrectedSetOddsPercentage(final List<List<SetOdds>> favouriteSetOdds, final List<List<SetOdds>> underdogSetOdds, final long time)
+	protected double calculateCorrectedSetOddsPercentage(final List<List<SetOdds>> favouriteSetOdds, final List<List<SetOdds>> underdogSetOdds, final long time) throws FileNotFoundException
 	{
 		final List<SetOdds> bets = findMatchingBets(favouriteSetOdds, underdogSetOdds, time);
-		return calculateSetOddsProbability(bets) * 100;
-	}
-
-	private double calculateSetOddsProbability(final List<SetOdds> bets)
-	{
 		final int numSetsToWin = bets.size() / 2;
 
-		double normalisedProbability = 1.0;
+		// Add up recent LPM bets
+		double oddsProbability = 0;
 		for (int i = 0; i < numSetsToWin; i++)
+		{
+			if (bets.get(i).isMatchedBet())
+			{
+				oddsProbability += bets.get(i).getOddsProbability();
+			}
+		}
+		oddsProbability = oddsProbability > 1 ? 1.0 : oddsProbability;
+
+		// Subtract recent LPM bets from total probability
+		double normalisedProbability = 1.0;
+		for (int i = 0; i < bets.size(); i++)
 		{
 			if (bets.get(i).isMatchedBet())
 			{
 				normalisedProbability -= bets.get(i).getOddsProbability();
 			}
 		}
+		normalisedProbability = normalisedProbability < 0 ? 0.0 : normalisedProbability;
 
 		final double overround = calculateOverround(bets, normalisedProbability);
 
+		// Crossmatch while taking into account overround
 		double crossmatchedProbability = 0;
 		for (int i = 0; i < numSetsToWin; i++)
 		{
 			if (!bets.get(i).isMatchedBet())
 			{
+				final double bestBackPrice = bets.get(i).getBestBackPrice();
+				double newProbability = bestBackPrice;
 				double sum = 0;
-				double newProbability = 0;
 				for (int j = 0; j < bets.size(); j++)
 				{
 					if (i != j && !bets.get(j).isMatchedBet())
 					{
 						final double bestLayPrice = bets.get(j).getBestLayPrice();
-						if (bestLayPrice == -1)
+						if (bestLayPrice == -1) // If no lay price for some other non-recent selection, forget crossmatching, have to use best back price
 						{
-							newProbability = 1 / (bets.get(i).getBestBackPrice() * overround);
+							if (bestBackPrice == -1)
+							{
+								newProbability = bets.get(i).getOdds();
+							}
+							else
+							{
+								newProbability = bestBackPrice;
+							}
 							break;
 						}
 						else
 						{
-							sum += 1 / (bestLayPrice * overround);
-							newProbability = normalisedProbability - sum;
+							sum += 1 / bestLayPrice;
+							newProbability = 1 / (normalisedProbability - sum);
 						}
 					}
 				}
-				crossmatchedProbability += newProbability;
+				crossmatchedProbability += 1 / (newProbability * overround);
 			}
 		}
 
-		return crossmatchedProbability + (1 - normalisedProbability);
+		return (crossmatchedProbability + oddsProbability) * 100;
 	}
 
 	private double calculateOverround(final List<SetOdds> bets, final double normalisedProbability)
@@ -195,8 +212,9 @@ public abstract class OddsChart extends ApplicationFrame
 		{
 			if (!bets.get(i).isMatchedBet())
 			{
+				final double bestBackPrice = bets.get(i).getBestBackPrice();
+				double newProbability = 1 / bestBackPrice;
 				double sum = 0;
-				double newProbability = 0;
 				for (int j = 0; j < bets.size(); j++)
 				{
 					if (i != j && !bets.get(j).isMatchedBet())
@@ -204,7 +222,14 @@ public abstract class OddsChart extends ApplicationFrame
 						final double bestLayPrice = bets.get(j).getBestLayPrice();
 						if (bestLayPrice == -1)
 						{
-							newProbability = 1 / bets.get(i).getBestBackPrice();
+							if (bestBackPrice == -1)
+							{
+								newProbability = bets.get(i).getOddsProbability();
+							}
+							else
+							{
+								newProbability = 1 / bestBackPrice;
+							}
 							break;
 						}
 						else
@@ -218,15 +243,20 @@ public abstract class OddsChart extends ApplicationFrame
 			}
 		}
 
-		return remainingProbability / normalisedProbability;
+		return normalisedProbability == 0 ? 1.0 : remainingProbability / normalisedProbability;
 	}
 
 	private List<SetOdds> findMatchingBets(final List<List<SetOdds>> favouriteSetOdds, final List<List<SetOdds>> underdogSetOdds, final long time)
 	{
+		final List<List<SetOdds>> setOdds = new ArrayList<List<SetOdds>>();
+		setOdds.addAll(favouriteSetOdds);
+		setOdds.addAll(underdogSetOdds);
+
 		// Ideally want a recent (compared to the time of the given match odds bet) matched bet for each possible scoreline
-		final List<List<SetOdds>> lpmSetBets = getLpmSetBets(favouriteSetOdds);
+		final List<List<SetOdds>> lpmSetBets = getLpmSetBets(setOdds);
+
 		final List<SetOdds> matchingBets = new ArrayList<SetOdds>();
-		for (int i = 0; i < favouriteSetOdds.size(); i++)
+		for (int i = 0; i < setOdds.size(); i++)
 		{
 			SetOdds candidateBet = null;
 			for (final SetOdds bet : lpmSetBets.get(i))
@@ -243,13 +273,8 @@ public abstract class OddsChart extends ApplicationFrame
 			}
 			else // Otherwise, find the best lay price at the given time
 			{
-				matchingBets.add(findMatchingLayOffer(favouriteSetOdds.get(i), time));
+				matchingBets.add(findMatchingLayOffer(setOdds.get(i), time));
 			}
-		}
-
-		for (final List<SetOdds> odds : underdogSetOdds)
-		{
-			matchingBets.add(findMatchingLayOffer(odds, time));
 		}
 
 		return matchingBets;
@@ -257,6 +282,7 @@ public abstract class OddsChart extends ApplicationFrame
 
 	private List<List<SetOdds>> getLpmSetBets(final List<List<SetOdds>> setOdds)
 	{
+		// Initialise results list
 		final List<List<SetOdds>> result = new ArrayList<List<SetOdds>>();
 		for (int i = 0; i < setOdds.size(); i++)
 		{
@@ -265,14 +291,17 @@ public abstract class OddsChart extends ApplicationFrame
 
 		for (int i = 0; i < setOdds.size(); i++)
 		{
+			// First bet
 			SetOdds currentBet = setOdds.get(i).get(0);
+			result.get(i).add(new SetOdds(currentBet.getTime(), currentBet.getDate(), currentBet.getOdds(), currentBet.getBestBackPrice(), currentBet.getBestLayPrice(), true));
 			for (final SetOdds bet : setOdds.get(i))
 			{
+				// Anytime the LPM value changes means a new matched bet has occurred
 				if (bet.getOdds() != currentBet.getOdds())
 				{
-					result.get(i).add(new SetOdds(bet.getTime(), bet.getDate(), bet.getOdds(), bet.getBestBackPrice(), bet.getBestLayPrice(), true));
+					currentBet = bet;
+					result.get(i).add(new SetOdds(currentBet.getTime(), currentBet.getDate(), currentBet.getOdds(), currentBet.getBestBackPrice(), currentBet.getBestLayPrice(), true));
 				}
-				currentBet = bet;
 			}
 		}
 
@@ -282,7 +311,7 @@ public abstract class OddsChart extends ApplicationFrame
 	private boolean isCandidateBet(final SetOdds bet, final long time)
 	{
 		final long interval = 300000; // 5 minutes
-		return Math.abs(time - bet.getTime()) <= interval;
+		return Math.abs(time - bet.getTime()) <= interval || bet.getOdds() >= 500;
 	}
 
 	private SetOdds findMatchingLayOffer(final List<SetOdds> setOdds, final long time)
@@ -290,10 +319,12 @@ public abstract class OddsChart extends ApplicationFrame
 		SetOdds candidateBet = null;
 		for (final SetOdds bet : setOdds)
 		{
+			// Found closer odds entry
 			if (candidateBet == null || Math.abs(time - bet.getTime()) < Math.abs(time - candidateBet.getTime()))
 			{
 				candidateBet = bet;
 			}
+			// Definitely no closer odds entry exists
 			if (candidateBet != null && bet.getTime() - time > Math.abs(time - candidateBet.getTime()))
 			{
 				return candidateBet;

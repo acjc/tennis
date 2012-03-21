@@ -5,6 +5,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 
 import tennis.graphs.lpm.DefaultOddsChart;
+import tennis.graphs.lpm.LpmOddsChart;
 
 public class GraphGenerator
 {
@@ -29,6 +30,8 @@ public class GraphGenerator
 
 			new DefaultOddsChart(playerOne, playerTwo);
 			new DefaultOddsChart(playerTwo, playerOne);
+			new LpmOddsChart(playerOne, playerTwo);
+			new LpmOddsChart(playerTwo, playerOne);
 		}
 
 		matchType = "examples\\treatment";
@@ -47,6 +50,8 @@ public class GraphGenerator
 
 			new DefaultOddsChart(playerOne, playerTwo);
 			new DefaultOddsChart(playerTwo, playerOne);
+			new LpmOddsChart(playerOne, playerTwo);
+			new LpmOddsChart(playerTwo, playerOne);
 		}
 
 		System.out.println("Stopping Graph Generator");
