@@ -23,13 +23,13 @@ import tennis.graphs.helper.PlayerOdds;
 import tennis.graphs.helper.SetOdds;
 import au.com.bytecode.opencsv.CSVReader;
 
-public abstract class LpmChart extends ApplicationFrame
+public abstract class OddsChart extends ApplicationFrame
 {
 	protected final String title;
 	protected final PlayerOdds favourite;
 	protected final PlayerOdds underdog;
 
-	public LpmChart(final String title, final PlayerOdds favourite, final PlayerOdds underdog) throws IOException
+	public OddsChart(final String title, final PlayerOdds favourite, final PlayerOdds underdog) throws IOException
 	{
 		super(title);
 		this.title = title;
@@ -66,24 +66,6 @@ public abstract class LpmChart extends ApplicationFrame
 	    ChartUtilities.saveChartAsPNG(new File("graphs\\matches\\" + title + ".png"), chart, 1000, 570);
 
 	    return chart;
-	}
-
-	protected boolean updateOdds(final List<CSVReader> matchOddsReaders, final List<CSVReader> setOddsReaders, final List<String []> matchOdds, final List<String []> setOdds) throws IOException
-	{
-//		matchOdds.clear();
-//		for (int i = 0; i < matchOddsReaders.size(); i++)
-//		{
-//			matchOdds.add(matchOddsReaders.get(i).readNext());
-//		}
-//		final Second matchOddsTime = new Second(new Date(Long.parseLong(matchOdds.get(0)[TIME_INDEX])));
-//
-//		for (int i = 0; i < setOddsReaders.size(); i++)
-//		{
-//			setOdds.add(setOddsReaders.get(i).readNext());
-//		}
-//		final Second setOddsTime = new Second(new Date(Long.parseLong(setOdds.get(0)[TIME_INDEX])));
-
-		return true;
 	}
 
 	private boolean endOfData(final List<String[]> oddsData)
@@ -140,6 +122,7 @@ public abstract class LpmChart extends ApplicationFrame
 											  line[DATE_INDEX],
 											  Double.parseDouble(line[LPM_INDEX]),
 											  Double.parseDouble(line[BACK_INDEX]),
+											  Double.parseDouble(line[LAY_INDEX]),
 											  false));
 			}
 
@@ -153,9 +136,14 @@ public abstract class LpmChart extends ApplicationFrame
 		return result;
 	}
 
-	protected double calculateSetOddsPercentage(final List<List<SetOdds>> favouriteSetOdds, final List<List<SetOdds>> underdogSetOdds, final long time)
+	protected double calculateCorrectedSetOddsPercentage(final List<List<SetOdds>> favouriteSetOdds, final List<List<SetOdds>> underdogSetOdds, final long time)
 	{
 		final List<SetOdds> bets = findMatchingBets(favouriteSetOdds, underdogSetOdds, time);
+		return calculateSetOddsProbability(bets) * 100;
+	}
+
+	private double calculateSetOddsProbability(final List<SetOdds> bets)
+	{
 		final int numSetsToWin = bets.size() / 2;
 
 		double normalisedProbability = 1.0;
@@ -167,25 +155,70 @@ public abstract class LpmChart extends ApplicationFrame
 			}
 		}
 
-		double crossmatchedPercentage = 0;
+		final double overround = calculateOverround(bets, normalisedProbability);
+
+		double crossmatchedProbability = 0;
 		for (int i = 0; i < numSetsToWin; i++)
 		{
 			if (!bets.get(i).isMatchedBet())
 			{
 				double sum = 0;
+				double newProbability = 0;
 				for (int j = 0; j < bets.size(); j++)
 				{
 					if (i != j && !bets.get(j).isMatchedBet())
 					{
-						sum += 1 / bets.get(j).getLayPrice();
+						final double bestLayPrice = bets.get(j).getBestLayPrice();
+						if (bestLayPrice == -1)
+						{
+							newProbability = 1 / (bets.get(i).getBestBackPrice() * overround);
+							break;
+						}
+						else
+						{
+							sum += 1 / (bestLayPrice * overround);
+							newProbability = normalisedProbability - sum;
+						}
 					}
 				}
-				crossmatchedPercentage += 100 / (1 / (normalisedProbability - sum));
+				crossmatchedProbability += newProbability;
 			}
 		}
 
-		final double result = crossmatchedPercentage + (100 * (1 - normalisedProbability));
-		return result;
+		return crossmatchedProbability + (1 - normalisedProbability);
+	}
+
+	private double calculateOverround(final List<SetOdds> bets, final double normalisedProbability)
+	{
+		double remainingProbability = 0.0;
+		for (int i = 0; i < bets.size(); i++)
+		{
+			if (!bets.get(i).isMatchedBet())
+			{
+				double sum = 0;
+				double newProbability = 0;
+				for (int j = 0; j < bets.size(); j++)
+				{
+					if (i != j && !bets.get(j).isMatchedBet())
+					{
+						final double bestLayPrice = bets.get(j).getBestLayPrice();
+						if (bestLayPrice == -1)
+						{
+							newProbability = 1 / bets.get(i).getBestBackPrice();
+							break;
+						}
+						else
+						{
+							sum += 1 / bestLayPrice;
+							newProbability = normalisedProbability - sum;
+						}
+					}
+				}
+				remainingProbability += newProbability;
+			}
+		}
+
+		return remainingProbability / normalisedProbability;
 	}
 
 	private List<SetOdds> findMatchingBets(final List<List<SetOdds>> favouriteSetOdds, final List<List<SetOdds>> underdogSetOdds, final long time)
@@ -237,7 +270,7 @@ public abstract class LpmChart extends ApplicationFrame
 			{
 				if (bet.getOdds() != currentBet.getOdds())
 				{
-					result.get(i).add(new SetOdds(bet.getTime(), bet.getDate(), bet.getOdds(), bet.getLayPrice(), true));
+					result.get(i).add(new SetOdds(bet.getTime(), bet.getDate(), bet.getOdds(), bet.getBestBackPrice(), bet.getBestLayPrice(), true));
 				}
 				currentBet = bet;
 			}
@@ -249,7 +282,7 @@ public abstract class LpmChart extends ApplicationFrame
 	private boolean isCandidateBet(final SetOdds bet, final long time)
 	{
 		final long interval = 300000; // 5 minutes
-		return Math.abs(time - bet.getTime()) <= interval || (bet.getTime() < time && bet.getOdds() == 1000);
+		return Math.abs(time - bet.getTime()) <= interval;
 	}
 
 	private SetOdds findMatchingLayOffer(final List<SetOdds> setOdds, final long time)
@@ -268,37 +301,5 @@ public abstract class LpmChart extends ApplicationFrame
 		}
 
 		return candidateBet;
-	}
-
-	protected double [] getCorrectedMatchOdds(final List<String[]> matchOddsData)
-	{
-		double overround = 0;
-		for (int i = 0; i < matchOddsData.size(); i++)
-		{
-			overround += 1 / Double.parseDouble(matchOddsData.get(i)[LPM_INDEX]);
-		}
-
-		final double [] result = new double[matchOddsData.size()];
-		for (int i = 0; i < result.length; i++)
-		{
-			result[i] = Double.parseDouble(matchOddsData.get(i)[LPM_INDEX]) * overround;
-		}
-		return result;
-	}
-
-	protected double [] getCorrectedSetOdds(final List<String[]> setOddsData)
-	{
-		double overround = 0;
-		for (int i = 0; i < setOddsData.size(); i++)
-		{
-			overround += 1 / Double.parseDouble(setOddsData.get(i)[LPM_INDEX]);
-		}
-
-		final double [] result = new double[setOddsData.size()];
-		for (int i = 0; i < result.length; i++)
-		{
-			result[i] = Double.parseDouble(setOddsData.get(i)[LPM_INDEX]) * overround;
-		}
-		return result;
 	}
 }

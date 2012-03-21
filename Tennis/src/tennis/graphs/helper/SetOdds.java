@@ -5,15 +5,17 @@ public class SetOdds
 	private final long time;
 	private final String date;
 	private final double lpm;
-	private final double layPrice;
+	private double bestBackPrice;
+	private double bestLayPrice;
 	private final boolean matchedBet;
 
-	public SetOdds(final long time, final String date, final double lpm, final double layPrice, final boolean matchedBet)
+	public SetOdds(final long time, final String date, final double lpm, final double bestBackPrice, final double bestLayPrice, final boolean matchedBet)
 	{
 		this.time = time;
 		this.date = date;
 		this.lpm = lpm;
-		this.layPrice = layPrice;
+		this.bestBackPrice = bestBackPrice;
+		this.bestLayPrice = bestLayPrice;
 		this.matchedBet = matchedBet;
 	}
 
@@ -47,9 +49,24 @@ public class SetOdds
 		return lpm;
 	}
 
-	public double getLayPrice()
+	public double getBestBackPrice()
 	{
-		return layPrice == -1 ? 1000 : layPrice;
+		return bestBackPrice;
+	}
+
+	public double getBestLayPrice()
+	{
+		return bestLayPrice;
+	}
+
+	public void modifyBackPrice(final double price)
+	{
+		bestBackPrice = price;
+	}
+
+	public void modifyLayPrice(final double price)
+	{
+		bestLayPrice = price;
 	}
 
 	public boolean isMatchedBet()

@@ -17,9 +17,9 @@ import tennis.graphs.helper.PlayerOdds;
 import tennis.graphs.helper.SetOdds;
 import au.com.bytecode.opencsv.CSVReader;
 
-public class DefaultLpmChart extends LpmChart
+public class DefaultOddsChart extends OddsChart
 {
-	public DefaultLpmChart(final PlayerOdds favourite, final PlayerOdds underdog) throws IOException
+	public DefaultOddsChart(final PlayerOdds favourite, final PlayerOdds underdog) throws IOException
 	{
 		super(favourite.getTitle() + " (" + favourite.getSurname() + ")", favourite, underdog);
 	}
@@ -53,7 +53,7 @@ public class DefaultLpmChart extends LpmChart
 	    	final long time = favouriteMatchOdds.get(i).getTime();
 			final Second second = new Second(new Date(time));
 			final double matchOddsPercentage = favouriteMatchOdds.get(i).getOddsPercentage();
-			final double setOddsPercentage = calculateSetOddsPercentage(favouriteSetOdds, underdogSetOdds, time);
+			final double setOddsPercentage = calculateCorrectedSetOddsPercentage(favouriteSetOdds, underdogSetOdds, time);
 
 			matchOddsSeries.add(second, matchOddsPercentage);
 			setBettingSeries.add(second, setOddsPercentage);
