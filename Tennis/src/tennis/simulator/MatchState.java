@@ -3,6 +3,9 @@ package tennis.simulator;
 import java.util.ArrayList;
 import java.util.List;
 
+import tennis.omalley.CurrentGameScore;
+import tennis.omalley.CurrentMatchScore;
+import tennis.omalley.CurrentSetScore;
 import tennis.omalley.OMalley;
 
 public class MatchState implements Score
@@ -184,9 +187,10 @@ public class MatchState implements Score
 
 	public double getTargetPrediction(final double p, final double q, final boolean serving)
 	{
-		return OMalley.matchInProgress(p, q, targetSets, opponentSets, set.getTargetGames(), set.getOpponentGames(),
-				  					  	     game.getTargetPoints(), game.getOpponentPoints(), isServingNext(),
-											 numSetsForWin);
+		return OMalley.matchInProgress(p, q, new CurrentMatchScore(targetSets, opponentSets),
+											 new CurrentSetScore(set.getTargetGames(), set.getOpponentGames()),
+				  					  	     new CurrentGameScore(game.getTargetPoints(), game.getOpponentPoints()),
+				  					  	     isServingNext(), numSetsForWin);
 	}
 
 	public Double getTargetInjuryPrediction(final double p, final double q, final double risk, final boolean serving)

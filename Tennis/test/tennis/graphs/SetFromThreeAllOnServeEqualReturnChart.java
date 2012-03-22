@@ -7,7 +7,7 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.RefineryUtilities;
 
-import tennis.graphs.XYLineChart;
+import tennis.omalley.CurrentSetScore;
 import tennis.omalley.OMalley;
 
 public class SetFromThreeAllOnServeEqualReturnChart extends XYLineChart
@@ -23,7 +23,7 @@ public class SetFromThreeAllOnServeEqualReturnChart extends XYLineChart
 		final XYSeries series = new XYSeries("ThreeAllOnServe");
 	    for(double i = 0; i < 1.0; i += 0.01)
 	    {
-			series.add(i, OMalley.setInProgress(i, 0.5, 3, 3, true));
+			series.add(i, OMalley.setInProgress(i, 0.5, new CurrentSetScore(3, 3), true));
 	    }
 
 	    final XYSeriesCollection dataset = new XYSeriesCollection();

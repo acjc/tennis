@@ -64,14 +64,14 @@ public final class OMalley
 
 	public static double gameInProgress(final double probabilityOfWinningPoint)
 	{
-		return gameInProgress(probabilityOfWinningPoint, 0, 0);
+		return gameInProgress(probabilityOfWinningPoint, new CurrentGameScore());
 	}
 
-	public static double gameInProgress(final double probabilityOfWinningPoint, final int targetScore, final int opponentScore)
+	public static double gameInProgress(final double probabilityOfWinningPoint, final CurrentGameScore gameScore)
 	{
 		final double p = probabilityOfWinningPoint;
-		final int a = targetScore;
-		final int b = opponentScore;
+		final int a = gameScore.getTargetPoints();
+		final int b = gameScore.getOpponentPoints();
 
 		if (a > b && a >= 4 && Math.abs(a - b) >= 2)
 		{
@@ -87,27 +87,28 @@ public final class OMalley
 		}
 		else
 		{
-			return p * gameInProgress(p, a + 1, b) + (1 - p) * gameInProgress(p, a, b + 1);
+			return p * gameInProgress(p, gameScore.incTargetPoints()) + (1 - p) * gameInProgress(p, gameScore.incOpponentPoints());
 		}
 	}
 
 	public static double setInProgress(final double onServe, final double returnServe, final boolean servingNext)
 	{
-		return setInProgress(onServe, returnServe, 0, 0, 0, 0, servingNext);
+		return setInProgress(onServe, returnServe, new CurrentSetScore(), new CurrentGameScore(), servingNext);
 	}
 
-	public static double setInProgress(final double onServe, final double returnServe, final int targetGames, final int opponentGames, final boolean servingNext)
+	public static double setInProgress(final double onServe, final double returnServe, final CurrentSetScore setScore, final boolean servingNext)
 	{
-		return setInProgress(onServe, returnServe, targetGames, opponentGames, 0, 0, servingNext);
+		return setInProgress(onServe, returnServe, setScore, new CurrentGameScore(), servingNext);
 	}
 
 	public static double setInProgress(final double onServe, final double returnServe,
-								   	   final int targetGames, final int opponentGames,
-								   	   final int targetPoints, final int opponentPoints,
+								   	   final CurrentSetScore setScore, final CurrentGameScore gameScore,
 								   	   final boolean servingNext)
 	{
 		final double p = onServe;
 		final double q = returnServe;
+		final int targetGames = setScore.getTargetGames();
+		final int opponentGames = setScore.getOpponentGames();
 
 		if (targetGames == 7 || (targetGames == 6 && opponentGames < 5))
 		{
@@ -121,43 +122,43 @@ public final class OMalley
 		{
 			return tiebreak(p, q);
 		}
-		final double g = (servingNext) ? gameInProgress(p, targetPoints, opponentPoints) : gameInProgress(q, targetPoints, opponentPoints);
-		return g * setInProgress(p, q, targetGames + 1, opponentGames, 0, 0, !servingNext) + (1 - g) * setInProgress(p, q, targetGames, opponentGames + 1, 0, 0, !servingNext);
+		final double g = (servingNext) ? gameInProgress(p, gameScore) : gameInProgress(q, gameScore);
+		return g * setInProgress(p, q, setScore.incTargetGames(), new CurrentGameScore(), !servingNext) + (1 - g) * setInProgress(p, q, setScore.incOpponentGames(), new CurrentGameScore(), !servingNext);
 	}
 
 	public static double matchInProgress(final double onServe, final double returnServe,
-								     	 final int targetSets, final int opponentSets,
-								     	 final int targetGames, final int opponentGames,
-								     	 final int targetPoints, final int opponentPoints,
+								     	 final CurrentMatchScore matchScore,
+								     	 final CurrentSetScore setScore,
+								     	 final CurrentGameScore gameScore,
 								     	 final boolean servingNext, final int numSetsForWin)
 	{
 		final double p = onServe;
 		final double q = returnServe;
 
-		if (targetSets == numSetsForWin)
+		if (matchScore.getTargetSets() == numSetsForWin)
 		{
 			return 1.0;
 		}
-		if (opponentSets == numSetsForWin)
+		if (matchScore.getOpponentSets() == numSetsForWin)
 		{
 			return 0.0;
 		}
 		else // Doesn't matter who serves first the next set because you don't know who served at the end of the previous set
 		{
-			final double s = setInProgress(p, q, targetGames, opponentGames, targetPoints, opponentPoints, servingNext);
-			return s * matchInProgress(p, q, targetSets + 1, opponentSets, numSetsForWin) + (1 - s) * matchInProgress(p, q, targetSets, opponentSets + 1, numSetsForWin);
+			final double s = setInProgress(p, q, setScore, gameScore, servingNext);
+			return s * matchInProgress(p, q, matchScore.incTargetSets(), numSetsForWin) + (1 - s) * matchInProgress(p, q, matchScore.incOpponentSets(), numSetsForWin);
 		}
 	}
 
 	public static double matchInProgress(final double onServe, final double returnServe,
-									     final int targetSets, final int opponentSets,
+									     final CurrentMatchScore matchScore,
 									     final int numSetsForWin)
 	{
-		return matchInProgress(onServe, returnServe, targetSets, opponentSets, 0, 0, 0, 0, (Math.random() < 0.5) ? true : false, numSetsForWin);
+		return matchInProgress(onServe, returnServe, matchScore, new CurrentSetScore(), new CurrentGameScore(), (Math.random() < 0.5) ? true : false, numSetsForWin);
 	}
 
 	public static double matchInProgress(final double onServe, final double returnServe, final int numSetsForWin)
 	{
-		return matchInProgress(onServe, returnServe, 0, 0, numSetsForWin);
+		return matchInProgress(onServe, returnServe, new CurrentMatchScore(), numSetsForWin);
 	}
 }

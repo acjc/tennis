@@ -31,22 +31,17 @@ public class LpmOddsChart extends OddsChart
 
 		final TimeSeries matchOddsSeries = new TimeSeries("Match Odds");
 		final CSVReader favouriteMatchOddsReader = favourite.getMatchOdds();
-		final CSVReader underdogMatchOddsReader = underdog.getMatchOdds();
 
 		final TimeSeries setBettingSeries = new TimeSeries("Set Odds");
 		final List<CSVReader> favouriteSetOddsReaders = new ArrayList<CSVReader>();
-		final List<CSVReader> underdogSetOddsReaders = new ArrayList<CSVReader>();
 		favouriteSetOddsReaders.addAll(favourite.getSetOdds());
-		underdogSetOddsReaders.addAll(underdog.getSetOdds());
 
 		final TimeSeries oddsDifferenceSeries = new TimeSeries("Odds Difference");
 
 		final FileOutputStream fout = new FileOutputStream ("doc\\adam.txt");
 
 		final List<MatchOdds> favouriteMatchOdds = parseMatchOdds(favouriteMatchOddsReader);
-		final List<MatchOdds> underdogMatchOdds = parseMatchOdds(underdogMatchOddsReader);
 		final List<List<SetOdds>> favouriteSetOdds = parseSetOdds(favouriteSetOddsReaders);
-		final List<List<SetOdds>> underdogSetOdds = parseSetOdds(underdogSetOddsReaders);
 
 		final int matchLength = favouriteMatchOdds.size() <= favouriteSetOdds.get(0).size() ? favouriteMatchOdds.size() : favouriteSetOdds.get(0).size();
 

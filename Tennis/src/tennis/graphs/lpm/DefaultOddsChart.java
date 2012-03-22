@@ -31,7 +31,6 @@ public class DefaultOddsChart extends OddsChart
 
 		final TimeSeries matchOddsSeries = new TimeSeries("Match Odds");
 		final CSVReader favouriteMatchOddsReader = favourite.getMatchOdds();
-		final CSVReader underdogMatchOddsReader = underdog.getMatchOdds();
 
 		final TimeSeries setBettingSeries = new TimeSeries("Set Odds");
 		final List<CSVReader> favouriteSetOddsReaders = new ArrayList<CSVReader>();
@@ -44,7 +43,6 @@ public class DefaultOddsChart extends OddsChart
 		final FileOutputStream fout = new FileOutputStream ("doc\\adam.txt");
 
 		final List<MatchOdds> favouriteMatchOdds = parseMatchOdds(favouriteMatchOddsReader);
-		final List<MatchOdds> underdogMatchOdds = parseMatchOdds(underdogMatchOddsReader);
 		final List<List<SetOdds>> favouriteSetOdds = parseSetOdds(favouriteSetOddsReaders);
 		final List<List<SetOdds>> underdogSetOdds = parseSetOdds(underdogSetOddsReaders);
 
