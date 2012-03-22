@@ -311,7 +311,7 @@ public abstract class OddsChart extends ApplicationFrame
 	private boolean isCandidateBet(final SetOdds bet, final long time)
 	{
 		final long interval = 300000; // 5 minutes
-		return Math.abs(time - bet.getTime()) <= interval || bet.getOdds() >= 500;
+		return Math.abs(time - bet.getTime()) <= interval || (bet.getTime() > time && bet.getOdds() >= 600);
 	}
 
 	private SetOdds findMatchingLayOffer(final List<SetOdds> setOdds, final long time)
