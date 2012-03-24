@@ -127,9 +127,7 @@ public final class OMalley
 	}
 
 	public static double matchInProgress(final double onServe, final double returnServe,
-								     	 final CurrentMatchScore matchScore,
-								     	 final CurrentSetScore setScore,
-								     	 final CurrentGameScore gameScore,
+								     	 final CurrentMatchScore matchScore, final CurrentSetScore setScore, final CurrentGameScore gameScore,
 								     	 final boolean servingNext, final int numSetsForWin)
 	{
 		final double p = onServe;
