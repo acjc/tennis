@@ -1,8 +1,5 @@
 package tennis.simulator;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import tennis.omalley.CurrentGameScore;
 import tennis.omalley.CurrentMatchScore;
 import tennis.omalley.CurrentSetScore;
@@ -17,10 +14,11 @@ public class MatchState implements Score
 
 	private final int numSetsForWin;
 
-	private int tiebreaks = 0;
+	private int numDeuces = 0;
+	private int totalPointsPostDeuce = 0;
+	private int numTiebreaks = 0;
+	private int totalTiebreakPoints = 0;
 	private final double[][] setScores = new double[8][8];
-
-	private final List<Double> targetPrediction;
 
 	public MatchState()
 	{
@@ -40,7 +38,6 @@ public class MatchState implements Score
 		this.set = set;
 		this.game = game;
 		this.numSetsForWin = numSetsForWin;
-		targetPrediction = new ArrayList<Double>();
 	}
 
 	public MatchState(final int numSetsToWin)
@@ -98,8 +95,10 @@ public class MatchState implements Score
 	{
 		if (game.tiebreakOver())
 		{
+			totalTiebreakPoints += game.getTargetPoints();
+			totalTiebreakPoints += game.getOpponentPoints();
+			numTiebreaks++;
 			resetGame();
-			tiebreaks++;
 			return true;
 		}
 		return false;
@@ -109,6 +108,12 @@ public class MatchState implements Score
 	{
 		if (game.over())
 		{
+			if (game.wentToDeuce())
+			{
+				numDeuces++;
+				totalPointsPostDeuce += game.getTargetPoints() - 3;
+				totalPointsPostDeuce += game.getOpponentPoints() - 3;
+			}
 			resetGame();
 			return true;
 		}
@@ -175,9 +180,24 @@ public class MatchState implements Score
 		game.coinToss();
 	}
 
-	public int tiebreaks()
+	public int getNumTiebreaks()
 	{
-		return tiebreaks;
+		return numTiebreaks;
+	}
+
+	public int getTotalTiebreakPoints()
+	{
+		return totalTiebreakPoints;
+	}
+
+	public int getNumDeuces()
+	{
+		return numDeuces;
+	}
+
+	public int getTotalPointsPostDeuce()
+	{
+		return totalPointsPostDeuce;
 	}
 
 	public double getSetScores(final int i, final int j)

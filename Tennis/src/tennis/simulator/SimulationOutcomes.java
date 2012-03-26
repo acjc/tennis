@@ -14,7 +14,10 @@ public class SimulationOutcomes
 	private final double[][] matchScores = new double[4][4];
 	private final double[][] setScores = new double[8][8];
 	private double targetMatchesWon = 0;
-	private double tiebreaks = 0;
+	private double numDeuces = 0;
+	private double totalPointsPostDeuce = 0;
+	private double numTiebreaks = 0;
+	private double totalTiebreakPoints = 0;
 	private double setsPlayed = 0;
 	private double simulationTime;
 
@@ -66,12 +69,12 @@ public class SimulationOutcomes
 
 	public double percentageTiebreaksPlayed()
 	{
-		return round((tiebreaks / setsPlayed) * 100);
+		return round((numTiebreaks / setsPlayed) * 100);
 	}
 
 	public double oddsOfTiebreak()
 	{
-		return tiebreaks == 0 ? 0 : round(setsPlayed / tiebreaks);
+		return numTiebreaks == 0 ? 0 : round(setsPlayed / numTiebreaks);
 	}
 
 	public double oddsOfTargetWin()
@@ -91,7 +94,10 @@ public class SimulationOutcomes
 		final int opponentSets = matchState.getOpponentSets();
 
 		setsPlayed += targetSets + opponentSets;
-		tiebreaks += matchState.tiebreaks();
+		numDeuces += matchState.getNumDeuces();
+		totalPointsPostDeuce += matchState.getTotalPointsPostDeuce();
+		numTiebreaks += matchState.getNumTiebreaks();
+		totalTiebreakPoints += matchState.getTotalTiebreakPoints();
 
 		matchScores[targetSets][opponentSets]++;
 		for (int i = 0; i <= 7; i++)
@@ -106,6 +112,16 @@ public class SimulationOutcomes
 		{
 			targetMatchesWon++;
 		}
+	}
+
+	public double avgTiebreakPoints()
+	{
+		return numTiebreaks == 0 ? 0 : totalTiebreakPoints / numTiebreaks;
+	}
+
+	public double avgPointsPostDeuce()
+	{
+		return numDeuces == 0 ? 0 : totalPointsPostDeuce / numDeuces;
 	}
 
 	public void addPrediction(final double p, final double q, final boolean serving, final MatchState matchState) throws IOException
@@ -189,7 +205,7 @@ public class SimulationOutcomes
 				}
 			}
 		}
-		System.out.println("Total tiebreaks played = " + tiebreaks + ", Total sets played = " + setsPlayed);
+		System.out.println("Total tiebreaks played = " + numTiebreaks + ", Total sets played = " + setsPlayed);
 		System.out.println("Chance of tiebreak: " + percentageTiebreaksPlayed() + "%, Odds = " + oddsOfTiebreak());
 	}
 }

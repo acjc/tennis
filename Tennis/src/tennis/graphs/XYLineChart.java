@@ -32,7 +32,7 @@ public abstract class XYLineChart extends ApplicationFrame
 	protected void buildChart() throws IOException
 	{
 		final ChartPanel chartPanel = new ChartPanel(createXYLineChart(createDataset()));
-	    chartPanel.setPreferredSize(new Dimension(500, 270));
+	    chartPanel.setPreferredSize(new Dimension(1000, 570));
 	    setContentPane(chartPanel);
 	}
 

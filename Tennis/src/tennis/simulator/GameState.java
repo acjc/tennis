@@ -94,4 +94,9 @@ public class GameState implements Score
 	{
 		serving = (Math.random() < 0.5) ? true : false;
 	}
+
+	public boolean wentToDeuce()
+	{
+		return targetPoints >= 3 && opponentPoints >= 3;
+	}
 }

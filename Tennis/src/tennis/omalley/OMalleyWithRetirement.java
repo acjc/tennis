@@ -2,34 +2,64 @@ package tennis.omalley;
 
 import static java.lang.Math.pow;
 
-public class OMalleyWithRetirement
+public final class OMalleyWithRetirement
 {
-	public static double matchInProgressWithRetirement(final double onServe, final double returnServe,
-													   final CurrentMatchScore matchScore, final CurrentSetScore setScore, final CurrentGameScore gameScore,
-													   final boolean servingNext, final int numSetsForWin, final double retirementRisk)
+	public static int levels = 0;
+
+	public static double tiebreakWithRetirement(final double onServe, final double returnServe,
+												final double retirementRisk, final double pointsRemaining, final double expectedPoints)
 	{
 		final double p = onServe;
 		final double q = returnServe;
 
-		if (matchScore.getTargetSets() == numSetsForWin)
+		double result = 0;
+		for (final double[] a : Matrices.tbMatrix)
+		{
+			result += a[0] * pow(p, a[1]) * pow(1 - p, a[2]) * pow(q, a[3]) * pow(1 - q, a[4]) * pow(d(p, q), a[5]);
+		}
+//		final double r = (pointsRemaining + ((1 - retirementRisk) * (expectedPoints - pointsRemaining))) / expectedPoints;
+		return result;
+	}
+
+	private static double d(final double p, final double q)
+	{
+		return p * q * pow(1 - (p * (1 - q) + (1 - p) * q), -1);
+	}
+
+	public static double gameInProgressWithRetirement(final double probabilityOfWinningPoint, final CurrentGameScore gameScore,
+													  final double retirementRisk, final double pointsRemaining, final double expectedPoints)
+	{
+		final double p = probabilityOfWinningPoint;
+		final int a = gameScore.getTargetPoints();
+		final int b = gameScore.getOpponentPoints();
+
+		if (a > b && a >= 4 && Math.abs(a - b) >= 2)
 		{
 			return 1.0;
 		}
-		if (matchScore.getOpponentSets() == numSetsForWin)
+		if (b > a && b >= 4 && Math.abs(a - b) >= 2)
 		{
 			return 0.0;
 		}
-		else // Doesn't matter who serves first the next set because you don't know who served at the end of the previous set
+//		double r = (pointsRemaining + ((1 - retirementRisk) * (expectedPoints - pointsRemaining))) / expectedPoints;
+		if (a == b && a >= 3) // Deuce (sum of an infinite geometric series)
 		{
-			final double s = setInProgressWithRetirement(p, q, setScore, gameScore, servingNext, retirementRisk);
-			return s * matchInProgressWithRetirement(p, q, matchScore.incTargetSets(), new CurrentSetScore(), new CurrentGameScore(), (Math.random() < 0.5) ? true : false, numSetsForWin, retirementRisk)
-				 + (1 - s) * matchInProgressWithRetirement(p, q, matchScore.incOpponentSets(), new CurrentSetScore(), new CurrentGameScore(), (Math.random() < 0.5) ? true : false, numSetsForWin, retirementRisk);
+			return Math.pow(p, 2) / (1 - 2 * p * (1 - p));
+		}
+		else
+		{
+			levels++;
+			final double r = (pointsRemaining + ((1 - (retirementRisk / 5)) * (expectedPoints - pointsRemaining))) / expectedPoints;
+//			final double r = Math.pow(retirementRisk, 1 / pointsRemaining);
+//			System.out.println(r);
+			return r * (p * gameInProgressWithRetirement(p, gameScore.incTargetPoints(), retirementRisk, pointsRemaining, expectedPoints)
+						+ (1 - p) * gameInProgressWithRetirement(p, gameScore.incOpponentPoints(), retirementRisk, pointsRemaining, expectedPoints));
 		}
 	}
 
-	private static double setInProgressWithRetirement(final double onServe, final double returnServe,
-												      final CurrentSetScore setScore, final CurrentGameScore gameScore,
-												      final boolean servingNext, final double retirementRisk)
+	public static double setInProgressWithRetirement(final double onServe, final double returnServe,
+													 final CurrentSetScore setScore, final CurrentGameScore gameScore,
+													 final boolean servingNext, final double retirementRisk, final double pointsRemaining, final double expectedPoints)
 	{
 		final double p = onServe;
 		final double q = returnServe;
@@ -46,53 +76,33 @@ public class OMalleyWithRetirement
 		}
 		if (targetGames == 6 && opponentGames == 6)
 		{
-			return tiebreak(p, q, retirementRisk);
+			return tiebreakWithRetirement(p, q, retirementRisk, pointsRemaining, expectedPoints);
 		}
-		final double g = (servingNext) ? gameInProgressWithRetirement(p, gameScore, retirementRisk) : gameInProgressWithRetirement(q, gameScore, retirementRisk);
-		return g * setInProgressWithRetirement(p, q, setScore.incTargetGames(), new CurrentGameScore(), !servingNext, retirementRisk)
-		     + (1 - g) * setInProgressWithRetirement(p, q, setScore.incOpponentGames(), new CurrentGameScore(), !servingNext, retirementRisk);
+		final double g = (servingNext) ? gameInProgressWithRetirement(p, gameScore, retirementRisk, pointsRemaining, expectedPoints) : gameInProgressWithRetirement(q, gameScore, retirementRisk, pointsRemaining, expectedPoints);
+		return g * setInProgressWithRetirement(p, q, setScore.incTargetGames(), new CurrentGameScore(), !servingNext, retirementRisk, pointsRemaining, expectedPoints)
+			 + (1 - g) * setInProgressWithRetirement(p, q, setScore.incOpponentGames(), new CurrentGameScore(), !servingNext, retirementRisk, pointsRemaining, expectedPoints);
 	}
 
-	private static double tiebreak(final double onServe, final double returnServe, final double retirementRisk)
+	public static double matchInProgressWithRetirement(final double onServe, final double returnServe,
+								     	 			   final CurrentMatchScore matchScore, final CurrentSetScore setScore, final CurrentGameScore gameScore,
+								     	 			   final boolean servingNext, final int numSetsForWin, final double retirementRisk, final double pointsRemaining, final double expectedPoints)
 	{
 		final double p = onServe;
 		final double q = returnServe;
 
-		double result = 0;
-		for (final double[] a : Matrices.tbMatrix)
-		{
-			result += a[0] * pow(p, a[1]) * pow(1 - p, a[2]) * pow(q, a[3]) * pow(1 - q, a[4]) * pow(d(p, q), a[5]);
-		}
-		return result * (1 - retirementRisk);
-	}
-
-	private static double d(final double p, final double q)
-	{
-		return p * q * pow(1 - (p * (1 - q) + (1 - p) * q), -1);
-	}
-
-	private static double gameInProgressWithRetirement(final double probabilityOfWinningPoint, final CurrentGameScore gameScore, final double retirementRisk)
-	{
-		final double p = probabilityOfWinningPoint;
-		final int a = gameScore.getTargetPoints();
-		final int b = gameScore.getOpponentPoints();
-
-		if (a > b && a >= 4 && Math.abs(a - b) >= 2)
+		if (matchScore.getTargetSets() == numSetsForWin)
 		{
 			return 1.0;
 		}
-		if (b > a && b >= 4 && Math.abs(a - b) >= 2)
+		if (matchScore.getOpponentSets() == numSetsForWin)
 		{
 			return 0.0;
 		}
-		if (a == b && a >= 3) // Deuce (sum of an infinite geometric series)
+		else // Doesn't matter who serves first the next set because you don't know who served at the end of the previous set
 		{
-			return Math.pow(p, 2) / (1 - 2 * p * (1 - p));
-		}
-		else
-		{
-			final double r = 1 - retirementRisk;
-			return (p * gameInProgressWithRetirement(p, gameScore.incTargetPoints(), retirementRisk) + (1 - p) * gameInProgressWithRetirement(p, gameScore.incOpponentPoints(), retirementRisk)) * r;
+			final double s = setInProgressWithRetirement(p, q, setScore, gameScore, servingNext, retirementRisk, pointsRemaining, expectedPoints);
+			return s * matchInProgressWithRetirement(p, q, matchScore.incTargetSets(), new CurrentSetScore(), new CurrentGameScore(), (Math.random() < 0.5) ? true : false, numSetsForWin, retirementRisk, pointsRemaining, expectedPoints)
+				 + (1 - s) * matchInProgressWithRetirement(p, q, matchScore.incOpponentSets(), new CurrentSetScore(), new CurrentGameScore(), (Math.random() < 0.5) ? true : false, numSetsForWin, retirementRisk, pointsRemaining, expectedPoints);
 		}
 	}
 }
