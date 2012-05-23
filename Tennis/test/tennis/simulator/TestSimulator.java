@@ -32,11 +32,29 @@ public class TestSimulator
 	}
 
 	@Test
+	public void testThreeSetMatch() throws IOException
+	{
+		// Huang results
+		double mwp = round(simulator.simulate(0.60, 0.43, new MatchState(1, 1, new SetState(4, 3), new GameState(true), 2), true, 400000).proportionMatchesWon());
+		assertThat(mwp, equalTo(0.891));
+		System.out.println(mwp);
+
+		mwp = round(simulator.simulate(0.65, 0.46, new MatchState(1, 1, new SetState(4, 3), new GameState(true), 2), true, 400000).proportionMatchesWon());
+		assertThat(mwp, equalTo(0.968));
+		System.out.println(mwp);
+	}
+
+
+	@Test
 	public void testFiveSetMatch() throws IOException
 	{
-		// Liu result
-		final double mwp = round(simulator.simulate(0.55, 0.55, 400000).proportionMatchesWon());
+		// Liu results
+		double mwp = round(simulator.simulate(0.55, 0.55, 400000).proportionMatchesWon());
 		assertThat(mwp, equalTo(0.953));
+		System.out.println(mwp);
+
+		mwp = round(simulator.simulate(0.51, 0.51, 400000).proportionMatchesWon());
+		assertThat(mwp, equalTo(0.632));
 		System.out.println(mwp);
 	}
 

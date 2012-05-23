@@ -10,9 +10,9 @@ import org.jfree.ui.RefineryUtilities;
 import tennis.omalley.CurrentSetScore;
 import tennis.omalley.OMalley;
 
-public class SetFromFourFiveOnServeEqualReturnChart extends XYLineChart
+public class SetFromFourFiveOnServeStaticReturnChart extends XYLineChart
 {
-	public SetFromFourFiveOnServeEqualReturnChart() throws IOException
+	public SetFromFourFiveOnServeStaticReturnChart() throws IOException
 	{
 	    super("Probability of winning the set when returning at 4-5", "p", "setInPlay(p, 0.5, 4, 5, false)");
 	}
@@ -34,7 +34,7 @@ public class SetFromFourFiveOnServeEqualReturnChart extends XYLineChart
 
 	public static void main(final String[] args) throws IOException
 	{
-	    final SetFromFourFiveOnServeEqualReturnChart chart = new SetFromFourFiveOnServeEqualReturnChart();
+	    final SetFromFourFiveOnServeStaticReturnChart chart = new SetFromFourFiveOnServeStaticReturnChart();
 	    chart.buildChart();
 	    chart.pack();
 	    RefineryUtilities.centerFrameOnScreen(chart);

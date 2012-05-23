@@ -7,14 +7,13 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.RefineryUtilities;
 
-import tennis.graphs.XYLineChart;
 import tennis.omalley.OMalley;
 
-public class BestOfThreeEqualReturnChart extends XYLineChart
+public class BestOfThreeStaticReturnChart extends XYLineChart
 {
-	public BestOfThreeEqualReturnChart() throws IOException
+	public BestOfThreeStaticReturnChart() throws IOException
 	{
-	    super("Probability of winning a best-of-3 set match", "p", "bestOfThree(p, 0.5)");
+	    super("Probability of winning a best-of-3 set match with return pwp 0.5", "p", "bestOfThree(p, 0.5)");
 	}
 
 	@Override
@@ -34,7 +33,7 @@ public class BestOfThreeEqualReturnChart extends XYLineChart
 
 	public static void main(final String[] args) throws IOException
 	{
-	    final BestOfThreeEqualReturnChart chart = new BestOfThreeEqualReturnChart();
+	    final BestOfThreeStaticReturnChart chart = new BestOfThreeStaticReturnChart();
 	    chart.buildChart();
 	    chart.pack();
 	    RefineryUtilities.centerFrameOnScreen(chart);

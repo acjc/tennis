@@ -7,23 +7,22 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.RefineryUtilities;
 
-import tennis.omalley.CurrentSetScore;
 import tennis.omalley.OMalley;
 
-public class SetFromFourFiveReturningEqualReturnChart extends XYLineChart
+public class BestOfThreeReturnSlightlyBetterChart extends XYLineChart
 {
-	public SetFromFourFiveReturningEqualReturnChart() throws IOException
+	public BestOfThreeReturnSlightlyBetterChart() throws IOException
 	{
-	    super("Probability of winning the set when on serve at 4-5", "p", "setInPlay(p, 0.5, 4, 5, true)");
+	    super("Probability of winning a best-of-3 set match with return pwp 0.02 better", "p", "bestOfThree(p, 1-(p-0.02)");
 	}
 
 	@Override
 	protected XYDataset createDataset()
 	{
-		final XYSeries series = new XYSeries("FourFiveOnServe");
-	    for(double i = 0; i < 1.0; i += 0.01)
+		final XYSeries series = new XYSeries("BestOfThree");
+	    for(double i = 0.02; i <= 1.0; i += 0.01)
 	    {
-			series.add(i, OMalley.setInProgress(i, 0.5, new CurrentSetScore(4, 5), true));
+			series.add(i, OMalley.bestOfThree(i, 1 - (i - 0.02)));
 	    }
 
 	    final XYSeriesCollection dataset = new XYSeriesCollection();
@@ -34,7 +33,7 @@ public class SetFromFourFiveReturningEqualReturnChart extends XYLineChart
 
 	public static void main(final String[] args) throws IOException
 	{
-	    final SetFromFourFiveReturningEqualReturnChart chart = new SetFromFourFiveReturningEqualReturnChart();
+	    final BestOfThreeReturnSlightlyBetterChart chart = new BestOfThreeReturnSlightlyBetterChart();
 	    chart.buildChart();
 	    chart.pack();
 	    RefineryUtilities.centerFrameOnScreen(chart);

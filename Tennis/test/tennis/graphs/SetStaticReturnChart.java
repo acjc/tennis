@@ -10,9 +10,9 @@ import org.jfree.ui.RefineryUtilities;
 import tennis.graphs.XYLineChart;
 import tennis.omalley.OMalley;
 
-public class SetEqualReturnChart extends XYLineChart
+public class SetStaticReturnChart extends XYLineChart
 {
-	public SetEqualReturnChart() throws IOException
+	public SetStaticReturnChart() throws IOException
 	{
 	    super("Probability of winning a set", "p", "set(p, 0.5)");
 	}
@@ -34,7 +34,7 @@ public class SetEqualReturnChart extends XYLineChart
 
 	public static void main(final String[] args) throws IOException
 	{
-	    final SetEqualReturnChart chart = new SetEqualReturnChart();
+	    final SetStaticReturnChart chart = new SetStaticReturnChart();
 	    chart.buildChart();
 	    chart.pack();
 	    RefineryUtilities.centerFrameOnScreen(chart);
