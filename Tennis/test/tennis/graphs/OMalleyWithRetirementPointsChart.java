@@ -14,7 +14,7 @@ import tennis.omalley.OMalleyCount;
 import tennis.omalley.OMalleyCount.MatchAnalysis;
 import tennis.omalley.OMalleyWithRetirement;
 
-public class OMalleyWithRetirementChart extends XYLineChart
+public class OMalleyWithRetirementPointsChart extends XYLineChart
 {
 	private final double p;
 	private final double q;
@@ -22,9 +22,9 @@ public class OMalleyWithRetirementChart extends XYLineChart
 	private final int numSetsToWin;
 	private final double retirementRisk;
 
-	public OMalleyWithRetirementChart(final double p, final double q, final boolean servingNext, final int numSetsToWin, final double retirementRisk) throws IOException
+	public OMalleyWithRetirementPointsChart(final double p, final double q, final boolean servingNext, final int numSetsToWin, final double retirementRisk) throws IOException
 	{
-		super("OMalleyWithRetirement", "Target Games", "MWP");
+		super("OMalleyWithRetirementPoints", "Target Games", "MWP");
 		this.p = p;
 		this.q = q;
 		this.servingNext = servingNext;
@@ -81,7 +81,7 @@ public class OMalleyWithRetirementChart extends XYLineChart
 
 	public static void main(final String[] args) throws IOException
 	{
-	    final OMalleyWithRetirementChart chart = new OMalleyWithRetirementChart(0.55, 0.46, true, 3, 0.2);
+	    final OMalleyWithRetirementPointsChart chart = new OMalleyWithRetirementPointsChart(0.55, 0.46, true, 3, 0.2);
 	    chart.buildChart();
 	    chart.pack();
 	    RefineryUtilities.centerFrameOnScreen(chart);

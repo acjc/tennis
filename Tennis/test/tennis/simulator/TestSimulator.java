@@ -1,9 +1,7 @@
 package tennis.simulator;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.lessThan;
+import static org.hamcrest.Matchers.*;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -17,12 +15,14 @@ public class TestSimulator
 	@Test
 	public void testPrediction() throws IOException
 	{
+		// One run triggers injury model
 		new Simulator().simulate(0.6, 0.4, 1).targetOneBallPredictionChart();
 	}
 
 	@Test
 	public void testPercentageWon() throws IOException
 	{
+		// Basic match assertions
 		assertThat(simulator.simulate(1, 0.3, 100).proportionMatchesWon(), equalTo(1.0));
 		assertThat(simulator.simulate(0, 0.3, 100).proportionMatchesWon(), equalTo(0.0));
 
@@ -34,6 +34,7 @@ public class TestSimulator
 	@Test
 	public void testFiveSetMatch() throws IOException
 	{
+		// Liu result
 		final double mwp = round(simulator.simulate(0.55, 0.55, 400000).proportionMatchesWon());
 		assertThat(mwp, equalTo(0.953));
 		System.out.println(mwp);
@@ -42,6 +43,7 @@ public class TestSimulator
 	@Test
 	public void testOutcomes() throws IOException
 	{
+		// Final score probabilities sum to 1
 		final int runs = 1000;
 		final SimulationOutcomes outcomes = simulator.simulate(0.67, 0.38, runs);
 		double total = 0;
@@ -56,10 +58,19 @@ public class TestSimulator
 	}
 
 	@Test
-	public void testMatchesInProgress() throws IOException
+	public void validateOMalley() throws IOException
 	{
-		final MatchState initialState = new MatchState(0, 0, new SetState(2, 3), new GameState(false), 1);
-		final SimulationOutcomes outcomes = new Simulator().simulate(0.67, 0.38, initialState, true, 200000);
+		// Results agree with me
+		MatchState initialState = new MatchState(0, 0, new SetState(2, 3), new GameState(false), 1);
+		SimulationOutcomes outcomes = new Simulator().simulate(0.67, 0.38, initialState, true, 200000);
+		System.out.println(outcomes.proportionMatchesWon());
+
+		initialState = new MatchState(0, 0, new SetState(1, 3), new GameState(true), 1);
+		outcomes = new Simulator().simulate(0.62, 0.33, initialState, true, 200000);
+		System.out.println(outcomes.proportionMatchesWon());
+
+		initialState = new MatchState(0, 0, new SetState(0, 3), new GameState(true), 1);
+		outcomes = new Simulator().simulate(0.62, 0.33, initialState, true, 200000);
 		System.out.println(outcomes.proportionMatchesWon());
 	}
 

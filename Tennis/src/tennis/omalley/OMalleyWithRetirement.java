@@ -4,10 +4,8 @@ import static java.lang.Math.pow;
 
 public final class OMalleyWithRetirement
 {
-	public static int levels = 0;
-
 	public static double tiebreakWithRetirement(final double onServe, final double returnServe,
-												final double retirementRisk, final double pointsRemaining, final double expectedPoints)
+												final double retirementRisk, final double levelsRemaining, final double expectedMwp)
 	{
 		final double p = onServe;
 		final double q = returnServe;
@@ -17,7 +15,6 @@ public final class OMalleyWithRetirement
 		{
 			result += a[0] * pow(p, a[1]) * pow(1 - p, a[2]) * pow(q, a[3]) * pow(1 - q, a[4]) * pow(d(p, q), a[5]);
 		}
-//		final double r = (pointsRemaining + ((1 - retirementRisk) * (expectedPoints - pointsRemaining))) / expectedPoints;
 		return result;
 	}
 
@@ -27,12 +24,14 @@ public final class OMalleyWithRetirement
 	}
 
 	public static double gameInProgressWithRetirement(final double probabilityOfWinningPoint, final CurrentGameScore gameScore,
-													  final double retirementRisk, final double pointsRemaining, final double expectedPoints)
+													  final double retirementRisk, final double levelsRemaining, final double expectedMwp)
 	{
 		final double p = probabilityOfWinningPoint;
 		final int a = gameScore.getTargetPoints();
 		final int b = gameScore.getOpponentPoints();
 
+		final double r1 = 0.08;
+		final double r2 = 0.01;
 		if (a > b && a >= 4 && Math.abs(a - b) >= 2)
 		{
 			return 1.0;
@@ -41,25 +40,21 @@ public final class OMalleyWithRetirement
 		{
 			return 0.0;
 		}
-//		double r = (pointsRemaining + ((1 - retirementRisk) * (expectedPoints - pointsRemaining))) / expectedPoints;
 		if (a == b && a >= 3) // Deuce (sum of an infinite geometric series)
 		{
-			return Math.pow(p, 2) / (1 - 2 * p * (1 - p));
+			return (Math.pow(p, 2) / (1 - 2 * p * (1 - p)));
 		}
 		else
 		{
-			levels++;
-			final double r = (pointsRemaining + ((1 - (retirementRisk / 5)) * (expectedPoints - pointsRemaining))) / expectedPoints;
-//			final double r = Math.pow(retirementRisk, 1 / pointsRemaining);
-//			System.out.println(r);
-			return r * (p * gameInProgressWithRetirement(p, gameScore.incTargetPoints(), retirementRisk, pointsRemaining, expectedPoints)
-						+ (1 - p) * gameInProgressWithRetirement(p, gameScore.incOpponentPoints(), retirementRisk, pointsRemaining, expectedPoints));
+			// Probability of winning is probability opponent retires + probability you don't retire and then you win
+			return r2 + (1 - r1) * (p * gameInProgressWithRetirement(p, gameScore.incTargetPoints(), retirementRisk, levelsRemaining, expectedMwp)
+								 + (1 - p) * gameInProgressWithRetirement(p, gameScore.incOpponentPoints(), retirementRisk, levelsRemaining, expectedMwp));
 		}
 	}
 
 	public static double setInProgressWithRetirement(final double onServe, final double returnServe,
 													 final CurrentSetScore setScore, final CurrentGameScore gameScore,
-													 final boolean servingNext, final double retirementRisk, final double pointsRemaining, final double expectedPoints)
+													 final boolean servingNext, final double retirementRisk, final double levelsRemaining, final double expectedMwp)
 	{
 		final double p = onServe;
 		final double q = returnServe;
@@ -76,16 +71,16 @@ public final class OMalleyWithRetirement
 		}
 		if (targetGames == 6 && opponentGames == 6)
 		{
-			return tiebreakWithRetirement(p, q, retirementRisk, pointsRemaining, expectedPoints);
+			return tiebreakWithRetirement(p, q, retirementRisk, levelsRemaining, expectedMwp);
 		}
-		final double g = (servingNext) ? gameInProgressWithRetirement(p, gameScore, retirementRisk, pointsRemaining, expectedPoints) : gameInProgressWithRetirement(q, gameScore, retirementRisk, pointsRemaining, expectedPoints);
-		return g * setInProgressWithRetirement(p, q, setScore.incTargetGames(), new CurrentGameScore(), !servingNext, retirementRisk, pointsRemaining, expectedPoints)
-			 + (1 - g) * setInProgressWithRetirement(p, q, setScore.incOpponentGames(), new CurrentGameScore(), !servingNext, retirementRisk, pointsRemaining, expectedPoints);
+		final double g = (servingNext) ? gameInProgressWithRetirement(p, gameScore, retirementRisk, levelsRemaining, expectedMwp) : gameInProgressWithRetirement(q, gameScore, retirementRisk, levelsRemaining, expectedMwp);
+		return g * setInProgressWithRetirement(p, q, setScore.incTargetGames(), new CurrentGameScore(), !servingNext, retirementRisk, levelsRemaining, expectedMwp)
+			 + (1 - g) * setInProgressWithRetirement(p, q, setScore.incOpponentGames(), new CurrentGameScore(), !servingNext, retirementRisk, levelsRemaining, expectedMwp);
 	}
 
 	public static double matchInProgressWithRetirement(final double onServe, final double returnServe,
 								     	 			   final CurrentMatchScore matchScore, final CurrentSetScore setScore, final CurrentGameScore gameScore,
-								     	 			   final boolean servingNext, final int numSetsForWin, final double retirementRisk, final double pointsRemaining, final double expectedPoints)
+								     	 			   final boolean servingNext, final int numSetsForWin, final double retirementRisk, final double levelsRemaining, final double expectedMwp)
 	{
 		final double p = onServe;
 		final double q = returnServe;
@@ -100,9 +95,9 @@ public final class OMalleyWithRetirement
 		}
 		else // Doesn't matter who serves first the next set because you don't know who served at the end of the previous set
 		{
-			final double s = setInProgressWithRetirement(p, q, setScore, gameScore, servingNext, retirementRisk, pointsRemaining, expectedPoints);
-			return s * matchInProgressWithRetirement(p, q, matchScore.incTargetSets(), new CurrentSetScore(), new CurrentGameScore(), (Math.random() < 0.5) ? true : false, numSetsForWin, retirementRisk, pointsRemaining, expectedPoints)
-				 + (1 - s) * matchInProgressWithRetirement(p, q, matchScore.incOpponentSets(), new CurrentSetScore(), new CurrentGameScore(), (Math.random() < 0.5) ? true : false, numSetsForWin, retirementRisk, pointsRemaining, expectedPoints);
+			final double s = setInProgressWithRetirement(p, q, setScore, gameScore, servingNext, retirementRisk, levelsRemaining, expectedMwp);
+			return s * matchInProgressWithRetirement(p, q, matchScore.incTargetSets(), new CurrentSetScore(), new CurrentGameScore(), (Math.random() < 0.5) ? true : false, numSetsForWin, retirementRisk, levelsRemaining, expectedMwp)
+				 + (1 - s) * matchInProgressWithRetirement(p, q, matchScore.incOpponentSets(), new CurrentSetScore(), new CurrentGameScore(), (Math.random() < 0.5) ? true : false, numSetsForWin, retirementRisk, levelsRemaining, expectedMwp);
 		}
 	}
 }
