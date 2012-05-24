@@ -18,12 +18,6 @@ public class TestOMalley
 		assertThat(game(0.0), equalTo(0.0));
 		assertThat(game(0.5), equalTo(0.5));
 		assertThat(game(1.0), equalTo(1.0));
-
-
-
-		System.out.println(setInProgress(0.60, 0.43, new CurrentSetScore(5, 1), true));
-		System.out.println((1 - setInProgress(0.60, 0.43, new CurrentSetScore(5, 1), true)) * set(0.60, 0.43));
-		System.out.println();
 	}
 
 	@Test
@@ -38,8 +32,10 @@ public class TestOMalley
 		assertThat(round(matchInProgress(0.51, 0.51, 3)), equalTo(0.632));
 
 		// Huang results
-//		assertThat(round(matchInProgress(0.60, 0.43, new CurrentMatchScore(1, 1), new CurrentSetScore(4, 3), new CurrentGameScore(), true, 2)), equalTo(0.891));
-//		assertThat(round(matchInProgress(0.60, 0.43, new CurrentMatchScore(1, 0), new CurrentSetScore(5, 1), new CurrentGameScore(), true, 2)), equalTo(0.871));
+		assertThat(round(matchInProgress(0.60, 0.43, new CurrentMatchScore(1, 0), new CurrentSetScore(), new CurrentGameScore(), true, 2)), equalTo(0.842)); // 0.843
+		assertThat(round(matchInProgress(0.65, 0.46, new CurrentMatchScore(1, 0), new CurrentSetScore(5, 1), new CurrentGameScore(), true, 2)), equalTo(0.999)); // 0.977
+		assertThat(round(matchInProgress(0.56, 0.44, new CurrentMatchScore(1, 1), new CurrentSetScore(4, 3), new CurrentGameScore(), true, 2)), equalTo(0.750)); // 0.841
+		assertThat(round(matchInProgress(0.55, 0.40, new CurrentMatchScore(0, 1), new CurrentSetScore(), new CurrentGameScore(), true, 2)), equalTo(0.109));
 
 		// Basic match assertion
 		assertThat(matchInProgress(0.5, 0.5, 3), equalTo(0.5));

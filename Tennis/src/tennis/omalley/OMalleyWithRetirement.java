@@ -1,6 +1,7 @@
 package tennis.omalley;
 
 import static java.lang.Math.pow;
+import static tennis.omalley.OMalleyCount.gameInProgressCount;
 
 public final class OMalleyWithRetirement
 {
@@ -30,8 +31,8 @@ public final class OMalleyWithRetirement
 		final int a = gameScore.getTargetPoints();
 		final int b = gameScore.getOpponentPoints();
 
-		final double r1 = 0.08;
-		final double r2 = 0.01;
+		final double r = 1 - Math.pow(1 - (retirementRisk / expectedMwp), 1 / levelsRemaining);
+//		final double r = retirementRisk;
 		if (a > b && a >= 4 && Math.abs(a - b) >= 2)
 		{
 			return 1.0;
@@ -46,9 +47,9 @@ public final class OMalleyWithRetirement
 		}
 		else
 		{
-			// Probability of winning is probability opponent retires + probability you don't retire and then you win
-			return r2 + (1 - r1) * (p * gameInProgressWithRetirement(p, gameScore.incTargetPoints(), retirementRisk, levelsRemaining, expectedMwp)
-								 + (1 - p) * gameInProgressWithRetirement(p, gameScore.incOpponentPoints(), retirementRisk, levelsRemaining, expectedMwp));
+			// Probability of winning is probability you don't retire and then you win
+			return (1 - r) * (p * gameInProgressWithRetirement(p, gameScore.incTargetPoints(), retirementRisk, levelsRemaining, expectedMwp)
+					          + (1 - p) * gameInProgressWithRetirement(p, gameScore.incOpponentPoints(), retirementRisk, levelsRemaining, expectedMwp));
 		}
 	}
 
@@ -74,8 +75,9 @@ public final class OMalleyWithRetirement
 			return tiebreakWithRetirement(p, q, retirementRisk, levelsRemaining, expectedMwp);
 		}
 		final double g = (servingNext) ? gameInProgressWithRetirement(p, gameScore, retirementRisk, levelsRemaining, expectedMwp) : gameInProgressWithRetirement(q, gameScore, retirementRisk, levelsRemaining, expectedMwp);
-		return g * setInProgressWithRetirement(p, q, setScore.incTargetGames(), new CurrentGameScore(), !servingNext, retirementRisk, levelsRemaining, expectedMwp)
-			 + (1 - g) * setInProgressWithRetirement(p, q, setScore.incOpponentGames(), new CurrentGameScore(), !servingNext, retirementRisk, levelsRemaining, expectedMwp);
+		final double gR = (servingNext) ? gameInProgressCount(p, 0.01, gameScore, 0, 0, 0).risk : gameInProgressCount(q, 0.01, gameScore, 0, 0, 0).risk;
+		return (1 - gR) * (g * setInProgressWithRetirement(p, q, setScore.incTargetGames(), new CurrentGameScore(), !servingNext, retirementRisk, levelsRemaining, expectedMwp)
+					 + (1 - g) * setInProgressWithRetirement(p, q, setScore.incOpponentGames(), new CurrentGameScore(), !servingNext, retirementRisk, levelsRemaining, expectedMwp));
 	}
 
 	public static double matchInProgressWithRetirement(final double onServe, final double returnServe,
@@ -96,8 +98,9 @@ public final class OMalleyWithRetirement
 		else // Doesn't matter who serves first the next set because you don't know who served at the end of the previous set
 		{
 			final double s = setInProgressWithRetirement(p, q, setScore, gameScore, servingNext, retirementRisk, levelsRemaining, expectedMwp);
-			return s * matchInProgressWithRetirement(p, q, matchScore.incTargetSets(), new CurrentSetScore(), new CurrentGameScore(), (Math.random() < 0.5) ? true : false, numSetsForWin, retirementRisk, levelsRemaining, expectedMwp)
-				 + (1 - s) * matchInProgressWithRetirement(p, q, matchScore.incOpponentSets(), new CurrentSetScore(), new CurrentGameScore(), (Math.random() < 0.5) ? true : false, numSetsForWin, retirementRisk, levelsRemaining, expectedMwp);
+			final double sR = OMalleyCount.setInProgressCount(p, q, 0.01, setScore, gameScore, servingNext, 0, 0, 0).risk;
+			return (1 - sR) * (s * matchInProgressWithRetirement(p, q, matchScore.incTargetSets(), new CurrentSetScore(), new CurrentGameScore(), (Math.random() < 0.5) ? true : false, numSetsForWin, retirementRisk, levelsRemaining, expectedMwp)
+							   + (1 - s) * matchInProgressWithRetirement(p, q, matchScore.incOpponentSets(), new CurrentSetScore(), new CurrentGameScore(), (Math.random() < 0.5) ? true : false, numSetsForWin, retirementRisk, levelsRemaining, expectedMwp));
 		}
 	}
 }
