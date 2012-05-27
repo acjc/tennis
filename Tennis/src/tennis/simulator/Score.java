@@ -5,6 +5,6 @@ public interface Score
 	void incrementTarget();
 	void incrementOpponent();
 
-	boolean over();
+	boolean matchOver();
 	boolean targetWon();
 }

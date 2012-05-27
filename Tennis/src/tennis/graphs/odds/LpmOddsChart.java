@@ -1,4 +1,4 @@
-package tennis.graphs.lpm;
+package tennis.graphs.odds;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -17,11 +17,11 @@ import tennis.graphs.helper.PlayerOdds;
 import tennis.graphs.helper.SetOdds;
 import au.com.bytecode.opencsv.CSVReader;
 
-public class DefaultOddsChart extends OddsChart
+public class LpmOddsChart extends OddsChart
 {
-	public DefaultOddsChart(final PlayerOdds favourite, final PlayerOdds underdog) throws IOException
+	public LpmOddsChart(final PlayerOdds favourite, final PlayerOdds underdog) throws IOException
 	{
-		super(favourite.getTitle() + " (" + favourite.getSurname() + ")", favourite, underdog);
+		super(favourite.getTitle() + " (" + favourite.getSurname() + ") [LPM]", favourite, underdog);
 	}
 
 	@Override
@@ -34,9 +34,7 @@ public class DefaultOddsChart extends OddsChart
 
 		final TimeSeries setBettingSeries = new TimeSeries("Set Odds");
 		final List<CSVReader> favouriteSetOddsReaders = new ArrayList<CSVReader>();
-		final List<CSVReader> underdogSetOddsReaders = new ArrayList<CSVReader>();
 		favouriteSetOddsReaders.addAll(favourite.getSetOdds());
-		underdogSetOddsReaders.addAll(underdog.getSetOdds());
 
 		final TimeSeries oddsDifferenceSeries = new TimeSeries("Odds Difference");
 
@@ -44,14 +42,21 @@ public class DefaultOddsChart extends OddsChart
 
 		final List<MatchOdds> favouriteMatchOdds = parseMatchOdds(favouriteMatchOddsReader);
 		final List<List<SetOdds>> favouriteSetOdds = parseSetOdds(favouriteSetOddsReaders);
-		final List<List<SetOdds>> underdogSetOdds = parseSetOdds(underdogSetOddsReaders);
 
-	    for (int i = 0; i < favouriteMatchOdds.size(); i++)
+		final int matchLength = favouriteMatchOdds.size() <= favouriteSetOdds.get(0).size() ? favouriteMatchOdds.size() : favouriteSetOdds.get(0).size();
+
+	    for (int i = 0; i < matchLength; i++)
 	    {
 	    	final long time = favouriteMatchOdds.get(i).getTime();
 			final Second second = new Second(new Date(time));
+
 			final double matchOddsPercentage = favouriteMatchOdds.get(i).getOddsPercentage();
-			final double setOddsPercentage = calculateCorrectedSetOddsPercentage(favouriteSetOdds, underdogSetOdds, time);
+
+			double setOddsPercentage = 0;
+			for (int j = 0; j < favouriteSetOdds.size(); j++)
+			{
+				setOddsPercentage += favouriteSetOdds.get(j).get(i).getOddsPercentage();
+			}
 
 			matchOddsSeries.add(second, matchOddsPercentage);
 			setBettingSeries.add(second, setOddsPercentage);

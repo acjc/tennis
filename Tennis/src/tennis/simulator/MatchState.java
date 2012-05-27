@@ -64,7 +64,7 @@ public class MatchState implements Score
 
 	public boolean setOver()
 	{
-		if (set.over())
+		if (set.matchOver())
 		{
 			setScores[set.getTargetGames()][set.getOpponentGames()]++;
 			if (set.targetWon())
@@ -106,7 +106,7 @@ public class MatchState implements Score
 
 	public boolean gameOver()
 	{
-		if (game.over())
+		if (game.matchOver())
 		{
 			if (game.wentToDeuce())
 			{
@@ -134,7 +134,7 @@ public class MatchState implements Score
 	}
 
 	@Override
-	public boolean over()
+	public boolean matchOver()
 	{
 		return targetSets == numSetsForWin || opponentSets == numSetsForWin;
 	}

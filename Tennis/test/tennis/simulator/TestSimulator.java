@@ -35,13 +35,11 @@ public class TestSimulator
 	public void validateHuang() throws IOException
 	{
 		// Huang results
-		double mwp = round(simulator.simulate(0.60, 0.43, new MatchState(1, 1, new SetState(4, 3), new GameState(true), 2), true, 400000).proportionMatchesWon());
-		assertThat(mwp, equalTo(0.828)); // 0.891
-		System.out.println(mwp);
+		double mwp = round(simulator.simulate(0.58, 0.38, new MatchState(1, 0, new SetState(5, 1), new GameState(true), 2), true, 500000).proportionMatchesWon());
+		assertThat(mwp, equalTo(0.979)); // 0.441
 
-		mwp = round(simulator.simulate(0.65, 0.46, new MatchState(1, 1, new SetState(4, 3), new GameState(true), 2), true, 400000).proportionMatchesWon());
-		assertThat(mwp, equalTo(0.931)); // 0.968
-		System.out.println(mwp);
+		mwp = round(simulator.simulate(0.56, 0.44, new MatchState(1, 1, new SetState(4, 3), new GameState(true), 2), true, 500000).proportionMatchesWon());
+		assertThat(mwp, equalTo(0.750)); // 0.841
 	}
 
 
@@ -49,30 +47,25 @@ public class TestSimulator
 	public void validateLiu() throws IOException
 	{
 		// Liu results
-		double mwp = round(simulator.simulate(0.55, 0.55, 400000).proportionMatchesWon());
+		double mwp = round(simulator.simulate(0.55, 0.55, 500000).proportionMatchesWon());
 		assertThat(mwp, equalTo(0.953));
-		System.out.println(mwp);
 
-		mwp = round(simulator.simulate(0.51, 0.51, 400000).proportionMatchesWon());
+		mwp = round(simulator.simulate(0.51, 0.51, 500000).proportionMatchesWon());
 		assertThat(mwp, equalTo(0.632));
-		System.out.println(mwp);
 	}
 
 	@Test
 	public void validateOMalley() throws IOException
 	{
 		// Results agree with me
-		MatchState initialState = new MatchState(0, 0, new SetState(2, 3), new GameState(false), 1);
-		SimulationOutcomes outcomes = new Simulator().simulate(0.67, 0.38, initialState, true, 200000);
-		System.out.println(outcomes.proportionMatchesWon());
+		SimulationOutcomes outcomes = new Simulator().simulate(0.67, 0.38, new MatchState(0, 0, new SetState(2, 3), new GameState(false), 1), true, 500000);
+		assertThat(round(outcomes.proportionMatchesWon()), equalTo(0.295)); // 0.295
 
-		initialState = new MatchState(0, 0, new SetState(1, 3), new GameState(true), 1);
-		outcomes = new Simulator().simulate(0.62, 0.33, initialState, true, 200000);
-		System.out.println(outcomes.proportionMatchesWon());
+		outcomes = new Simulator().simulate(0.62, 0.33, new MatchState(0, 0, new SetState(1, 3), new GameState(true), 1), true, 500000);
+		assertThat(round(outcomes.proportionMatchesWon()), equalTo(0.092)); // 0.092
 
-		initialState = new MatchState(0, 0, new SetState(0, 3), new GameState(true), 1);
-		outcomes = new Simulator().simulate(0.62, 0.33, initialState, true, 200000);
-		System.out.println(outcomes.proportionMatchesWon());
+		outcomes = new Simulator().simulate(0.62, 0.33, new MatchState(0, 0, new SetState(0, 3), new GameState(true), 1), true, 500000);
+		assertThat(round(outcomes.proportionMatchesWon()), equalTo(0.074)); // 0.074
 	}
 
 	@Test

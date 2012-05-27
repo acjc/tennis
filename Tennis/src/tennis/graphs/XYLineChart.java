@@ -31,9 +31,12 @@ public abstract class XYLineChart extends ApplicationFrame
 
 	protected void buildChart() throws IOException
 	{
-		final ChartPanel chartPanel = new ChartPanel(createXYLineChart(createDataset()));
+		JFreeChart chart = createXYLineChart(createDataset());
+		final ChartPanel chartPanel = new ChartPanel(chart);
 	    chartPanel.setPreferredSize(new Dimension(1000, 570));
 	    setContentPane(chartPanel);
+
+	    ChartUtilities.saveChartAsPNG(new File("graphs\\" + title + ".png"), chart, 1000, 570);
 	}
 
 	protected abstract XYDataset createDataset() throws IOException;

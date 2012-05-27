@@ -1,4 +1,4 @@
-package tennis.odds;
+package tennis.read;
 
 import java.io.FileReader;
 import java.io.IOException;

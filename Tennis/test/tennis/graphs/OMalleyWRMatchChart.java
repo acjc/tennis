@@ -49,10 +49,10 @@ public class OMalleyWRMatchChart extends XYLineChart
 			{
 				System.out.println("i = " + i + ", j = " + j);
 
-				final MatchAnalysis analysis = OMalleyCount.matchInProgressCount(p, q, r, new CurrentMatchScore(i, i-1),
-																					      new CurrentSetScore(j, j+1),
+				final MatchAnalysis analysis = OMalleyCount.matchInProgressCount(p, q, new CurrentMatchScore(i, i-1), new CurrentSetScore(j, j+1),
 																					      new CurrentGameScore(),
-																				 servingNext, numSetsToWin, 0, 0, 0);
+																					      servingNext,
+																				 numSetsToWin, 0, 0);
 
 				System.out.println("Expected Mwp: " + analysis.mwp);
 				System.out.println("Recursion Levels Remaining: " + analysis.levels);

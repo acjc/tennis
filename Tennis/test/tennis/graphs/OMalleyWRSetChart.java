@@ -21,15 +21,13 @@ public class OMalleyWRSetChart extends XYLineChart
 {
 	private final double p;
 	private final double q;
-	private final double r;
 	private final double retirementRisk;
 
-	public OMalleyWRSetChart(final double p, final double q, final double r, final double retirementRisk) throws IOException
+	public OMalleyWRSetChart(final double p, final double q, final double retirementRisk) throws IOException
 	{
 		super("OMalleyWRSet", "Target Set", "MWP");
 		this.p = p;
 		this.q = q;
-		this.r = r;
 		this.retirementRisk = retirementRisk;
 	}
 
@@ -55,18 +53,19 @@ public class OMalleyWRSetChart extends XYLineChart
 		{
 			System.out.println("i = " + i);
 
-			final int targetScore = (int) (Math.random() * 7);
-			final int opponentScore = (int) (Math.random() * 7);
+			final int targetScore = (int) (Math.random() * 6);
+			final int opponentScore = (int) (Math.random() * 6);
 			System.out.println("(" + targetScore + ", " + opponentScore + ")");
 
-			final MatchAnalysis analysis = OMalleyCount.setInProgressCount(p, q, r, new CurrentSetScore(targetScore, opponentScore), new CurrentGameScore(), true, 0, 0, 0);
+			final MatchAnalysis analysis = OMalleyCount.setInProgressCount(p, q, new CurrentSetScore(targetScore, opponentScore), new CurrentGameScore(), true, 0, 0);
 
-			System.out.println("Expected Mwp: " + analysis.mwp);
+			System.out.println("Expected MWP: " + analysis.mwp);
 			System.out.println("Recursion Levels Remaining: " + analysis.levels);
 			mwpSeries.add(i, analysis.mwp);
 
 			final double modifiedMwp = OMalleyWithRetirement.setInProgressWithRetirement(p, q, new CurrentSetScore(targetScore, opponentScore), new CurrentGameScore(), true, retirementRisk, analysis.levels, analysis.mwp);
 			modifiedMwpSeries.add(i, modifiedMwp);
+			System.out.println("Modified MWP: " + modifiedMwp);
 
 			final double mwpDifference = analysis.mwp - modifiedMwp;
 			mwpDifferenceSeries.add(i, mwpDifference);
@@ -76,8 +75,8 @@ public class OMalleyWRSetChart extends XYLineChart
 		}
 
 	    final XYSeriesCollection dataset = new XYSeriesCollection();
-//	    dataset.addSeries(mwpSeries);
-//	    dataset.addSeries(modifiedMwpSeries);
+	    dataset.addSeries(mwpSeries);
+	    dataset.addSeries(modifiedMwpSeries);
 	    dataset.addSeries(mwpDifferenceSeries);
 	    dataset.addSeries(riskDifferenceSeries);
 
@@ -86,7 +85,7 @@ public class OMalleyWRSetChart extends XYLineChart
 
 	public static void main(final String[] args) throws IOException
 	{
-	    final OMalleyWRSetChart chart = new OMalleyWRSetChart(0.55, 0.46, 0.01, 0.2);
+	    final OMalleyWRSetChart chart = new OMalleyWRSetChart(0.55, 0.46, 0.2);
 	    chart.buildChart();
 	    chart.pack();
 	    RefineryUtilities.centerFrameOnScreen(chart);

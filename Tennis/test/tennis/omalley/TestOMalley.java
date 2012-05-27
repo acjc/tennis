@@ -12,15 +12,6 @@ import org.junit.Test;
 public class TestOMalley
 {
 	@Test
-	public void testGame()
-	{
-		// Basic game assertions
-		assertThat(game(0.0), equalTo(0.0));
-		assertThat(game(0.5), equalTo(0.5));
-		assertThat(game(1.0), equalTo(1.0));
-	}
-
-	@Test
 	public void testMatchInProgress()
 	{
 		// Test against pre-play formulae
@@ -31,11 +22,15 @@ public class TestOMalley
 		assertThat(round(matchInProgress(0.55, 0.55, 3)), equalTo(0.953));
 		assertThat(round(matchInProgress(0.51, 0.51, 3)), equalTo(0.632));
 
+		// Barnett, Brown, Clarke results
+		assertThat(round(matchInProgress(0.52, 0.52, 3)), equalTo(0.749));
+		assertThat(round(matchInProgress(0.54, 0.54, 3)), equalTo(0.910));
+
 		// Huang results
-		assertThat(round(matchInProgress(0.60, 0.43, new CurrentMatchScore(1, 0), new CurrentSetScore(), new CurrentGameScore(), true, 2)), equalTo(0.842)); // 0.843
-		assertThat(round(matchInProgress(0.65, 0.46, new CurrentMatchScore(1, 0), new CurrentSetScore(5, 1), new CurrentGameScore(), true, 2)), equalTo(0.999)); // 0.977
+		assertThat(round(matchInProgress(0.65, 0.46, 2)), equalTo(0.923)); // 0.549
+		assertThat(round(matchInProgress(0.58, 0.38, new CurrentMatchScore(1, 0), new CurrentSetScore(5, 1), new CurrentGameScore(), false, 2)), equalTo(0.979)); // 0.441
 		assertThat(round(matchInProgress(0.56, 0.44, new CurrentMatchScore(1, 1), new CurrentSetScore(4, 3), new CurrentGameScore(), true, 2)), equalTo(0.750)); // 0.841
-		assertThat(round(matchInProgress(0.55, 0.40, new CurrentMatchScore(0, 1), new CurrentSetScore(), new CurrentGameScore(), true, 2)), equalTo(0.109));
+		assertThat(round(matchInProgress(0.60, 0.43, new CurrentMatchScore(0, 1), new CurrentSetScore(), new CurrentGameScore(), true, 2)), equalTo(0.364));
 
 		// Basic match assertion
 		assertThat(matchInProgress(0.5, 0.5, 3), equalTo(0.5));
@@ -47,12 +42,23 @@ public class TestOMalley
 		// Test against pre-play formulae
 		assertThat(round(gameInProgress(0.592)), equalTo(round(game(0.592))));
 
-		// Basic game assertion
+		// Basic game assertions
+		assertThat(gameInProgress(0.0), equalTo(0.0));
 		assertThat(gameInProgress(0.5), equalTo(0.5));
+		assertThat(gameInProgress(1.0), equalTo(1.0));
 
 		// O'Malley results
 		assertThat(round(gameInProgress(0.6)), equalTo(0.736));
 		assertThat(round(gameInProgress(0.7)), equalTo(0.901));
+
+		// Barnett, Brown, Clarke results
+		assertThat(round(gameInProgress(0.54)), equalTo(0.599));
+		assertThat(round(gameInProgress(0.58)), equalTo(0.693));
+		assertThat(round(gameInProgress(0.64)), equalTo(0.813));
+
+		assertThat(round(gameInProgress(0.54, new CurrentGameScore(0, 1))), equalTo(0.435));
+		assertThat(round(gameInProgress(0.54, new CurrentGameScore(2, 1))), equalTo(0.759));
+		assertThat(round(gameInProgress(0.54, new CurrentGameScore(1, 3))), equalTo(0.169));
 	}
 
 	@Test
@@ -70,11 +76,15 @@ public class TestOMalley
 		assertThat(setInProgress(0.5, 0.5, true), equalTo(0.5));
 		assertThat(setInProgress(0.5, 0.5, false), equalTo(0.5));
 
-		// First server doesn't matter pre-play
+		// First server doesn't matter pre-play ever
 		assertThat(round(setInProgress(0.61, 0.37, true)), equalTo(round(setInProgress(0.61, 0.37, false))));
 
-		// First server does matter in-play
+		// First server does matter in-play sometimes
 		assertThat(setInProgress(0.6, 0.4, new CurrentSetScore(4, 5), true), greaterThan(setInProgress(0.6, 0.4, new CurrentSetScore(4, 5), false)));
+		assertThat(setInProgress(0.6, 0.4, new CurrentSetScore(5, 3), true), equalTo(setInProgress(0.6, 0.4, new CurrentSetScore(5, 3), false)));
+
+		// Barnett, Brown, Clarke results
+		assertThat(round(setInProgress(0.54, 0.54, true)), equalTo(round(0.763)));
 
 		// O'Malley break down results - some values are different
 		assertThat(round(setInProgress(0.67, 0.38, new CurrentSetScore(4, 5), false)), equalTo(round(0.135)));

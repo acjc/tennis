@@ -17,7 +17,7 @@ public class Simulator
 		return simulate(onServe, returnServe, new MatchState(numSetsToWin), false, runs);
 	}
 
-	public SimulationOutcomes simulate(final double onServe, final double returnServe, final MatchState initialState, final boolean scenario, final double runs) throws IOException
+	public SimulationOutcomes simulate(final double onServe, final double returnServe, final MatchState initialState, final boolean isScenario, final double runs) throws IOException
 	{
 		this.runs = runs;
 		this.outcomes = new SimulationOutcomes(runs);
@@ -27,7 +27,7 @@ public class Simulator
 			// When simulating a particular scenario, we want to replicate the starting conditions exactly
 			// Otherwise, start a fresh match with a random first server
 			final MatchState result = new MatchState(initialState);
-			if (!scenario)
+			if (!isScenario)
 			{
 				result.coinToss();
 			}
@@ -44,7 +44,7 @@ public class Simulator
 		final double p = onServe;
 		final double q = returnServe;
 
-		while (!score.over())
+		while (!score.matchOver())
 		{
 			while (!score.setOver())
 			{

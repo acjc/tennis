@@ -30,7 +30,7 @@ public class GameState implements Score
 	}
 
 	@Override
-	public boolean over()
+	public boolean matchOver()
 	{
 		return Math.abs(targetPoints - opponentPoints) >= 2 && (targetPoints >= 4 || opponentPoints >= 4);
 	}

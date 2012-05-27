@@ -5,8 +5,8 @@ import java.io.IOException;
 import org.jfree.ui.RefineryUtilities;
 
 import tennis.graphs.helper.PlayerOdds;
-import tennis.graphs.lpm.DefaultOddsChart;
-import tennis.graphs.lpm.OddsChart;
+import tennis.graphs.odds.DefaultOddsChart;
+import tennis.graphs.odds.OddsChart;
 
 public class ClijstersLi
 {

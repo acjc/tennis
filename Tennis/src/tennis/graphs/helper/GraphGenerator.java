@@ -4,8 +4,8 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 
-import tennis.graphs.lpm.DefaultOddsChart;
-import tennis.graphs.lpm.LpmOddsChart;
+import tennis.graphs.odds.DefaultOddsChart;
+import tennis.graphs.odds.LpmOddsChart;
 
 public class GraphGenerator
 {

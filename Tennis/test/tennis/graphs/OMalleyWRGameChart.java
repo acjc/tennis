@@ -19,14 +19,12 @@ import tennis.omalley.OMalleyWithRetirement;
 public class OMalleyWRGameChart extends XYLineChart
 {
 	private final double p;
-	private final double r;
 	private final double retirementRisk;
 
-	public OMalleyWRGameChart(final double p, final double r, final double retirementRisk) throws IOException
+	public OMalleyWRGameChart(final double p, final double retirementRisk) throws IOException
 	{
 		super("OMalleyWithRetirementLevelsGame", "Target Games", "MWP");
 		this.p = p;
-		this.r = r;
 		this.retirementRisk = retirementRisk;
 	}
 
@@ -56,7 +54,7 @@ public class OMalleyWRGameChart extends XYLineChart
 			final int opponentScore = (int) (Math.random() * 4);
 			System.out.println("(" + targetScore + ", " + opponentScore + ")");
 
-			final MatchAnalysis analysis = OMalleyCount.gameInProgressCount(p, r, new CurrentGameScore(targetScore, opponentScore), 0, 0, 0);
+			final MatchAnalysis analysis = OMalleyCount.gameInProgressCount(p, new CurrentGameScore(targetScore, opponentScore), 0, 0);
 
 			System.out.println("Expected Mwp: " + analysis.mwp);
 			System.out.println("Recursion Levels Remaining: " + analysis.levels);
@@ -83,7 +81,7 @@ public class OMalleyWRGameChart extends XYLineChart
 
 	public static void main(final String[] args) throws IOException
 	{
-	    final OMalleyWRGameChart chart = new OMalleyWRGameChart(0.55, 0.01, 0.2);
+	    final OMalleyWRGameChart chart = new OMalleyWRGameChart(0.55, 0.2);
 	    chart.buildChart();
 	    chart.pack();
 	    RefineryUtilities.centerFrameOnScreen(chart);

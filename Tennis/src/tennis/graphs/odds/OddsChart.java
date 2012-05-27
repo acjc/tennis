@@ -1,4 +1,4 @@
-package tennis.graphs.lpm;
+package tennis.graphs.odds;
 
 import static tennis.graphs.helper.PlayerOdds.*;
 
