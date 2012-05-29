@@ -26,7 +26,7 @@ public class RetirementRiskGraph extends XYLineChart
 		final JFreeChart chart = createXYLineChart(createDataset());
 		((XYPlot) chart.getPlot()).getRangeAxis().setRange(0, 1);
 		final ChartPanel chartPanel = new ChartPanel(chart);
-	    chartPanel.setPreferredSize(new Dimension(500, 270));
+	    chartPanel.setPreferredSize(new Dimension(1000, 570));
 	    setContentPane(chartPanel);
 	}
 
@@ -34,11 +34,11 @@ public class RetirementRiskGraph extends XYLineChart
 	protected XYDataset createDataset()
 	{
 		final XYSeries series = new XYSeries("Retirement Risk Model");
-		final BoundedParetoDistribution pareto = new BoundedParetoDistribution(0.85, 0.01, 100, 0.9);
+		final BoundedParetoDistribution pareto = new BoundedParetoDistribution(3.0, 0.01, 1.01, 0.85);
 	    for(double t = 0; t <= 300; t++)
 	    {
 			series.add(t, pareto.getCurrentRisk());
-			pareto.spikePercentage();
+			pareto.spike();
 			pareto.decay();
 	    }
 

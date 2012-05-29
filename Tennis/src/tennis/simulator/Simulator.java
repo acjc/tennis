@@ -7,17 +7,17 @@ public class Simulator
 	private double runs = 1;
 	private SimulationOutcomes outcomes;
 
-	public SimulationOutcomes simulate(final double onServe, final double returnServe, final double runs) throws IOException
+	public SimulationOutcomes simulate(final double pa, final double pb, final double runs) throws IOException
 	{
-		return simulate(onServe, returnServe, new MatchState(), false, runs);
+		return simulate(pa, pb, new MatchState(), false, runs);
 	}
 
-	public SimulationOutcomes simulate(final double onServe, final double returnServe, final int numSetsToWin, final double runs) throws IOException
+	public SimulationOutcomes simulate(final double pa, final double pb, final int numSetsToWin, final double runs) throws IOException
 	{
-		return simulate(onServe, returnServe, new MatchState(numSetsToWin), false, runs);
+		return simulate(pa, pb, new MatchState(numSetsToWin), false, runs);
 	}
 
-	public SimulationOutcomes simulate(final double onServe, final double returnServe, final MatchState initialState, final boolean isScenario, final double runs) throws IOException
+	public SimulationOutcomes simulate(final double pa, final double pb, final MatchState initialState, final boolean isScenario, final double runs) throws IOException
 	{
 		this.runs = runs;
 		this.outcomes = new SimulationOutcomes(runs);
@@ -31,7 +31,7 @@ public class Simulator
 			{
 				result.coinToss();
 			}
-			simulateMatch(onServe, returnServe, result);
+			simulateMatch(pa, pb, result);
 			outcomes.update(result);
 		}
 		final long endTime = System.currentTimeMillis();
@@ -39,35 +39,32 @@ public class Simulator
 		return outcomes;
 	}
 
-	private MatchState simulateMatch(final double onServe, final double returnServe, final MatchState score) throws IOException
+	private MatchState simulateMatch(final double pa, final double pb, final MatchState score) throws IOException
 	{
-		final double p = onServe;
-		final double q = returnServe;
-
-		while (!score.matchOver())
+		while (!score.over())
 		{
 			while (!score.setOver())
 			{
 				while (!score.gameOver())
 				{
-					playPoint(p, q, score);
+					playPoint(pa, pb, score);
 				}
 				if (score.tiebreak()) // Assume tiebreaks are always used for now
 				{
-					playTiebreak(p, q, score);
+					playTiebreak(pa, pb, score);
 				}
 			}
 		}
 		return score;
 	}
 
-	private void playTiebreak(final double p, final double q, final MatchState score) throws IOException
+	private void playTiebreak(final double pa, final double pb, final MatchState score) throws IOException
 	{
 		// Whomever serves first is the server for this 'game'
 		boolean servingNext = score.isServingNext();
 		while (!score.tiebreakOver())
 		{
-			playPoint(p, q, score, servingNext);
+			playPoint(pa, pb, score, servingNext);
 			if (score.isOddPoint()) // Service changes every odd point
 			{
 				servingNext = !servingNext;
@@ -75,15 +72,15 @@ public class Simulator
 		}
 	}
 
-	private void playPoint(final double p, final double q, final MatchState score) throws IOException
+	private void playPoint(final double pa, final double pb, final MatchState score) throws IOException
 	{
-		playPoint(p, q, score, score.isServingNext());
+		playPoint(pa, pb, score, score.isServingNext());
 	}
 
-	private void playPoint(final double p, final double q, final MatchState score, final boolean serving) throws IOException
+	private void playPoint(final double pa, final double pb, final MatchState score, final boolean serving) throws IOException
 	{
 		final double playPoint = Math.random();
-		if ((serving && playPoint < p) || (!serving && playPoint > q))
+		if ((serving && playPoint < pa) || (!serving && playPoint > pb))
 		{
 			score.incrementTarget();
 		}
@@ -93,8 +90,8 @@ public class Simulator
 		}
 		if (runs == 1)
 		{
-			outcomes.addPrediction(p, q, serving, score);
-			outcomes.addInjuryPrediction(p, q, serving, score);
+			outcomes.addPrediction(pa, pb, serving, score);
+			outcomes.addInjuryPrediction(pa, pb, serving, score);
 		}
 	}
 }

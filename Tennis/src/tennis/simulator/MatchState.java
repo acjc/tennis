@@ -11,6 +11,8 @@ public class MatchState implements Score
 	private final SetState set;
 	private int targetSets;
 	private int opponentSets;
+	private boolean targetRetired = false;
+	private boolean opponentRetired = false;
 
 	private final int numSetsForWin;
 
@@ -64,7 +66,11 @@ public class MatchState implements Score
 
 	public boolean setOver()
 	{
-		if (set.matchOver())
+		if (retirementOccurred())
+		{
+			return true;
+		}
+		if (set.over())
 		{
 			setScores[set.getTargetGames()][set.getOpponentGames()]++;
 			if (set.targetWon())
@@ -81,6 +87,11 @@ public class MatchState implements Score
 		return false;
 	}
 
+	private boolean retirementOccurred()
+	{
+		return targetRetired || opponentRetired;
+	}
+
 	public boolean tiebreak()
 	{
 		return set.tiebreak();
@@ -93,6 +104,10 @@ public class MatchState implements Score
 
 	public boolean tiebreakOver()
 	{
+		if (retirementOccurred())
+		{
+			return true;
+		}
 		if (game.tiebreakOver())
 		{
 			totalTiebreakPoints += game.getTargetPoints();
@@ -106,7 +121,11 @@ public class MatchState implements Score
 
 	public boolean gameOver()
 	{
-		if (game.matchOver())
+		if (retirementOccurred())
+		{
+			return true;
+		}
+		if (game.over())
 		{
 			if (game.wentToDeuce())
 			{
@@ -134,15 +153,40 @@ public class MatchState implements Score
 	}
 
 	@Override
-	public boolean matchOver()
+	public boolean over()
 	{
-		return targetSets == numSetsForWin || opponentSets == numSetsForWin;
+		return targetSets == numSetsForWin || opponentSets == numSetsForWin || retirementOccurred();
 	}
 
 	@Override
 	public boolean targetWon()
 	{
 		return targetSets == numSetsForWin;
+	}
+
+	public void targetRetires()
+	{
+		targetRetired = true;
+	}
+
+	public void opponentRetires()
+	{
+		opponentRetired = true;
+	}
+
+	public boolean targetRetired()
+	{
+		return targetRetired;
+	}
+
+	public boolean opponentRetired()
+	{
+		return opponentRetired;
+	}
+
+	public boolean inFirstSet()
+	{
+		return targetSets + opponentSets == 0;
 	}
 
 	public int getTargetSets()

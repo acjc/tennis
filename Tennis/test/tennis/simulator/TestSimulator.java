@@ -22,7 +22,7 @@ public class TestSimulator
 	@Test
 	public void testSimulatorSpeed() throws IOException
 	{
-		System.out.println(new Simulator().simulate(0.5, 0.5, 1000000).getSimulationTime());
+		System.out.println(new Simulator().simulate(0.5, 0.5, 250000).getSimulationTime());
 	}
 
 	@Test

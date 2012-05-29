@@ -9,5 +9,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="C:/Users/Adam/eclipse/custom/commons-io-2.1/commons-io-2.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Adam/eclipse/custom/symja-0.0.7a.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

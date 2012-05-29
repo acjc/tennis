@@ -1,7 +1,13 @@
 package tennis.graphs.distributions;
 
+import java.awt.Dimension;
+import java.io.File;
 import java.io.IOException;
 
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.ChartUtilities;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -14,6 +20,18 @@ public class BoundedParetoSamplePdfGraph extends BoundedParetoGraph
 	public BoundedParetoSamplePdfGraph() throws IOException
 	{
 		super("Bounded Pareto PDF", "x", "f(x)");
+	}
+
+	@Override
+	protected void buildChart() throws IOException
+	{
+		final JFreeChart chart = createXYLineChart(createDataset());
+		final ChartPanel chartPanel = new ChartPanel(chart);
+		((XYPlot) chart.getPlot()).getRangeAxis().setRange(0, 100);
+	    chartPanel.setPreferredSize(new Dimension(1000, 570));
+	    setContentPane(chartPanel);
+
+	    ChartUtilities.saveChartAsPNG(new File("graphs\\" + title + ".png"), chart, 1000, 570);
 	}
 
 	@Override

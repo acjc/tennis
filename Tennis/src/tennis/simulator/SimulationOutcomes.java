@@ -11,9 +11,16 @@ import tennis.graphs.distributions.BoundedParetoDistribution;
 public class SimulationOutcomes
 {
 	private final double runs;
+
 	private final double[][] matchScores = new double[4][4];
 	private final double[][] setScores = new double[8][8];
+
 	private double targetMatchesWon = 0;
+	private double targetRetirements = 0;
+	private double opponentRetirements = 0;
+	private double targetRetirementsFirstSet = 0;
+	private double opponentRetirementsFirstSet = 0;
+
 	private double numDeuces = 0;
 	private double totalPointsPostDeuce = 0;
 	private double numTiebreaks = 0;
@@ -49,7 +56,7 @@ public class SimulationOutcomes
 
 	public double percentageWithSetScore(final int i, final int j)
 	{
-		return round((setScores[i][j] / setsPlayed) * 100);
+		return setsPlayed == 0 ? 0 : round((setScores[i][j] / setsPlayed) * 100);
 	}
 
 	public double proportionMatchesWon()
@@ -64,12 +71,52 @@ public class SimulationOutcomes
 
 	public double percentageMatchesLost()
 	{
-		return round((1 - proportionMatchesWon()) * 100);
+		return round((1 - proportionMatchesWon() - proportionTargetRetirements() - proportionOpponentRetirements()) * 100);
+	}
+
+	public double proportionTargetRetirements()
+	{
+		return round(targetRetirements / runs);
+	}
+
+	public double percentageTargetRetirements()
+	{
+		return round(proportionTargetRetirements() * 100);
+	}
+
+	public double proportionOpponentRetirements()
+	{
+		return round(opponentRetirements / runs);
+	}
+
+	public double percentageOpponentRetirements()
+	{
+		return round(proportionOpponentRetirements() * 100);
+	}
+
+	public double proportionTargetRetirementsFirstSet()
+	{
+		return round(targetRetirementsFirstSet / runs);
+	}
+
+	public double percentageTargetRetirementsFirstSet()
+	{
+		return round(proportionTargetRetirementsFirstSet() * 100);
+	}
+
+	public double proportionOpponentRetirementsFirstSet()
+	{
+		return round(opponentRetirementsFirstSet / runs);
+	}
+
+	public double percentageOpponentRetirementsFirstSet()
+	{
+		return round(proportionOpponentRetirementsFirstSet() * 100);
 	}
 
 	public double percentageTiebreaksPlayed()
 	{
-		return round((numTiebreaks / setsPlayed) * 100);
+		return setsPlayed == 0 ? 0 : round((numTiebreaks / setsPlayed) * 100);
 	}
 
 	public double oddsOfTiebreak()
@@ -84,33 +131,52 @@ public class SimulationOutcomes
 
 	public double oddsOfOpponentWin()
 	{
-		final double opponentMatchesWon = runs - targetMatchesWon;
+		final double opponentMatchesWon = runs - targetMatchesWon - targetRetirements - opponentRetirements;
 		return opponentMatchesWon == 0 ? 0 : round(runs / opponentMatchesWon);
 	}
 
 	public void update(final MatchState matchState)
 	{
-		final int targetSets = matchState.getTargetSets();
-		final int opponentSets = matchState.getOpponentSets();
-
-		setsPlayed += targetSets + opponentSets;
-		numDeuces += matchState.getNumDeuces();
-		totalPointsPostDeuce += matchState.getTotalPointsPostDeuce();
-		numTiebreaks += matchState.getNumTiebreaks();
-		totalTiebreakPoints += matchState.getTotalTiebreakPoints();
-
-		matchScores[targetSets][opponentSets]++;
-		for (int i = 0; i <= 7; i++)
+		if (matchState.targetRetired())
 		{
-			for (int j = 0; j <= 7; j++)
+			targetRetirements++;
+			if (matchState.inFirstSet())
 			{
-				setScores[i][j] += matchState.getSetScores(i, j);
+				targetRetirementsFirstSet++;
 			}
 		}
-
-		if (matchState.targetWon())
+		else if (matchState.opponentRetired())
 		{
-			targetMatchesWon++;
+			opponentRetirements++;
+			if (matchState.inFirstSet())
+			{
+				opponentRetirementsFirstSet++;
+			}
+		}
+		else
+		{
+			if (matchState.targetWon())
+			{
+				targetMatchesWon++;
+			}
+
+			final int targetSets = matchState.getTargetSets();
+			final int opponentSets = matchState.getOpponentSets();
+
+			setsPlayed += targetSets + opponentSets;
+			numDeuces += matchState.getNumDeuces();
+			totalPointsPostDeuce += matchState.getTotalPointsPostDeuce();
+			numTiebreaks += matchState.getNumTiebreaks();
+			totalTiebreakPoints += matchState.getTotalTiebreakPoints();
+
+			matchScores[targetSets][opponentSets]++;
+			for (int i = 0; i <= 7; i++)
+			{
+				for (int j = 0; j <= 7; j++)
+				{
+					setScores[i][j] += matchState.getSetScores(i, j);
+				}
+			}
 		}
 	}
 
@@ -185,9 +251,11 @@ public class SimulationOutcomes
 	public void print(final String target, final String opponent, final int numSetsToWin)
 	{
 		System.out.println("Simulator says: " + target + " = " + percentageMatchesWon() + "% (Odds = " + oddsOfTargetWin() + "), "
-						   + opponent + " = " + percentageMatchesLost() + "% (Odds = " + oddsOfOpponentWin() + ")");
+						   + opponent + " = " + percentageMatchesLost() + "% (Odds = " + oddsOfOpponentWin() + "), "
+						   + target + " retirements = " + percentageTargetRetirements() + "%, "+ opponent + " retirements = " + percentageOpponentRetirements() + "%, "
+						   + target + " retirements (1st set) = " + percentageTargetRetirementsFirstSet() + "%, "+ opponent + " retirements (1st set) = " + percentageOpponentRetirementsFirstSet() + "%");
 		System.out.println("Time to simulate " + runs + " runs = " + simulationTime + " seconds");
-		System.out.println("POSSIBLE MATCH SCORES:");
+		System.out.println("\nPOSSIBLE MATCH SCORES:");
 		for (int i = 0; i <= numSetsToWin; i++)
 		{
 			for (int j = 0; j <= numSetsToWin; j++)
@@ -198,7 +266,7 @@ public class SimulationOutcomes
 				}
 			}
 		}
-		System.out.println("POSSIBLE SET SCORES:");
+		System.out.println("\nPOSSIBLE SET SCORES:");
 		for (int i = 0; i <= 7; i++)
 		{
 			for (int j = 0; j <= 7; j++)

@@ -31,13 +31,13 @@ public class BoundedParetoDistribution
 	public void spike()
 	{
 		// Linearly shift and scale to be between 0 and the upper bound
-		currentRisk += (sample() - lowerBound) * (upperBound / (upperBound - lowerBound)) ;
+		currentRisk += sample();
 	}
 
 	public void spikePercentage()
 	{
 		// Linearly shift and scale to be between 0 and the upper bound
-		currentRisk += (sample() - lowerBound) * (upperBound / (upperBound - lowerBound)) / 100.0;
+		currentRisk += sample() / 100.0;
 	}
 
 	public void decay()
@@ -59,6 +59,6 @@ public class BoundedParetoDistribution
 	{
 		final double u = Math.random();
 		final double x = pow(-((u * pow(upperBound, alpha) - u * pow(lowerBound, alpha) - pow(upperBound, alpha)) / (pow(upperBound, alpha) * pow(lowerBound, alpha))), (-1 / alpha));
-		return x;
+		return (x - lowerBound) * (upperBound / (upperBound - lowerBound));
 	}
 }
