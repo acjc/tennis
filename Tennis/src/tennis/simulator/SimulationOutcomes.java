@@ -148,7 +148,7 @@ public class SimulationOutcomes
 		{
 			twoSetsTargetInjuryPrediction.add(matchState.getTargetPrediction(p, q, serving));
 		}
-		pareto.spike();
+		pareto.spikePercentage();
 		pareto.decay();
 	}
 
@@ -170,6 +170,11 @@ public class SimulationOutcomes
 	public void setSimulationTime(final double time)
 	{
 		simulationTime = time;
+	}
+
+	public double getSimulationTime()
+	{
+		return simulationTime;
 	}
 
 	private double round(final double value)

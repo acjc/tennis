@@ -30,7 +30,14 @@ public class BoundedParetoDistribution
 
 	public void spike()
 	{
-		currentRisk += sample() / 100.0;
+		// Linearly shift and scale to be between 0 and the upper bound
+		currentRisk += (sample() - lowerBound) * (upperBound / (upperBound - lowerBound)) ;
+	}
+
+	public void spikePercentage()
+	{
+		// Linearly shift and scale to be between 0 and the upper bound
+		currentRisk += (sample() - lowerBound) * (upperBound / (upperBound - lowerBound)) / 100.0;
 	}
 
 	public void decay()

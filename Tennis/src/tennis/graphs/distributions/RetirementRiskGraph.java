@@ -38,7 +38,7 @@ public class RetirementRiskGraph extends XYLineChart
 	    for(double t = 0; t <= 300; t++)
 	    {
 			series.add(t, pareto.getCurrentRisk());
-			pareto.spike();
+			pareto.spikePercentage();
 			pareto.decay();
 	    }
 

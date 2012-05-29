@@ -20,6 +20,12 @@ public class TestSimulator
 	}
 
 	@Test
+	public void testSimulatorSpeed() throws IOException
+	{
+		System.out.println(new Simulator().simulate(0.5, 0.5, 1000000).getSimulationTime());
+	}
+
+	@Test
 	public void testPercentageWon() throws IOException
 	{
 		// Basic match assertions
