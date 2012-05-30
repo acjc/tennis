@@ -21,7 +21,7 @@ public class BoundedParetoCdfGraph extends BoundedParetoGraph
 	protected XYDataset createDataset()
 	{
 		final XYSeries series = new XYSeries("Bounded Pareto CDF");
-		final BoundedParetoDistribution pareto = new BoundedParetoDistribution(alpha, lowerBound, upperBound, decay);
+		final BoundedParetoDistribution pareto = new BoundedParetoDistribution(alpha, lowerBound, upperBound, decay, Math.pow(lowerBound, alpha));
 	    for(double x = lowerBound; x <= upperBound; x += 0.01)
 	    {
 			series.add(x, pareto.F(x));

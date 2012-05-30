@@ -8,13 +8,17 @@ public class SimulatorWithRetirement
 {
 	private double runs = 1;
 	private final double alpha;
+	private final double lowerbound;
+	private final double lowerboundPowAlpha;
 	private final double decay;
 	private SimulationOutcomes outcomes;
 
-	public SimulatorWithRetirement(final double alpha, final double decay)
+	public SimulatorWithRetirement(final double alpha, final double lowerbound, final double decay)
 	{
 		this.alpha = alpha;
+		this.lowerbound = lowerbound;
 		this.decay = decay;
+		this.lowerboundPowAlpha = Math.pow(lowerbound, alpha);
 	}
 
 	public SimulationOutcomes simulate(final double pa, final double pb, final double runs) throws IOException
@@ -90,8 +94,8 @@ public class SimulatorWithRetirement
 
 	private void playPoint(final double pa, final double pb, final RetirementRisk risk, final MatchState score, final boolean serving) throws IOException
 	{
-		final BoundedParetoDistribution riskA = new BoundedParetoDistribution(alpha, 0.01, 1 - risk.ra, decay);
-		final BoundedParetoDistribution riskB = new BoundedParetoDistribution(alpha, 0.01, 1 - risk.rb, decay);
+		final BoundedParetoDistribution riskA = new BoundedParetoDistribution(alpha, lowerbound, 1 - risk.ra, decay, lowerboundPowAlpha);
+		final BoundedParetoDistribution riskB = new BoundedParetoDistribution(alpha, lowerbound, 1 - risk.rb, decay, lowerboundPowAlpha);
 		risk.ra *= decay;
 		risk.ra += riskA.sample();
 		risk.rb *= decay;

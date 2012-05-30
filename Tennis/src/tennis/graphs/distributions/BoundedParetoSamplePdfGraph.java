@@ -38,7 +38,7 @@ public class BoundedParetoSamplePdfGraph extends BoundedParetoGraph
 	protected XYDataset createDataset()
 	{
 		final XYSeries series = new XYSeries("Bounded Pareto PDF");
-		final BoundedParetoDistribution pareto = new BoundedParetoDistribution(alpha, lowerBound, upperBound, decay);
+		final BoundedParetoDistribution pareto = new BoundedParetoDistribution(alpha, lowerBound, upperBound, decay, Math.pow(lowerBound, alpha));
 	    for(double x = 0; x < 1000; x++)
 	    {
 			final double sample = pareto.sample();

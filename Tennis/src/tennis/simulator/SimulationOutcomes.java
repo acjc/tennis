@@ -32,7 +32,9 @@ public class SimulationOutcomes
 	private final List<Double> oneBallTargetInjuryPrediction = new ArrayList<Double>();
 	private final List<Double> oneSetTargetInjuryPrediction = new ArrayList<Double>();
 	private final List<Double> twoSetsTargetInjuryPrediction = new ArrayList<Double>();
-	final BoundedParetoDistribution pareto = new BoundedParetoDistribution(0.85, 0.01, 100, 0.95);
+	private final double alpha = 0.85;
+	private final double lowerbound = 0.01;
+	final BoundedParetoDistribution pareto = new BoundedParetoDistribution(alpha, lowerbound, 100, 0.95, Math.pow(lowerbound, alpha));
 
 	public SimulationOutcomes(final double runs)
 	{

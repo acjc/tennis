@@ -34,7 +34,9 @@ public class RetirementRiskGraph extends XYLineChart
 	protected XYDataset createDataset()
 	{
 		final XYSeries series = new XYSeries("Retirement Risk Model");
-		final BoundedParetoDistribution pareto = new BoundedParetoDistribution(3.0, 0.01, 1.01, 0.85);
+		final double alpha = 3.0;
+		final double lowerBound = 0.01;
+		final BoundedParetoDistribution pareto = new BoundedParetoDistribution(alpha, lowerBound, 1.01, 0.85, Math.pow(lowerBound, alpha));
 	    for(double t = 0; t <= 300; t++)
 	    {
 			series.add(t, pareto.getCurrentRisk());

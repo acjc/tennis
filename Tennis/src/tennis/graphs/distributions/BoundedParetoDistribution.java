@@ -8,14 +8,17 @@ public class BoundedParetoDistribution
 	private final double lowerBound;
 	private final double upperBound;
 	private final double decay;
+	private final double lowerboundPowAlpha;
+
 	private double currentRisk = 0;
 
-	public BoundedParetoDistribution(final double alpha, final double lowerBound, final double upperBound, final double decay)
+	public BoundedParetoDistribution(final double alpha, final double lowerBound, final double upperBound, final double decay, final double lowerboundPowAlpha)
 	{
 		this.alpha = alpha;
 		this.lowerBound = lowerBound;
 		this.upperBound = upperBound;
 		this.decay = decay;
+		this.lowerboundPowAlpha = lowerboundPowAlpha;
 	}
 
 	public double getDecay()
@@ -30,13 +33,11 @@ public class BoundedParetoDistribution
 
 	public void spike()
 	{
-		// Linearly shift and scale to be between 0 and the upper bound
 		currentRisk += sample();
 	}
 
 	public void spikePercentage()
 	{
-		// Linearly shift and scale to be between 0 and the upper bound
 		currentRisk += sample() / 100.0;
 	}
 
@@ -55,10 +56,19 @@ public class BoundedParetoDistribution
 		return (1 - pow(lowerBound, alpha) * pow(x, -alpha)) / (1 - pow(lowerBound / upperBound, alpha));
 	}
 
+	public static double fastPow(final double a, final double b) {
+	    final long temp = Double.doubleToLongBits(a);
+	    final long result = (long)(b * (temp - 4606921280493453312L)) + 4606921280493453312L;
+	    return Double.longBitsToDouble(result);
+	}
+
 	public double sample()
 	{
 		final double u = Math.random();
-		final double x = pow(-((u * pow(upperBound, alpha) - u * pow(lowerBound, alpha) - pow(upperBound, alpha)) / (pow(upperBound, alpha) * pow(lowerBound, alpha))), (-1 / alpha));
+		final double upperboundPowAlpha = fastPow(upperBound, alpha);
+		final double x = pow(-((u * upperboundPowAlpha - (u * lowerboundPowAlpha) - upperboundPowAlpha) / (upperboundPowAlpha * lowerboundPowAlpha)), (-1 / alpha));
+
+		// Linearly shift and scale to be between 0 and the upper bound
 		return (x - lowerBound) * (upperBound / (upperBound - lowerBound));
 	}
 }
