@@ -13,22 +13,25 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.RefineryUtilities;
 
-import tennis.simulator.Simulator;
+import tennis.simulator.GameState;
+import tennis.simulator.MatchState;
+import tennis.simulator.SetState;
+import tennis.simulator.SimulatorWR;
 
-public class SimulatorRunsChart extends XYLineChart
+public class SimulatorWithRetirementRunsChart extends XYLineChart
 {
-	public SimulatorRunsChart(final String title) throws IOException
+	public SimulatorWithRetirementRunsChart(final String title) throws IOException
 	{
-	    super(title, "Runs", "Match-winning Probability");
+	    super(title, "Runs", "Retirement Rate");
 	}
 
 	@Override
 	protected void buildChart() throws IOException
 	{
 		final JFreeChart chart = createXYLineChart(createDataset());
-		((XYPlot) chart.getPlot()).getRangeAxis().setRange(0.4975, 0.5025);
+		((XYPlot) chart.getPlot()).getRangeAxis().setRange(0.19, 0.21);
 		final ChartPanel chartPanel = new ChartPanel(chart);
-	    chartPanel.setPreferredSize(new Dimension(800, 400));
+	    chartPanel.setPreferredSize(new Dimension(1000, 570));
 	    setContentPane(chartPanel);
 
 	    ChartUtilities.saveChartAsPNG(new File("graphs\\" + title + ".png"), chart, 1000, 570);
@@ -41,15 +44,19 @@ public class SimulatorRunsChart extends XYLineChart
 		final XYSeries solutionSeries = new XYSeries("Exact Solution");
 		final XYSeries upperSeries = new XYSeries("Upper Bound");
 		final XYSeries lowerSeries = new XYSeries("Lower Bound");
-	    for(double i = 10000; i <= 750000; i += 10000)
-	    {
-			final double mwp = new Simulator().simulate(0.6, 0.6, i).proportionTargetWon();
-			simulatorSeries.add(i, mwp);
-			System.out.println("Runs = " + i + ", MWP = " + mwp);
 
-			solutionSeries.add(i, 0.500);
-			upperSeries.add(i, 0.501);
-			lowerSeries.add(i, 0.499);
+		final SimulatorWR simulator = new SimulatorWR(2.6446, 200.0, 0.8940, true);
+		final MatchState initialState = new MatchState(1, 0, new SetState(1, 2), new GameState(true), 3);
+
+	    for(double i = 10000; i <= 200000; i += 10000)
+	    {
+			final double rate = simulator.simulate(0.63, 0.61, initialState, true, i).proportionTargetRetirements();
+			simulatorSeries.add(i, rate);
+			System.out.println("Runs = " + i + ", Rate of Retirement = " + rate);
+
+			solutionSeries.add(i, 0.2);
+			upperSeries.add(i, 0.205);
+			lowerSeries.add(i, 0.195);
 	    }
 
 	    final XYSeriesCollection dataset = new XYSeriesCollection();
@@ -63,7 +70,7 @@ public class SimulatorRunsChart extends XYLineChart
 
 	public static void main(final String[] args) throws IOException
 	{
-	    final SimulatorRunsChart chart = new SimulatorRunsChart("Tennis Simulator Accuracy (best-of-five, p = 0.6, q = 0.4)");
+	    final SimulatorWithRetirementRunsChart chart = new SimulatorWithRetirementRunsChart("Tennis Simulator Retirement Rate Accuracy (best-of-five, pa = 0.6, pb = 0.6)");
 	    chart.buildChart();
 	    chart.pack();
 	    RefineryUtilities.centerFrameOnScreen(chart);

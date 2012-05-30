@@ -66,9 +66,10 @@ public class BoundedParetoDistribution
 	{
 		final double u = Math.random();
 		final double upperboundPowAlpha = fastPow(upperBound, alpha);
-		final double x = pow(-((u * upperboundPowAlpha - (u * lowerboundPowAlpha) - upperboundPowAlpha) / (upperboundPowAlpha * lowerboundPowAlpha)), (-1 / alpha));
+		double x = pow(-((u * upperboundPowAlpha - (u * lowerboundPowAlpha) - upperboundPowAlpha) / (upperboundPowAlpha * lowerboundPowAlpha)), (-1 / alpha));
 
 		// Linearly shift and scale to be between 0 and the upper bound
-		return (x - lowerBound) * (upperBound / (upperBound - lowerBound));
+		x = (x - lowerBound) * (upperBound / (upperBound - lowerBound));
+		return x < 0 ? 0 : x;
 	}
 }

@@ -8,12 +8,12 @@ import java.text.DecimalFormat;
 
 import org.junit.Test;
 
-public class TestSimulator
+public class TestSimulatorWRBase
 {
-	private final Simulator simulator = new Simulator();
+	private final SimulatorWR simulator = new SimulatorWR(300.0, 300.0, 0.85, false);
 
 	@Test
-	public void testPercentageWon() throws IOException
+	public void testProportionWon() throws IOException
 	{
 		// Basic match assertions
 		assertThat(simulator.simulate(1, 0.3, 100).proportionTargetWon(), equalTo(1.0));

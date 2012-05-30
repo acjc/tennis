@@ -1,35 +1,44 @@
 package tennis.simulator;
 
-import java.io.IOException;
-
 import tennis.graphs.distributions.BoundedParetoDistribution;
 
-public class SimulatorWithRetirement
+public class SimulatorWR
 {
-	private final double alpha;
+	private final double alphaA;
+	private final double alphaB;
 	private final double lowerbound = 0.01;
-	private final double lowerboundPowAlpha;
+	private final double lowerboundPowAlphaA;
+	private final double lowerboundPowAlphaB;
 	private final double decay;
+	private final boolean withRetirement;
 	private SimulationOutcomes outcomes;
 
-	public SimulatorWithRetirement(final double alpha, final double decay)
+	public SimulatorWR(final double alphaA, final double alphaB, final double decay, final boolean withRetirement)
 	{
-		this.alpha = alpha;
+		this.alphaA = alphaA;
+		this.alphaB = alphaB;
 		this.decay = decay;
-		this.lowerboundPowAlpha = Math.pow(lowerbound, alpha);
+		this.withRetirement = withRetirement;
+		this.lowerboundPowAlphaA = Math.pow(lowerbound, alphaA);
+		this.lowerboundPowAlphaB = Math.pow(lowerbound, alphaB);
 	}
 
-	public SimulationOutcomes simulate(final double pa, final double pb, final double runs) throws IOException
+	public SimulatorWR(final double alpha, final double decay, final boolean withRetirement)
+	{
+		this(alpha, alpha, decay, withRetirement);
+	}
+
+	public SimulationOutcomes simulate(final double pa, final double pb, final double runs)
 	{
 		return simulate(pa, pb, new MatchState(), false, runs);
 	}
 
-	public SimulationOutcomes simulate(final double pa, final double pb, final int numSetsToWin, final double runs) throws IOException
+	public SimulationOutcomes simulate(final double pa, final double pb, final int numSetsToWin, final double runs)
 	{
 		return simulate(pa, pb, new MatchState(numSetsToWin), false, runs);
 	}
 
-	public SimulationOutcomes simulate(final double pa, final double pb, final MatchState initialState, final boolean isScenario, final double runs) throws IOException
+	public SimulationOutcomes simulate(final double pa, final double pb, final MatchState initialState, final boolean isScenario, final double runs)
 	{
 		this.outcomes = new SimulationOutcomes(runs);
 		final long startTime = System.currentTimeMillis();
@@ -50,7 +59,7 @@ public class SimulatorWithRetirement
 		return outcomes;
 	}
 
-	private MatchState simulateMatch(final double pa, final double pb, final MatchState score) throws IOException
+	private MatchState simulateMatch(final double pa, final double pb, final MatchState score)
 	{
 		final RetirementRisk risk = new RetirementRisk();
 		while (!score.over())
@@ -70,7 +79,7 @@ public class SimulatorWithRetirement
 		return score;
 	}
 
-	private void playTiebreak(final double pa, final double pb, final RetirementRisk risk, final MatchState score) throws IOException
+	private void playTiebreak(final double pa, final double pb, final RetirementRisk risk, final MatchState score)
 	{
 		// Whomever serves first is the server for this 'game'
 		boolean servingNext = score.isServingNext();
@@ -84,19 +93,36 @@ public class SimulatorWithRetirement
 		}
 	}
 
-	private void playPoint(final double pa, final double pb, final RetirementRisk risk, final MatchState score) throws IOException
+	private void playPoint(final double pa, final double pb, final RetirementRisk risk, final MatchState score)
 	{
 		playPoint(pa, pb, risk, score, score.isServingNext());
 	}
 
-	private void playPoint(final double pa, final double pb, final RetirementRisk risk, final MatchState score, final boolean serving) throws IOException
+	private void playPoint(final double pa, final double pb, final RetirementRisk risk, final MatchState score, final boolean serving)
 	{
-		final BoundedParetoDistribution riskA = new BoundedParetoDistribution(alpha, lowerbound, 1 - risk.ra, decay, lowerboundPowAlpha);
-		final BoundedParetoDistribution riskB = new BoundedParetoDistribution(alpha, lowerbound, 1 - risk.rb, decay, lowerboundPowAlpha);
-		risk.ra *= decay;
-		risk.ra += riskA.sample();
-		risk.rb *= decay;
-		risk.rb += riskB.sample();
+		if (withRetirement)
+		{
+			if (alphaA >= 500)
+			{
+				risk.ra = 0;
+			}
+			else
+			{
+				final BoundedParetoDistribution riskA = new BoundedParetoDistribution(alphaA, lowerbound, 1 - risk.ra, decay, lowerboundPowAlphaA);
+				risk.ra *= decay;
+				risk.ra += riskA.sample();
+			}
+			if (alphaB >= 500)
+			{
+				risk.rb = 0;
+			}
+			else
+			{
+				final BoundedParetoDistribution riskB = new BoundedParetoDistribution(alphaB, lowerbound, 1 - risk.rb, decay, lowerboundPowAlphaB);
+				risk.rb *= decay;
+				risk.rb += riskB.sample();
+			}
+		}
 
 		// p = probability target player wins this point, q = probability target player loses this point
 		double p, q;

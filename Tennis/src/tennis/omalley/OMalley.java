@@ -135,7 +135,12 @@ public final class OMalley
 
 	public static double matchInProgress(final double pa, final double pb, final CurrentMatchScore matchScore, final int numSetsForWin)
 	{
-		return matchInProgress(pa, pb, matchScore, new CurrentSetScore(), new CurrentGameScore(), (Math.random() < 0.5) ? true : false, numSetsForWin);
+		return matchInProgress(pa, pb, matchScore, new CurrentSetScore(), (Math.random() < 0.5) ? true : false, numSetsForWin);
+	}
+
+	public static double matchInProgress(final double pa, final double pb, final CurrentMatchScore matchScore, final CurrentSetScore setScore, final boolean servingNext, final int numSetsForWin)
+	{
+		return matchInProgress(pa, pb, matchScore, setScore, new CurrentGameScore(), servingNext, numSetsForWin);
 	}
 
 	public static double matchInProgress(final double pa, final double pb, final int numSetsForWin)

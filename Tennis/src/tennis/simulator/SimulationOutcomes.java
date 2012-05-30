@@ -61,19 +61,24 @@ public class SimulationOutcomes
 		return setsPlayed == 0 ? 0 : round((setScores[i][j] / setsPlayed) * 100);
 	}
 
-	public double proportionMatchesWon()
+	public double proportionTargetWon()
 	{
 		return round(targetMatchesWon / runs);
 	}
 
-	public double percentageMatchesWon()
+	public double percentageTargetWon()
 	{
-		return round(proportionMatchesWon() * 100);
+		return round(proportionTargetWon() * 100);
 	}
 
-	public double percentageMatchesLost()
+	public double proportionOpponentWon()
 	{
-		return round((1 - proportionMatchesWon() - proportionTargetRetirements() - proportionOpponentRetirements()) * 100);
+		return round(1 - (proportionTargetWon() + proportionTargetRetirements() + proportionOpponentRetirements()));
+	}
+
+	public double percentageOpponentWon()
+	{
+		return round(proportionOpponentWon() * 100);
 	}
 
 	public double proportionTargetRetirements()
@@ -252,8 +257,8 @@ public class SimulationOutcomes
 
 	public void minPrint(final String target, final String opponent)
 	{
-		System.out.println("Simulator says: " + target + " = " + percentageMatchesWon() + "% (Odds = " + oddsOfTargetWin() + "), "
-				   + opponent + " = " + percentageMatchesLost() + "% (Odds = " + oddsOfOpponentWin() + "), "
+		System.out.println("Simulator says: " + target + " = " + percentageTargetWon() + "% (Odds = " + oddsOfTargetWin() + "), "
+				   + opponent + " = " + percentageOpponentWon() + "% (Odds = " + oddsOfOpponentWin() + "), "
 				   + target + " retirements = " + percentageTargetRetirements() + "%, "+ opponent + " retirements = " + percentageOpponentRetirements() + "%, "
 				   + target + " retirements (1st set) = " + percentageTargetRetirementsFirstSet() + "%, "+ opponent + " retirements (1st set) = " + percentageOpponentRetirementsFirstSet() + "%");
 		System.out.println("Time to simulate " + runs + " runs = " + simulationTime + " seconds");
