@@ -250,13 +250,18 @@ public class SimulationOutcomes
 		return Double.parseDouble(new DecimalFormat("#.#####").format(value));
 	}
 
-	public void print(final String target, final String opponent, final int numSetsToWin)
+	public void minPrint(final String target, final String opponent)
 	{
 		System.out.println("Simulator says: " + target + " = " + percentageMatchesWon() + "% (Odds = " + oddsOfTargetWin() + "), "
-						   + opponent + " = " + percentageMatchesLost() + "% (Odds = " + oddsOfOpponentWin() + "), "
-						   + target + " retirements = " + percentageTargetRetirements() + "%, "+ opponent + " retirements = " + percentageOpponentRetirements() + "%, "
-						   + target + " retirements (1st set) = " + percentageTargetRetirementsFirstSet() + "%, "+ opponent + " retirements (1st set) = " + percentageOpponentRetirementsFirstSet() + "%");
+				   + opponent + " = " + percentageMatchesLost() + "% (Odds = " + oddsOfOpponentWin() + "), "
+				   + target + " retirements = " + percentageTargetRetirements() + "%, "+ opponent + " retirements = " + percentageOpponentRetirements() + "%, "
+				   + target + " retirements (1st set) = " + percentageTargetRetirementsFirstSet() + "%, "+ opponent + " retirements (1st set) = " + percentageOpponentRetirementsFirstSet() + "%");
 		System.out.println("Time to simulate " + runs + " runs = " + simulationTime + " seconds");
+	}
+
+	public void fullPrint(final String target, final String opponent, final int numSetsToWin)
+	{
+		minPrint(target, opponent);
 		System.out.println("\nPOSSIBLE MATCH SCORES:");
 		for (int i = 0; i <= numSetsToWin; i++)
 		{

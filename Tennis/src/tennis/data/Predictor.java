@@ -29,6 +29,6 @@ public class Predictor
 
 		// Simulator
 		final SimulationOutcomes outcomes = new Simulator().simulate(p, q, NUM_SETS_TO_WIN, RUNS);
-		outcomes.print(p1.name(), p2.name(), NUM_SETS_TO_WIN);
+		outcomes.fullPrint(p1.name(), p2.name(), NUM_SETS_TO_WIN);
 	}
 }

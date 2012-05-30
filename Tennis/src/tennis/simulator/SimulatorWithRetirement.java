@@ -6,17 +6,15 @@ import tennis.graphs.distributions.BoundedParetoDistribution;
 
 public class SimulatorWithRetirement
 {
-	private double runs = 1;
 	private final double alpha;
-	private final double lowerbound;
+	private final double lowerbound = 0.01;
 	private final double lowerboundPowAlpha;
 	private final double decay;
 	private SimulationOutcomes outcomes;
 
-	public SimulatorWithRetirement(final double alpha, final double lowerbound, final double decay)
+	public SimulatorWithRetirement(final double alpha, final double decay)
 	{
 		this.alpha = alpha;
-		this.lowerbound = lowerbound;
 		this.decay = decay;
 		this.lowerboundPowAlpha = Math.pow(lowerbound, alpha);
 	}
@@ -33,7 +31,6 @@ public class SimulatorWithRetirement
 
 	public SimulationOutcomes simulate(final double pa, final double pb, final MatchState initialState, final boolean isScenario, final double runs) throws IOException
 	{
-		this.runs = runs;
 		this.outcomes = new SimulationOutcomes(runs);
 		final long startTime = System.currentTimeMillis();
 		for (int i = 0; i < runs; i++)

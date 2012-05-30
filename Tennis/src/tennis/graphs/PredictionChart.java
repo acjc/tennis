@@ -66,7 +66,7 @@ public class PredictionChart extends XYLineChart
 		oneBallChart.pack();
 	    RefineryUtilities.centerFrameOnScreen(oneBallChart);
 	    oneBallChart.setVisible(true);
-	    outcomes.print("Target", "Opponent", 3);
+	    outcomes.fullPrint("Target", "Opponent", 3);
 
 	    final PredictionChart oneSetChart = outcomes.targetOneSetPredictionChart();
 		oneSetChart.buildChart();
