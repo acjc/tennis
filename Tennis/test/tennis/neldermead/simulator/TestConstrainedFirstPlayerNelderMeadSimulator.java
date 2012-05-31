@@ -1,32 +1,25 @@
-package tennis.surface;
+package tennis.neldermead.simulator;
 
 import org.junit.Test;
 
-import tennis.omalley.CurrentMatchScore;
-import tennis.omalley.CurrentSetScore;
-import tennis.omalley.OMalley;
-import tennis.simulator.GameState;
-import tennis.simulator.MatchState;
-import tennis.simulator.SetState;
 import tennis.simulator.SimulationOutcomes;
 import tennis.simulator.SimulatorWR;
 import flanagan.math.Minimisation;
 import flanagan.math.MinimisationFunction;
 
-public class TestConstrainedFirstPlayerNelderMead
+public class TestConstrainedFirstPlayerNelderMeadSimulator extends TestNelderMead
 {
-	private final double mwp = OMalley.matchInProgress(0.63, 0.61, new CurrentMatchScore(1, 0), new CurrentSetScore(1, 2), true, 3);
 	private final double risk = 0.2;
-	MatchState initialState = new MatchState(1, 0, new SetState(1, 2), new GameState(true), 3);
 
 	@Test
 	public void testRetirementRiskFitOnePlayer()
 	{
 		final Minimisation nm = new Minimisation();
-		final double [] simplex = {40.0, 0.70, 50.0, 0.85, 60.0, 0.95};
+		final double [] simplex = {20.0, 0.15, 50.0, 0.60, 80.0, 0.95};
 		final double [] step = {10.0, 1.0, 10.0, 1.0, 10.0, 1.0};
-		nm.addConstraint(1, -1, 0.70);
-		nm.addConstraint(1, 1, 0.95);
+		nm.addConstraint(0, -1, 0);
+		nm.addConstraint(1, -1, 0.10);
+		nm.addConstraint(1, 1, 1.0);
 		final RetirementRiskFirstPlayerFunction f = new RetirementRiskFirstPlayerFunction();
 		nm.nelderMead(f, simplex, step, 0.005);
 

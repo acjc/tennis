@@ -1,6 +1,8 @@
-package tennis.graphs.distributions;
+package tennis.graphs.distributions.pareto;
 
 import static java.lang.Math.pow;
+
+import org.apache.commons.math.random.MersenneTwister;
 
 public class BoundedParetoDistribution
 {
@@ -64,12 +66,12 @@ public class BoundedParetoDistribution
 
 	public double sample()
 	{
-		final double u = Math.random();
+		final double u = new MersenneTwister().nextDouble();
 		final double upperboundPowAlpha = fastPow(upperBound, alpha);
 		double x = pow(-((u * upperboundPowAlpha - (u * lowerboundPowAlpha) - upperboundPowAlpha) / (upperboundPowAlpha * lowerboundPowAlpha)), (-1 / alpha));
 
-		// Linearly shift and scale to be between 0 and the upper bound
-		x = (x - lowerBound) * (upperBound / (upperBound - lowerBound));
+		// Linearly shift to be between 0 and the upper bound
+		x -= lowerBound;
 		return x < 0 ? 0 : x;
 	}
 }

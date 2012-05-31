@@ -1,4 +1,4 @@
-package tennis.distributions;
+package tennis.graphs.distributions.pareto;
 
 import java.awt.Dimension;
 import java.io.IOException;
@@ -13,9 +13,9 @@ import org.jfree.ui.RefineryUtilities;
 
 import tennis.graphs.XYLineChart;
 
-public class RetirementRiskChart extends XYLineChart
+public class RetirementRiskGraph extends XYLineChart
 {
-	public RetirementRiskChart() throws IOException
+	public RetirementRiskGraph() throws IOException
 	{
 		super("Retirement Risk Model", "Time", "Retirement Risk");
 	}
@@ -26,7 +26,7 @@ public class RetirementRiskChart extends XYLineChart
 		final JFreeChart chart = createXYLineChart(createDataset());
 		((XYPlot) chart.getPlot()).getRangeAxis().setRange(0, 1);
 		final ChartPanel chartPanel = new ChartPanel(chart);
-	    chartPanel.setPreferredSize(new Dimension(500, 270));
+	    chartPanel.setPreferredSize(new Dimension(1000, 570));
 	    setContentPane(chartPanel);
 	}
 
@@ -34,7 +34,9 @@ public class RetirementRiskChart extends XYLineChart
 	protected XYDataset createDataset()
 	{
 		final XYSeries series = new XYSeries("Retirement Risk Model");
-		final BoundedParetoDistribution pareto = new BoundedParetoDistribution(0.85, 0.01, 100, 0.9);
+		final double alpha = 3.0;
+		final double lowerBound = 0.01;
+		final BoundedParetoDistribution pareto = new BoundedParetoDistribution(alpha, lowerBound, 1.01, 0.85, Math.pow(lowerBound, alpha));
 	    for(double t = 0; t <= 300; t++)
 	    {
 			series.add(t, pareto.getCurrentRisk());
@@ -50,7 +52,7 @@ public class RetirementRiskChart extends XYLineChart
 
 	public static void main(final String[] args) throws IOException
 	{
-	    final RetirementRiskChart chart = new RetirementRiskChart();
+	    final RetirementRiskGraph chart = new RetirementRiskGraph();
 	    chart.buildChart();
 	    chart.pack();
 	    RefineryUtilities.centerFrameOnScreen(chart);

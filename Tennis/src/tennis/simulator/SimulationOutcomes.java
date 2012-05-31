@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tennis.graphs.PredictionChart;
-import tennis.graphs.distributions.BoundedParetoDistribution;
+import tennis.graphs.distributions.pareto.BoundedParetoDistribution;
 
 public class SimulationOutcomes
 {

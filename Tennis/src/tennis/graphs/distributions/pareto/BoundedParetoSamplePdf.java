@@ -1,4 +1,4 @@
-package tennis.graphs.distributions;
+package tennis.graphs.distributions.pareto;
 
 import java.awt.Dimension;
 import java.io.File;
@@ -15,9 +15,9 @@ import org.jfree.ui.RefineryUtilities;
 
 import tennis.graphs.XYLineChart;
 
-public class BoundedParetoSamplePdfGraph extends BoundedParetoGraph
+public class BoundedParetoSamplePdf extends BoundedParetoGraph
 {
-	public BoundedParetoSamplePdfGraph() throws IOException
+	public BoundedParetoSamplePdf() throws IOException
 	{
 		super("Bounded Pareto PDF", "x", "f(x)");
 	}
@@ -53,7 +53,7 @@ public class BoundedParetoSamplePdfGraph extends BoundedParetoGraph
 
 	public static void main(final String[] args) throws IOException
 	{
-	    final XYLineChart chart = new BoundedParetoSamplePdfGraph();
+	    final XYLineChart chart = new BoundedParetoSamplePdf();
 	    chart.pack();
 	    RefineryUtilities.centerFrameOnScreen(chart);
 	    chart.setVisible(true);

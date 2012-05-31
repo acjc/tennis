@@ -1,4 +1,4 @@
-package tennis.surface;
+package tennis.neldermead.simulator;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -7,22 +7,14 @@ import org.apache.commons.math.FunctionEvaluationException;
 import org.apache.commons.math.optimization.OptimizationException;
 import org.junit.Test;
 
-import tennis.omalley.CurrentMatchScore;
-import tennis.omalley.CurrentSetScore;
-import tennis.omalley.OMalley;
-import tennis.simulator.GameState;
-import tennis.simulator.MatchState;
-import tennis.simulator.SetState;
 import tennis.simulator.SimulationOutcomes;
 import tennis.simulator.SimulatorWR;
 import flanagan.math.Minimisation;
 import flanagan.math.MinimisationFunction;
 
-public class TestFixedDecayNelderMead
+public class TestFixedDecayNelderMeadSimulator extends TestNelderMead
 {
-	private final double mwp = OMalley.matchInProgress(0.63, 0.61, new CurrentMatchScore(1, 0), new CurrentSetScore(1, 2), true, 3);
 	private final double risk = 0.2;
-	MatchState initialState = new MatchState(1, 0, new SetState(1, 2), new GameState(true), 3);
 
 	@Test
 	public void testSampleNelderMead() throws OptimizationException, FunctionEvaluationException, IllegalArgumentException

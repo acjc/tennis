@@ -1,46 +1,37 @@
-package tennis.surface;
+package tennis.neldermead.simulator;
 
 import org.junit.Test;
 
-import tennis.omalley.CurrentMatchScore;
-import tennis.omalley.CurrentSetScore;
-import tennis.omalley.OMalley;
-import tennis.simulator.GameState;
-import tennis.simulator.MatchState;
-import tennis.simulator.SetState;
 import tennis.simulator.SimulationOutcomes;
 import tennis.simulator.SimulatorWR;
 import flanagan.math.Minimisation;
 import flanagan.math.MinimisationFunction;
 
-public class TestConstrainedSecondPlayerNelderMead
+public class TestConstrainedBothPlayersNelderMeadSimulator extends TestNelderMead
 {
-	final double mwp = OMalley.matchInProgress(0.63, 0.61, new CurrentMatchScore(1, 0), new CurrentSetScore(1, 2), true, 3);
 	private final double riskA = 0.2;
 	private final double riskB = 0.2;
-	MatchState initialState = new MatchState(1, 0, new SetState(1, 2), new GameState(true), 3);
 
 	@Test
 	public void testRetirementRiskFitTwoPlayer()
 	{
 		final Minimisation nm = new Minimisation();
-		final double [] simplex = {40.0, 60.0};
-		final double [] step = {10.0, 10.0};
-		nm.addConstraint(0, -1, 0);
-		final RetirementRiskSecondPlayerFunction f = new RetirementRiskSecondPlayerFunction();
+		final double [] simplex = {40.0, 40.0, 50.0, 50.0, 60.0, 60.0};
+		final double [] step = {5.0, 5.0,5.0, 5.0, 5.0, 5.0};
+		final RetirementRiskBothPlayersFunction f = new RetirementRiskBothPlayersFunction();
 		nm.nelderMead(f, simplex, step, 0.005);
 
 		System.out.println("\nFinal Answer");
 		f.function(nm.getParamValues());
 	}
 
-	private class RetirementRiskSecondPlayerFunction implements MinimisationFunction
+	private class RetirementRiskBothPlayersFunction implements MinimisationFunction
 	{
 		@Override
 		public double function(final double[] param)
 		{
-			final double alphaA = 50.0;
-			final double alphaB = param[0];
+			final double alphaA = param[0];
+			final double alphaB = param[1];
 			final double decay = 0.85;
 			System.out.println("AlphaA = " + alphaA + ", alphaB = " + alphaB + ", Decay = " + decay);
 

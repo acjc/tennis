@@ -1,6 +1,6 @@
 package tennis.simulator;
 
-import tennis.graphs.distributions.BoundedParetoDistribution;
+import tennis.graphs.distributions.pareto.BoundedParetoDistribution;
 
 public class SimulatorWR
 {
@@ -158,7 +158,7 @@ public class SimulatorWR
 
 	private class RetirementRisk
 	{
-		public double ra = 0;
-		public double rb = 0;
+		double ra = 0;
+		double rb = 0;
 	}
 }
