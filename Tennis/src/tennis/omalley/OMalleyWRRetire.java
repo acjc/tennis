@@ -1,16 +1,13 @@
 package tennis.omalley;
 
 import static java.lang.Math.pow;
-import tennis.graphs.distributions.pareto.BoundedParetoDistribution;
+import tennis.distributions.pareto.BoundedParetoDistribution;
 import tennis.simulator.RetirementRisk;
 
 public final class OMalleyWRRetire
 {
 	private final double alphaA;
 	private final double alphaB;
-	private final double lowerbound = 0.01;
-	private final double lowerboundPowAlphaA;
-	private final double lowerboundPowAlphaB;
 	private final double decay;
 	private final boolean withRetirement;
 
@@ -20,8 +17,6 @@ public final class OMalleyWRRetire
 		this.alphaB = alphaB;
 		this.decay = decay;
 		this.withRetirement = withRetirement;
-		this.lowerboundPowAlphaA = Math.pow(lowerbound, alphaA);
-		this.lowerboundPowAlphaB = Math.pow(lowerbound, alphaB);
 	}
 
 	public OMalleyWRRetire(final double alpha, final double decay, final boolean withRetirement)
@@ -70,7 +65,7 @@ public final class OMalleyWRRetire
 			}
 			else
 			{
-				final BoundedParetoDistribution riskA = new BoundedParetoDistribution(alphaA, lowerbound, 1 - risk.ra, decay, lowerboundPowAlphaA);
+				final BoundedParetoDistribution riskA = new BoundedParetoDistribution(alphaA, decay);
 				risk.ra *= decay;
 				risk.ra += riskA.sample();
 			}
@@ -80,7 +75,7 @@ public final class OMalleyWRRetire
 			}
 			else
 			{
-				final BoundedParetoDistribution riskB = new BoundedParetoDistribution(alphaB, lowerbound, 1 - risk.rb, decay, lowerboundPowAlphaB);
+				final BoundedParetoDistribution riskB = new BoundedParetoDistribution(alphaB, decay);
 				risk.rb *= decay;
 				risk.rb += riskB.sample();
 			}

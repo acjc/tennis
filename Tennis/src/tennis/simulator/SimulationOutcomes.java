@@ -5,8 +5,8 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import tennis.distributions.pareto.BoundedParetoDistribution;
 import tennis.graphs.PredictionChart;
-import tennis.graphs.distributions.pareto.BoundedParetoDistribution;
 
 public class SimulationOutcomes
 {
@@ -32,9 +32,8 @@ public class SimulationOutcomes
 	private final List<Double> oneBallTargetInjuryPrediction = new ArrayList<Double>();
 	private final List<Double> oneSetTargetInjuryPrediction = new ArrayList<Double>();
 	private final List<Double> twoSetsTargetInjuryPrediction = new ArrayList<Double>();
-	private final double alpha = 0.85;
-	private final double lowerbound = 0.01;
-	final BoundedParetoDistribution pareto = new BoundedParetoDistribution(alpha, lowerbound, 100, 0.95, Math.pow(lowerbound, alpha));
+	private final double alpha = 1.0;
+	final BoundedParetoDistribution pareto = new BoundedParetoDistribution(alpha, 0.85);
 
 	public SimulationOutcomes(final double runs)
 	{

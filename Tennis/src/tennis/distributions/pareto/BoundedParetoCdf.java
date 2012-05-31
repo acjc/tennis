@@ -1,9 +1,11 @@
-package tennis.graphs.distributions.pareto;
+package tennis.distributions.pareto;
 
 import java.awt.Dimension;
+import java.io.File;
 import java.io.IOException;
 
 import org.jfree.chart.ChartPanel;
+import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.XYDataset;
@@ -13,35 +15,33 @@ import org.jfree.ui.RefineryUtilities;
 
 import tennis.graphs.XYLineChart;
 
-public class RetirementRiskGraph extends XYLineChart
+public class BoundedParetoCdf extends XYLineChart
 {
-	public RetirementRiskGraph() throws IOException
+	public BoundedParetoCdf() throws IOException
 	{
-		super("Retirement Risk Model", "Time", "Retirement Risk");
+		super("Bounded Pareto CDF", "x", "F(x)");
 	}
 
 	@Override
 	protected void buildChart() throws IOException
 	{
 		final JFreeChart chart = createXYLineChart(createDataset());
-		((XYPlot) chart.getPlot()).getRangeAxis().setRange(0, 1);
 		final ChartPanel chartPanel = new ChartPanel(chart);
+		((XYPlot) chart.getPlot()).getRangeAxis().setRange(0, 1.2);
 	    chartPanel.setPreferredSize(new Dimension(1000, 570));
 	    setContentPane(chartPanel);
+
+	    ChartUtilities.saveChartAsPNG(new File("graphs\\" + title + ".png"), chart, 1000, 570);
 	}
 
 	@Override
 	protected XYDataset createDataset()
 	{
-		final XYSeries series = new XYSeries("Retirement Risk Model");
-		final double alpha = 3.0;
-		final double lowerBound = 0.01;
-		final BoundedParetoDistribution pareto = new BoundedParetoDistribution(alpha, lowerBound, 1.01, 0.85, Math.pow(lowerBound, alpha));
-	    for(double t = 0; t <= 300; t++)
+		final XYSeries series = new XYSeries("Bounded Pareto CDF");
+		final BoundedParetoDistribution pareto = new BoundedParetoDistribution(80000, 0.85);
+	    for(double x = 1.0; x <= 2.1; x += 0.01)
 	    {
-			series.add(t, pareto.getCurrentRisk());
-			pareto.spike();
-			pareto.decay();
+			series.add(x, pareto.F(x));
 	    }
 
 	    final XYSeriesCollection dataset = new XYSeriesCollection();
@@ -52,7 +52,7 @@ public class RetirementRiskGraph extends XYLineChart
 
 	public static void main(final String[] args) throws IOException
 	{
-	    final RetirementRiskGraph chart = new RetirementRiskGraph();
+	    final BoundedParetoCdf chart = new BoundedParetoCdf();
 	    chart.buildChart();
 	    chart.pack();
 	    RefineryUtilities.centerFrameOnScreen(chart);

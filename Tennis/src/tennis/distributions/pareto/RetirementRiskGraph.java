@@ -1,11 +1,9 @@
-package tennis.graphs.distributions.exp;
+package tennis.distributions.pareto;
 
 import java.awt.Dimension;
-import java.io.File;
 import java.io.IOException;
 
 import org.jfree.chart.ChartPanel;
-import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.XYDataset;
@@ -15,35 +13,34 @@ import org.jfree.ui.RefineryUtilities;
 
 import tennis.graphs.XYLineChart;
 
-public class TruncatedExponentialPdf extends XYLineChart
+public class RetirementRiskGraph extends XYLineChart
 {
-	public TruncatedExponentialPdf() throws IOException
+	public RetirementRiskGraph() throws IOException
 	{
-		super("Truncated Exponential PDF", "x", "f(x)");
-		buildChart();
+		super("Retirement Risk Model", "Time", "Retirement Risk");
 	}
 
 	@Override
 	protected void buildChart() throws IOException
 	{
 		final JFreeChart chart = createXYLineChart(createDataset());
+		((XYPlot) chart.getPlot()).getRangeAxis().setRange(0, 1);
 		final ChartPanel chartPanel = new ChartPanel(chart);
-		((XYPlot) chart.getPlot()).getRangeAxis().setRange(0, 100);
 	    chartPanel.setPreferredSize(new Dimension(1000, 570));
 	    setContentPane(chartPanel);
-
-	    ChartUtilities.saveChartAsPNG(new File("graphs\\" + title + ".png"), chart, 1000, 570);
 	}
 
 	@Override
 	protected XYDataset createDataset()
 	{
-		final XYSeries series = new XYSeries("Truncated Exponential PDF");
-		final TruncatedExponentialDistribution exp = new TruncatedExponentialDistribution(50);
-	    for(double x = 0; x < 1000; x++)
+		final XYSeries series = new XYSeries("Retirement Risk Model");
+		final double alpha = 3.0;
+		final BoundedParetoDistribution pareto = new BoundedParetoDistribution(alpha, 0.85);
+	    for(double t = 0; t <= 300; t++)
 	    {
-			final double sample = exp.sample();
-			series.add(sample, exp.f(sample));
+			series.add(t, pareto.getCurrentRisk());
+			pareto.spike();
+			pareto.decay();
 	    }
 
 	    final XYSeriesCollection dataset = new XYSeriesCollection();
@@ -54,7 +51,8 @@ public class TruncatedExponentialPdf extends XYLineChart
 
 	public static void main(final String[] args) throws IOException
 	{
-	    final XYLineChart chart = new TruncatedExponentialPdf();
+	    final RetirementRiskGraph chart = new RetirementRiskGraph();
+	    chart.buildChart();
 	    chart.pack();
 	    RefineryUtilities.centerFrameOnScreen(chart);
 	    chart.setVisible(true);

@@ -1,4 +1,4 @@
-package tennis.graphs.distributions.pareto;
+package tennis.distributions.pareto;
 
 import java.awt.Dimension;
 import java.io.File;
@@ -15,7 +15,7 @@ import org.jfree.ui.RefineryUtilities;
 
 import tennis.graphs.XYLineChart;
 
-public class BoundedParetoSamplePdf extends BoundedParetoGraph
+public class BoundedParetoSamplePdf extends XYLineChart
 {
 	public BoundedParetoSamplePdf() throws IOException
 	{
@@ -27,7 +27,7 @@ public class BoundedParetoSamplePdf extends BoundedParetoGraph
 	{
 		final JFreeChart chart = createXYLineChart(createDataset());
 		final ChartPanel chartPanel = new ChartPanel(chart);
-		((XYPlot) chart.getPlot()).getRangeAxis().setRange(0, 100);
+		((XYPlot) chart.getPlot()).getRangeAxis().setRange(0, 1000);
 	    chartPanel.setPreferredSize(new Dimension(1000, 570));
 	    setContentPane(chartPanel);
 
@@ -38,10 +38,11 @@ public class BoundedParetoSamplePdf extends BoundedParetoGraph
 	protected XYDataset createDataset()
 	{
 		final XYSeries series = new XYSeries("Bounded Pareto PDF");
-		final BoundedParetoDistribution pareto = new BoundedParetoDistribution(alpha, lowerBound, upperBound, decay, Math.pow(lowerBound, alpha));
+		final BoundedParetoDistribution pareto = new BoundedParetoDistribution(1.0, 0.85);
 	    for(double x = 0; x < 1000; x++)
 	    {
 			final double sample = pareto.sample();
+			System.out.println(sample);
 			series.add(sample, pareto.f(sample));
 	    }
 
@@ -53,7 +54,8 @@ public class BoundedParetoSamplePdf extends BoundedParetoGraph
 
 	public static void main(final String[] args) throws IOException
 	{
-	    final XYLineChart chart = new BoundedParetoSamplePdf();
+	    final BoundedParetoSamplePdf chart = new BoundedParetoSamplePdf();
+	    chart.buildChart();
 	    chart.pack();
 	    RefineryUtilities.centerFrameOnScreen(chart);
 	    chart.setVisible(true);

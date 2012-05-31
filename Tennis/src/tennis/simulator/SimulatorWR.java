@@ -1,12 +1,15 @@
 package tennis.simulator;
 
+
 public abstract class SimulatorWR
 {
+	protected final double decay;
 	protected final boolean withRetirement;
 	private SimulationOutcomes outcomes;
 
-	public SimulatorWR(final boolean withRetirement)
+	public SimulatorWR(final double decay, final boolean withRetirement)
 	{
+		this.decay = decay;
 		this.withRetirement = withRetirement;
 	}
 

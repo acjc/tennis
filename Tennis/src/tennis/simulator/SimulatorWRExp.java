@@ -1,27 +1,27 @@
 package tennis.simulator;
 
 import tennis.distributions.ProbabilityDistribution;
-import tennis.distributions.pareto.BoundedParetoDistribution;
+import tennis.distributions.exp.TruncatedExponentialDistribution;
 
-public class SimulatorWRPareto extends SimulatorWR
+public class SimulatorWRExp extends SimulatorWR
 {
-	private final double alphaA;
-	private final double alphaB;
-	private final BoundedParetoDistribution riskA;
-	private final BoundedParetoDistribution riskB;
+	private final double lambdaA;
+	private final double lambdaB;
+	private final TruncatedExponentialDistribution riskA;
+	private final TruncatedExponentialDistribution riskB;
 
-	public SimulatorWRPareto(final double alphaA, final double alphaB, final double decay, final boolean withRetirement)
+	public SimulatorWRExp(final double lambdaA, final double lambdaB, final double decay, final boolean withRetirement)
 	{
 		super(decay, withRetirement);
-		this.alphaA = alphaA;
-		this.alphaB = alphaB;
-		riskA = new BoundedParetoDistribution(alphaA, decay);
-		riskB = new BoundedParetoDistribution(alphaB, decay);
+		this.lambdaA = lambdaA;
+		this.lambdaB = lambdaB;
+		this.riskA = new TruncatedExponentialDistribution(lambdaA);
+		this.riskB = new TruncatedExponentialDistribution(lambdaB);
 	}
 
-	public SimulatorWRPareto(final double alpha, final double decay, final boolean withRetirement)
+	public SimulatorWRExp(final double lambda, final double decay, final boolean withRetirement)
 	{
-		this(alpha, alpha, decay, withRetirement);
+		this(lambda, lambda, decay, withRetirement);
 	}
 
 	@Override
@@ -29,7 +29,7 @@ public class SimulatorWRPareto extends SimulatorWR
 	{
 		if (withRetirement)
 		{
-			if (alphaA < 0)
+			if (lambdaA < 0)
 			{
 				risk.ra = 0;
 			}
@@ -38,7 +38,7 @@ public class SimulatorWRPareto extends SimulatorWR
 				risk.ra *= decay;
 				risk.ra += riskA.sample();
 			}
-			if (alphaB < 0)
+			if (lambdaB < 0)
 			{
 				risk.rb = 0;
 			}

@@ -1,4 +1,4 @@
-package tennis.neldermead.simulator;
+package tennis.neldermead.simulator.pareto;
 
 import tennis.omalley.CurrentMatchScore;
 import tennis.omalley.CurrentSetScore;

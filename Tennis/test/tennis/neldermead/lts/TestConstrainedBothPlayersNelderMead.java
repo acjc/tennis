@@ -2,7 +2,7 @@ package tennis.neldermead.lts;
 
 import org.junit.Test;
 
-import tennis.neldermead.simulator.TestNelderMead;
+import tennis.neldermead.simulator.pareto.TestNelderMead;
 import tennis.omalley.CurrentMatchScore;
 import tennis.omalley.CurrentSetScore;
 import tennis.omalley.OMalleyWRWin;
