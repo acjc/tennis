@@ -11,7 +11,7 @@ import tennis.omalley.CurrentGameScore;
 import tennis.omalley.CurrentSetScore;
 import tennis.omalley.OMalleyCount;
 import tennis.omalley.OMalleyCount.MatchAnalysis;
-import tennis.omalley.OMalleyWithRetirement;
+import tennis.omalley.OMalleyWRAnalytically;
 
 public class RhoGuessSetChart extends XYLineChart
 {
@@ -35,31 +35,31 @@ public class RhoGuessSetChart extends XYLineChart
 	    for(double r = 0; r <= 0.5; r += 0.01)
 	    {
 			MatchAnalysis analysis = OMalleyCount.setInProgressCount(0.55, 0.46, true);
-			double modifiedMwp = OMalleyWithRetirement.setInProgressWithRetirement(0.55, 0.46, new CurrentSetScore(), new CurrentGameScore(), true, r, rho, analysis.mwp);
+			double modifiedMwp = OMalleyWRAnalytically.setInProgressWithRetirement(0.55, 0.46, new CurrentSetScore(), new CurrentGameScore(), true, r, rho, analysis.mwp);
 			mwpDifference1.add(r, analysis.mwp - modifiedMwp);
 
 			analysis = OMalleyCount.setInProgressCount(0.55, 0.46, new CurrentSetScore(1, 0), new CurrentGameScore(), true, 0, 0);
-			modifiedMwp = OMalleyWithRetirement.setInProgressWithRetirement(0.55, 0.46, new CurrentSetScore(1, 0), new CurrentGameScore(), true, r, rho, analysis.mwp);
+			modifiedMwp = OMalleyWRAnalytically.setInProgressWithRetirement(0.55, 0.46, new CurrentSetScore(1, 0), new CurrentGameScore(), true, r, rho, analysis.mwp);
 			mwpDifference2.add(r, analysis.mwp - modifiedMwp);
 
 			analysis = OMalleyCount.setInProgressCount(0.55, 0.46, new CurrentSetScore(2, 1), new CurrentGameScore(), true, 0, 0);
-			modifiedMwp = OMalleyWithRetirement.setInProgressWithRetirement(0.55, 0.46, new CurrentSetScore(2, 1), new CurrentGameScore(), true, r, rho, analysis.mwp);
+			modifiedMwp = OMalleyWRAnalytically.setInProgressWithRetirement(0.55, 0.46, new CurrentSetScore(2, 1), new CurrentGameScore(), true, r, rho, analysis.mwp);
 			mwpDifference3.add(r, analysis.mwp - modifiedMwp);
 
 			analysis = OMalleyCount.setInProgressCount(0.55, 0.46, new CurrentSetScore(1, 4), new CurrentGameScore(), true, 0, 0);
-			modifiedMwp = OMalleyWithRetirement.setInProgressWithRetirement(0.55, 0.46, new CurrentSetScore(1, 4), new CurrentGameScore(), true, r, rho, analysis.mwp);
+			modifiedMwp = OMalleyWRAnalytically.setInProgressWithRetirement(0.55, 0.46, new CurrentSetScore(1, 4), new CurrentGameScore(), true, r, rho, analysis.mwp);
 			mwpDifference4.add(r, analysis.mwp - modifiedMwp);
 
 			analysis = OMalleyCount.setInProgressCount(0.55, 0.46, new CurrentSetScore(4, 3), new CurrentGameScore(), true, 0, 0);
-			modifiedMwp = OMalleyWithRetirement.setInProgressWithRetirement(0.55, 0.46, new CurrentSetScore(4, 3), new CurrentGameScore(), true, r, rho, analysis.mwp);
+			modifiedMwp = OMalleyWRAnalytically.setInProgressWithRetirement(0.55, 0.46, new CurrentSetScore(4, 3), new CurrentGameScore(), true, r, rho, analysis.mwp);
 			mwpDifference5.add(r, analysis.mwp - modifiedMwp);
 
 			analysis = OMalleyCount.setInProgressCount(0.55, 0.46, new CurrentSetScore(4, 4), new CurrentGameScore(), true, 0, 0);
-			modifiedMwp = OMalleyWithRetirement.setInProgressWithRetirement(0.55, 0.46, new CurrentSetScore(4, 4), new CurrentGameScore(), true, r, rho, analysis.mwp);
+			modifiedMwp = OMalleyWRAnalytically.setInProgressWithRetirement(0.55, 0.46, new CurrentSetScore(4, 4), new CurrentGameScore(), true, r, rho, analysis.mwp);
 			mwpDifference6.add(r, analysis.mwp - modifiedMwp);
 
 			analysis = OMalleyCount.setInProgressCount(0.55, 0.46, new CurrentSetScore(5, 4), new CurrentGameScore(), true, 0, 0);
-			modifiedMwp = OMalleyWithRetirement.setInProgressWithRetirement(0.55, 0.46, new CurrentSetScore(5, 4), new CurrentGameScore(), true, r, rho, analysis.mwp);
+			modifiedMwp = OMalleyWRAnalytically.setInProgressWithRetirement(0.55, 0.46, new CurrentSetScore(5, 4), new CurrentGameScore(), true, r, rho, analysis.mwp);
 			mwpDifference7.add(r, analysis.mwp - modifiedMwp);
 	    }
 

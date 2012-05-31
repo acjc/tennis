@@ -3,6 +3,8 @@ package tennis.omalley;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import tennis.simulator.RetirementRisk;
+
 public class TestOMalleyWR
 {
 	@Ignore

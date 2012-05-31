@@ -14,7 +14,7 @@ import org.jfree.ui.RefineryUtilities;
 import tennis.omalley.CurrentGameScore;
 import tennis.omalley.OMalleyCount;
 import tennis.omalley.OMalleyCount.MatchAnalysis;
-import tennis.omalley.OMalleyWithRetirement;
+import tennis.omalley.OMalleyWRAnalytically;
 
 public class OMalleyWRGameChart extends XYLineChart
 {
@@ -60,7 +60,7 @@ public class OMalleyWRGameChart extends XYLineChart
 			System.out.println("Recursion Levels Remaining: " + analysis.levels);
 			mwpSeries.add(i, analysis.mwp);
 
-			final double modifiedMwp = OMalleyWithRetirement.gameInProgressWithRetirement(p, new CurrentGameScore(targetScore, opponentScore), retirementRisk, analysis.levels, analysis.mwp);
+			final double modifiedMwp = OMalleyWRAnalytically.gameInProgressWithRetirement(p, new CurrentGameScore(targetScore, opponentScore), retirementRisk, analysis.levels, analysis.mwp);
 			modifiedMwpSeries.add(i, modifiedMwp);
 
 			final double mwpDifference = analysis.mwp - modifiedMwp;

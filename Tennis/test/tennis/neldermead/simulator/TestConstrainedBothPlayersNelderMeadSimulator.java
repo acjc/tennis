@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import tennis.simulator.SimulationOutcomes;
 import tennis.simulator.SimulatorWR;
+import tennis.simulator.SimulatorWRPareto;
 import flanagan.math.Minimisation;
 import flanagan.math.MinimisationFunction;
 
@@ -36,7 +37,7 @@ public class TestConstrainedBothPlayersNelderMeadSimulator extends TestNelderMea
 			System.out.println("AlphaA = " + alphaA + ", alphaB = " + alphaB + ", Decay = " + decay);
 
 
-			final SimulatorWR simulator = new SimulatorWR(alphaA, alphaB, decay, true);
+			final SimulatorWR simulator = new SimulatorWRPareto(alphaA, alphaB, decay, true);
 			final SimulationOutcomes outcomes = simulator.simulate(0.63, 0.61, initialState, true, 20000);
 			final double targetMwpWR = outcomes.proportionTargetWon();
 			final double opponentMwpWR = outcomes.proportionOpponentWon();

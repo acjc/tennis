@@ -2,6 +2,7 @@ package tennis.omalley;
 
 import static java.lang.Math.pow;
 import tennis.graphs.distributions.pareto.BoundedParetoDistribution;
+import tennis.simulator.RetirementRisk;
 
 public final class OMalleyWRRetire
 {

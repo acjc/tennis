@@ -8,6 +8,8 @@ import java.text.DecimalFormat;
 
 import org.junit.Test;
 
+import tennis.simulator.RetirementRisk;
+
 public class TestOMalleyWRWinBase
 {
 	private final OMalleyWRWin omalley = new OMalleyWRWin(1000.0, 0.85, false);

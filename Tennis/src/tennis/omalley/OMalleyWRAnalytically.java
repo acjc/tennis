@@ -3,7 +3,7 @@ package tennis.omalley;
 import static java.lang.Math.pow;
 import tennis.omalley.OMalleyCount.MatchAnalysis;
 
-public final class OMalleyWithRetirement
+public final class OMalleyWRAnalytically
 {
 	public static double tiebreakWithRetirement(final double onServe, final double returnServe,
 												final double retirementRisk, final double levelsRemaining, final double expectedMwp)

@@ -1,4 +1,4 @@
-package tennis.omalley;
+package tennis.simulator;
 
 public class RetirementRisk
 {

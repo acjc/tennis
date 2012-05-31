@@ -17,10 +17,11 @@ import tennis.simulator.GameState;
 import tennis.simulator.MatchState;
 import tennis.simulator.SetState;
 import tennis.simulator.SimulatorWR;
+import tennis.simulator.SimulatorWRPareto;
 
-public class SimulatorWithRetirementRunsChart extends XYLineChart
+public class SimulatorWRParetoRunsChart extends XYLineChart
 {
-	public SimulatorWithRetirementRunsChart(final String title) throws IOException
+	public SimulatorWRParetoRunsChart(final String title) throws IOException
 	{
 	    super(title, "Runs", "Retirement Rate");
 	}
@@ -45,7 +46,7 @@ public class SimulatorWithRetirementRunsChart extends XYLineChart
 		final XYSeries upperSeries = new XYSeries("Upper Bound");
 		final XYSeries lowerSeries = new XYSeries("Lower Bound");
 
-		final SimulatorWR simulator = new SimulatorWR(2.6446, 200.0, 0.8940, true);
+		final SimulatorWR simulator = new SimulatorWRPareto(2.6446, 200.0, 0.8940, true);
 		final MatchState initialState = new MatchState(1, 0, new SetState(1, 2), new GameState(true), 3);
 
 	    for(double i = 10000; i <= 200000; i += 10000)
@@ -70,7 +71,7 @@ public class SimulatorWithRetirementRunsChart extends XYLineChart
 
 	public static void main(final String[] args) throws IOException
 	{
-	    final SimulatorWithRetirementRunsChart chart = new SimulatorWithRetirementRunsChart("Tennis Simulator Retirement Rate Accuracy (best-of-five, pa = 0.6, pb = 0.6)");
+	    final SimulatorWRParetoRunsChart chart = new SimulatorWRParetoRunsChart("Tennis Simulator Retirement Rate Accuracy (best-of-five, pa = 0.6, pb = 0.6)");
 	    chart.buildChart();
 	    chart.pack();
 	    RefineryUtilities.centerFrameOnScreen(chart);

@@ -10,7 +10,7 @@ import org.jfree.ui.RefineryUtilities;
 import tennis.omalley.CurrentGameScore;
 import tennis.omalley.OMalleyCount;
 import tennis.omalley.OMalleyCount.MatchAnalysis;
-import tennis.omalley.OMalleyWithRetirement;
+import tennis.omalley.OMalleyWRAnalytically;
 
 public class RhoGuessGameChart extends XYLineChart
 {
@@ -32,23 +32,23 @@ public class RhoGuessGameChart extends XYLineChart
 	    for(double r = 0; r <= 0.5; r += 0.01)
 	    {
 			MatchAnalysis analysis = OMalleyCount.gameInProgressCount(0.55);
-			double modifiedMwp = OMalleyWithRetirement.gameInProgressWithRetirement(0.55, new CurrentGameScore(), r, rho, analysis.mwp);
+			double modifiedMwp = OMalleyWRAnalytically.gameInProgressWithRetirement(0.55, new CurrentGameScore(), r, rho, analysis.mwp);
 			mwpDifference1.add(r, analysis.mwp - modifiedMwp);
 
 			analysis = OMalleyCount.gameInProgressCount(0.55, new CurrentGameScore(1, 0), 0, 0);
-			modifiedMwp = OMalleyWithRetirement.gameInProgressWithRetirement(0.55, new CurrentGameScore(1, 0), r, rho, analysis.mwp);
+			modifiedMwp = OMalleyWRAnalytically.gameInProgressWithRetirement(0.55, new CurrentGameScore(1, 0), r, rho, analysis.mwp);
 			mwpDifference2.add(r, analysis.mwp - modifiedMwp);
 
 			analysis = OMalleyCount.gameInProgressCount(0.55, new CurrentGameScore(2, 1), 0, 0);
-			modifiedMwp = OMalleyWithRetirement.gameInProgressWithRetirement(0.55, new CurrentGameScore(2, 1), r, rho, analysis.mwp);
+			modifiedMwp = OMalleyWRAnalytically.gameInProgressWithRetirement(0.55, new CurrentGameScore(2, 1), r, rho, analysis.mwp);
 			mwpDifference3.add(r, analysis.mwp - modifiedMwp);
 
 			analysis = OMalleyCount.gameInProgressCount(0.55, new CurrentGameScore(2, 2), 0, 0);
-			modifiedMwp = OMalleyWithRetirement.gameInProgressWithRetirement(0.55, new CurrentGameScore(2, 2), r, rho, analysis.mwp);
+			modifiedMwp = OMalleyWRAnalytically.gameInProgressWithRetirement(0.55, new CurrentGameScore(2, 2), r, rho, analysis.mwp);
 			mwpDifference4.add(r, analysis.mwp - modifiedMwp);
 
 			analysis = OMalleyCount.gameInProgressCount(0.55, new CurrentGameScore(3, 2), 0, 0);
-			modifiedMwp = OMalleyWithRetirement.gameInProgressWithRetirement(0.55, new CurrentGameScore(3, 2), r, rho, analysis.mwp);
+			modifiedMwp = OMalleyWRAnalytically.gameInProgressWithRetirement(0.55, new CurrentGameScore(3, 2), r, rho, analysis.mwp);
 			mwpDifference5.add(r, analysis.mwp - modifiedMwp);
 	    }
 

@@ -12,7 +12,7 @@ import tennis.omalley.CurrentMatchScore;
 import tennis.omalley.CurrentSetScore;
 import tennis.omalley.OMalleyCount;
 import tennis.omalley.OMalleyCount.MatchAnalysis;
-import tennis.omalley.OMalleyWithRetirement;
+import tennis.omalley.OMalleyWRAnalytically;
 
 public class OMalleyWRMatchChart extends XYLineChart
 {
@@ -58,7 +58,7 @@ public class OMalleyWRMatchChart extends XYLineChart
 				System.out.println("Recursion Levels Remaining: " + analysis.levels);
 				mwpSeries.add(games, analysis.mwp);
 
-				final double modifiedMwp = OMalleyWithRetirement.matchInProgressWithRetirement(p, q, new CurrentMatchScore(i, i-1),
+				final double modifiedMwp = OMalleyWRAnalytically.matchInProgressWithRetirement(p, q, new CurrentMatchScore(i, i-1),
 																									 new CurrentSetScore(j, j+1),
 																									 new CurrentGameScore(),
 																							   servingNext, numSetsToWin, retirementRisk, analysis.levels, analysis.mwp);

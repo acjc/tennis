@@ -10,7 +10,7 @@ import org.junit.Test;
 
 public class TestSimulatorWRBase
 {
-	private final SimulatorWR simulator = new SimulatorWR(300.0, 300.0, 0.85, false);
+	private final SimulatorWR simulator = new SimulatorWRPareto(300.0, 300.0, 0.85, false);
 
 	@Test
 	public void testProportionWon() throws IOException

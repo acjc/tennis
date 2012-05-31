@@ -6,7 +6,7 @@ import tennis.neldermead.simulator.TestNelderMead;
 import tennis.omalley.CurrentMatchScore;
 import tennis.omalley.CurrentSetScore;
 import tennis.omalley.OMalleyWRWin;
-import tennis.omalley.RetirementRisk;
+import tennis.simulator.RetirementRisk;
 import flanagan.math.Minimisation;
 import flanagan.math.MinimisationFunction;
 
