@@ -36,7 +36,7 @@ public class SimulatorWRExpRecord extends SimulatorWR
 	}
 
 	@Override
-	public SimulationOutcomes simulate(final double pa, final double pb, final MatchState initialState, final boolean isScenario, final double runs)
+	public SimulationOutcomes simulate(final double pa, final double pb, final RetirementRisk initialRisk, final MatchState initialState, final boolean isScenario, final double runs)
 	{
 		this.outcomes = new SimulationOutcomes(runs);
 		final long startTime = System.currentTimeMillis();
@@ -45,11 +45,12 @@ public class SimulatorWRExpRecord extends SimulatorWR
 			// When simulating a particular scenario, we want to replicate the starting conditions exactly
 			// Otherwise, start a fresh match with a random first server
 			final MatchState result = new MatchState(initialState);
+			final RetirementRisk risk = new RetirementRisk(initialRisk.ra, initialRisk.rb);
 			if (!isScenario)
 			{
 				result.coinToss();
 			}
-			simulateMatch(pa, pb, result);
+			simulateMatch(pa, pb, risk, result);
 			outcomes.update(result);
 		}
 		final long endTime = System.currentTimeMillis();
@@ -123,7 +124,7 @@ public class SimulatorWRExpRecord extends SimulatorWR
 
 		final String[] entries = {Integer.toString(score.getTargetSets()), Integer.toString(score.getOpponentSets()),
 								  Integer.toString(score.getTargetGames()), Integer.toString(score.getOpponentGames()),
-								  Integer.toString(score.getTargetPoints()), Integer.toString(score.getOpponentPoints()),
+								  Integer.toString(score.getTargetPoints()), Integer.toString(score.getOpponentPoints()), serving ? "1" : "0",
 							      Double.toString(point), Double.toString(risk.ra), Double.toString(risk.rb)};
 		writer.writeNext(entries);
 	}

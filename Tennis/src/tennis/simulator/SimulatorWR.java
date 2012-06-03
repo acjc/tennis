@@ -24,6 +24,11 @@ public abstract class SimulatorWR
 
 	public SimulationOutcomes simulate(final double pa, final double pb, final MatchState initialState, final boolean isScenario, final double runs)
 	{
+		return simulate(pa, pb, new RetirementRisk(), initialState, isScenario, runs);
+	}
+
+	public SimulationOutcomes simulate(final double pa, final double pb, final RetirementRisk initialRisk, final MatchState initialState, final boolean isScenario, final double runs)
+	{
 		this.outcomes = new SimulationOutcomes(runs);
 		final long startTime = System.currentTimeMillis();
 		for (int i = 0; i < runs; i++)
@@ -31,11 +36,12 @@ public abstract class SimulatorWR
 			// When simulating a particular scenario, we want to replicate the starting conditions exactly
 			// Otherwise, start a fresh match with a random first server
 			final MatchState result = new MatchState(initialState);
+			final RetirementRisk risk = new RetirementRisk(initialRisk.ra, initialRisk.rb);
 			if (!isScenario)
 			{
 				result.coinToss();
 			}
-			simulateMatch(pa, pb, result);
+			simulateMatch(pa, pb, risk, result);
 			outcomes.update(result);
 		}
 		final long endTime = System.currentTimeMillis();
@@ -43,9 +49,8 @@ public abstract class SimulatorWR
 		return outcomes;
 	}
 
-	protected MatchState simulateMatch(final double pa, final double pb, final MatchState score)
+	protected MatchState simulateMatch(final double pa, final double pb, final RetirementRisk risk, final MatchState score)
 	{
-		final RetirementRisk risk = new RetirementRisk();
 		while (!score.over())
 		{
 			while (!score.setOver())

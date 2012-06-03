@@ -10,8 +10,7 @@ public class TestSimulatorWRExpRecord
 	@Test
 	public void testFullMatchBothPlayers() throws IOException
 	{
-		final double lambda = 100000;
-		final SimulatorWR simulator = new SimulatorWRExpRecord(lambda, 0.85, true);
+		final SimulatorWR simulator = new SimulatorWRExpRecord(-1, 0.85, true);
 		simulator.simulate(0.60, 0.60, 1).minPrint("A", "B");
 	}
 

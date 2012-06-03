@@ -65,8 +65,6 @@ public abstract class XYLineChart extends ApplicationFrame
 	    renderer.setBaseShapesVisible(false);
 	    plot.setRenderer(renderer);
 
-	    ChartUtilities.saveChartAsPNG(new File("graphs\\" + title + ".png"), chart, 1000, 570);
-
 	    return chart;
 	}
 }

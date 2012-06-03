@@ -22,6 +22,49 @@ public final class OMalley
 		return result;
 	}
 
+	public static double tiebreakInProgress(final double pa, final double pb, final boolean servingNext)
+	{
+		return tiebreakInProgress(pa, pb, new CurrentGameScore(), servingNext);
+	}
+
+	public static double tiebreakInProgress(final double pa, final double pb, final CurrentGameScore gameScore, boolean servingNext)
+	{
+		final int a = gameScore.getTargetPoints();
+		final int b = gameScore.getOpponentPoints();
+
+		if (a > b && a >= 7 && Math.abs(a - b) >= 2)
+		{
+			return 1.0;
+		}
+		if (b > a && b >= 7 && Math.abs(a - b) >= 2)
+		{
+			return 0.0;
+		}
+		if (a == b && a >= 6)
+		{
+			return (pa * (1 - pb)) / (1 - (pa * pb + (1 - pa) * (1 - pb)));
+		}
+		else
+		{
+			double p, q;
+			if (servingNext)
+			{
+				p = pa;
+				q = 1 - pa;
+			}
+			else
+			{
+				p = 1 - pb;
+				q = pb;
+			}
+			if((gameScore.getTargetPoints() + gameScore.getOpponentPoints()) % 2 == 1)
+			{
+				servingNext = !servingNext;
+			}
+			return p * tiebreakInProgress(pa, pb, gameScore.incTargetPoints(), servingNext) + q * tiebreakInProgress(pa, pb, gameScore.incOpponentPoints(), servingNext);
+		}
+	}
+
 	private static double d(final double p, final double q)
 	{
 		return p * q * pow(1 - (p * (1 - q) + (1 - p) * q), -1);
@@ -108,7 +151,7 @@ public final class OMalley
 		}
 		if (targetGames == 6 && opponentGames == 6)
 		{
-			return tiebreak(pa, pb);
+			return tiebreakInProgress(pa, pb, gameScore, servingNext);
 		}
 		final double g = (servingNext) ? gameInProgress(pa, gameScore) : gameInProgress(1 - pb, gameScore);
 		return g * setInProgress(pa, pb, setScore.incTargetGames(), new CurrentGameScore(), !servingNext) + (1 - g) * setInProgress(pa, pb, setScore.incOpponentGames(), new CurrentGameScore(), !servingNext);

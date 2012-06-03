@@ -257,9 +257,9 @@ public class SimulationOutcomes
 	public void minPrint(final String target, final String opponent)
 	{
 		System.out.println("Simulator says: " + target + " = " + percentageTargetWon() + "% (Odds = " + oddsOfTargetWin() + "), "
-				   + opponent + " = " + percentageOpponentWon() + "% (Odds = " + oddsOfOpponentWin() + "), "
-				   + target + " retirements = " + percentageTargetRetirements() + "%, "+ opponent + " retirements = " + percentageOpponentRetirements() + "%, "
-				   + target + " retirements (1st set) = " + percentageTargetRetirementsFirstSet() + "%, "+ opponent + " retirements (1st set) = " + percentageOpponentRetirementsFirstSet() + "%");
+				   		   + opponent + " = " + percentageOpponentWon() + "% (Odds = " + oddsOfOpponentWin() + "), "
+				   		   + target + " retirements = " + percentageTargetRetirements() + "%, "+ opponent + " retirements = " + percentageOpponentRetirements() + "%, "
+				   		   + target + " retirements (1st set) = " + percentageTargetRetirementsFirstSet() + "%, "+ opponent + " retirements (1st set) = " + percentageOpponentRetirementsFirstSet() + "%");
 		System.out.println("Time to simulate " + runs + " runs = " + simulationTime + " seconds");
 	}
 

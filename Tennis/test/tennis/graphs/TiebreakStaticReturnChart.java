@@ -22,7 +22,7 @@ public class TiebreakStaticReturnChart extends XYLineChart{
 		final XYSeries series = new XYSeries("Tiebreak");
 	    for(double i = 0; i <= 1.0; i += 0.01)
 	    {
-			series.add(i, OMalley.tiebreak(i, 0.5));
+			series.add(i, OMalley.tiebreakInProgress(i, 0.5, true));
 	    }
 
 	    final XYSeriesCollection dataset = new XYSeriesCollection();
