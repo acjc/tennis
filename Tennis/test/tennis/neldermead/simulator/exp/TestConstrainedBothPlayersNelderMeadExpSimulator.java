@@ -28,6 +28,7 @@ public class TestConstrainedBothPlayersNelderMeadExpSimulator extends TestNelder
 		System.out.println("\nFinal Answer");
 		f.function(nm.getParamValues());
 		System.out.println("Minimum = " + nm.getMinimum());
+		System.out.println();
 	}
 
 	private class RetirementRiskBothPlayersFunction implements MinimisationFunction
@@ -40,7 +41,6 @@ public class TestConstrainedBothPlayersNelderMeadExpSimulator extends TestNelder
 			final double decay = 0.85;
 			System.out.println("LambdaA = " + lambdaA + ", LambdaB = " + lambdaB + ", Decay = " + decay);
 
-
 			final SimulatorWR simulator = new SimulatorWRExp(lambdaA, lambdaB, decay, true);
 			final SimulationOutcomes outcomes = simulator.simulate(pa, pb, initialState, true, 50000);
 			final double targetMwpWR = outcomes.proportionTargetWon();
@@ -48,8 +48,13 @@ public class TestConstrainedBothPlayersNelderMeadExpSimulator extends TestNelder
 			final double rateA = outcomes.proportionTargetRetirements();
 			final double rateB = outcomes.proportionOpponentRetirements();
 
+			System.out.println("MWP = " + mwp + ", RiskA = " + riskA + ", RiskB = " + riskB);
 			outcomes.minPrint("A", "B");
-			return Math.abs(rateA - riskA) + Math.abs(rateB - riskB) + Math.abs(mwp - (targetMwpWR + riskA)) + Math.abs((1 - mwp) - (opponentMwpWR + riskB));
+			final double targetNoRetMwp = targetMwpWR / (targetMwpWR + opponentMwpWR);
+			System.out.println("Target No Ret. MWP = " + targetNoRetMwp);
+			final double opponentNoRetMwp = opponentMwpWR / (targetMwpWR + opponentMwpWR);
+			System.out.println("Opponent No Ret. MWP = " + opponentNoRetMwp);
+			return Math.abs(rateA - riskA) + Math.abs(rateB - riskB) + Math.abs(mwp - targetNoRetMwp) + Math.abs((1 - mwp) - opponentNoRetMwp);
 		}
 	}
 }

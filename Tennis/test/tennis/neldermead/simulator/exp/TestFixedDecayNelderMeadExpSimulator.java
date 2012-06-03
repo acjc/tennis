@@ -26,6 +26,7 @@ public class TestFixedDecayNelderMeadExpSimulator extends TestNelderMead
 		System.out.println("\nFinal Answer");
 		f.function(nm.getParamValues());
 		System.out.println("Minimum = " + nm.getMinimum());
+		System.out.println();
 	}
 
 	private class RetirementRiskFixedDecayFunction implements MinimisationFunction
@@ -43,10 +44,13 @@ public class TestFixedDecayNelderMeadExpSimulator extends TestNelderMead
 			final double opponentMwpWR = outcomes.proportionOpponentWon();
 			final double rate = outcomes.proportionTargetRetirements();
 
-			System.out.println("MWP = " + mwp);
+			System.out.println("MWP = " + mwp + ", Risk = " + risk);
 			outcomes.minPrint("A", "B");
-			System.out.println("MWP Difference = " + (mwp - targetMwpWR));
-			return Math.abs(rate - risk) + Math.abs(mwp - (targetMwpWR + risk)) + Math.abs((1 - mwp) - opponentMwpWR);
+			final double targetNoRetMwp = targetMwpWR / (targetMwpWR + opponentMwpWR);
+			System.out.println("Target No Ret. MWP = " + targetNoRetMwp);
+			final double opponentNoRetMwp = opponentMwpWR / (targetMwpWR + opponentMwpWR);
+			System.out.println("Opponent No Ret. MWP = " + opponentNoRetMwp);
+			return Math.abs(rate - risk) + Math.abs(mwp - targetNoRetMwp) + Math.abs((1 - mwp) - opponentNoRetMwp);
 		}
 	}
 }

@@ -19,7 +19,7 @@ public class BoundedParetoCdf extends XYLineChart
 {
 	public BoundedParetoCdf() throws IOException
 	{
-		super("Bounded Pareto CDF", "x", "F(x)");
+		super("Shifted Bounded Pareto CDF", "x", "F(x)");
 	}
 
 	@Override
@@ -37,11 +37,11 @@ public class BoundedParetoCdf extends XYLineChart
 	@Override
 	protected XYDataset createDataset()
 	{
-		final XYSeries series = new XYSeries("Bounded Pareto CDF");
-		final BoundedParetoDistribution pareto = new BoundedParetoDistribution(80000, 0.85);
-	    for(double x = 1.0; x <= 2.1; x += 0.01)
+		final XYSeries series = new XYSeries("Shifted Bounded Pareto CDF");
+		final BoundedParetoDistribution pareto = new BoundedParetoDistribution(20, 0.85);
+	    for(double x = 1.0; x <= 2.0; x += 0.01)
 	    {
-			series.add(x, pareto.F(x));
+			series.add(x - 1, pareto.F(x));
 	    }
 
 	    final XYSeriesCollection dataset = new XYSeriesCollection();

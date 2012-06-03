@@ -31,7 +31,7 @@ public abstract class XYLineChart extends ApplicationFrame
 
 	protected void buildChart() throws IOException
 	{
-		JFreeChart chart = createXYLineChart(createDataset());
+		final JFreeChart chart = createXYLineChart(createDataset());
 		final ChartPanel chartPanel = new ChartPanel(chart);
 	    chartPanel.setPreferredSize(new Dimension(1000, 570));
 	    setContentPane(chartPanel);
@@ -57,9 +57,9 @@ public abstract class XYLineChart extends ApplicationFrame
 	    chart.setBackgroundPaint(Color.white);
 
 	    final XYPlot plot = chart.getXYPlot();
-	    plot.setBackgroundPaint(Color.lightGray);
-	    plot.setDomainGridlinePaint(Color.white);
-	    plot.setRangeGridlinePaint(Color.white);
+	    plot.setBackgroundPaint(Color.white);
+	    plot.setDomainGridlinePaint(Color.lightGray);
+	    plot.setRangeGridlinePaint(Color.lightGray);
 
 	    final XYSplineRenderer renderer = new XYSplineRenderer();
 	    renderer.setBaseShapesVisible(false);

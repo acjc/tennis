@@ -39,7 +39,7 @@ public class TruncatedExponentialCdf extends XYLineChart
 	protected XYDataset createDataset()
 	{
 		final XYSeries series = new XYSeries("Truncated Exponential CDF");
-		final TruncatedExponentialDistribution exp = new TruncatedExponentialDistribution(1000);
+		final TruncatedExponentialDistribution exp = new TruncatedExponentialDistribution(20);
 	    for(double x = 0; x <= 1.0; x += 0.01)
 	    {
 			series.add(x, exp.F(x));

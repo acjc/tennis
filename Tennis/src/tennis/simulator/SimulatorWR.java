@@ -1,11 +1,10 @@
 package tennis.simulator;
 
-
 public abstract class SimulatorWR
 {
 	protected final double decay;
 	protected final boolean withRetirement;
-	private SimulationOutcomes outcomes;
+	protected SimulationOutcomes outcomes;
 
 	public SimulatorWR(final double decay, final boolean withRetirement)
 	{
@@ -44,7 +43,7 @@ public abstract class SimulatorWR
 		return outcomes;
 	}
 
-	private MatchState simulateMatch(final double pa, final double pb, final MatchState score)
+	protected MatchState simulateMatch(final double pa, final double pb, final MatchState score)
 	{
 		final RetirementRisk risk = new RetirementRisk();
 		while (!score.over())

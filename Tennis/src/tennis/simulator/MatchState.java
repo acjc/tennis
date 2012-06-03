@@ -199,6 +199,26 @@ public class MatchState implements Score
 		return opponentSets;
 	}
 
+	public int getTargetGames()
+	{
+		return set.getTargetGames();
+	}
+
+	public int getOpponentGames()
+	{
+		return set.getOpponentGames();
+	}
+
+	public int getTargetPoints()
+	{
+		return game.getTargetPoints();
+	}
+
+	public int getOpponentPoints()
+	{
+		return game.getOpponentPoints();
+	}
+
 	public int setsPlayed()
 	{
 		return targetSets + opponentSets;

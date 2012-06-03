@@ -80,7 +80,7 @@ public class Simulator
 	private void playPoint(final double pa, final double pb, final MatchState score, final boolean serving) throws IOException
 	{
 		final double playPoint = Math.random();
-		if ((serving && playPoint < pa) || (!serving && playPoint > pb))
+		if ((serving && playPoint < pa) || (!serving && playPoint >= pb))
 		{
 			score.incrementTarget();
 		}
