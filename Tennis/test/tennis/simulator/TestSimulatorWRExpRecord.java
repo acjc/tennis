@@ -8,7 +8,7 @@ import org.junit.Test;
 public class TestSimulatorWRExpRecord
 {
 	@Test
-	public void testFullMatchBothPlayers() throws IOException
+	public void generateFullMatch() throws IOException
 	{
 		final SimulatorWR simulator = new SimulatorWRExpRecord(-1, 0.85, true);
 		simulator.simulate(0.60, 0.60, 1).minPrint("A", "B");

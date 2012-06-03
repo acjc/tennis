@@ -46,7 +46,7 @@ public class PlayArtificialMatch extends XYLineChart
 		final XYSeries series = new XYSeries("Artificial Match");
 		final XYSeries seriesWR = new XYSeries("Artificial Match WR");
 		final CSVReader reader = new CSVReader(new FileReader("doc\\testmatch.csv"));
-		final SimulatorWRExp simulator = new SimulatorWRExp(100000, 0.85, true);
+		final SimulatorWRExp simulator = new SimulatorWRExp(3333, -1, 0.85, true);
 		int index = 0;
 		String [] nextLine;
 	    while ((nextLine = reader.readNext()) != null)
@@ -67,8 +67,9 @@ public class PlayArtificialMatch extends XYLineChart
 	    	final MatchState initialState = new MatchState(targetSets, opponentSets, new SetState(targetGames, opponentGames), new GameState(targetPoints, opponentPoints, true), 3);
 			final SimulationOutcomes outcomes = simulator.simulate(0.60, 0.60, new RetirementRisk(ra, rb), initialState, true, 10000);
 
-			System.out.println("(" + targetSets + ", " + opponentSets + "), " + "(" + targetGames + ", " + opponentGames + "), " + "(" + targetPoints + ", " + opponentPoints + ")");
-			System.out.println("MWP = " + outcomes.proportionTargetWon());
+			System.out.println(index + ": (" + targetSets + ", " + opponentSets + "), " + "(" + targetGames + ", " + opponentGames + "), " + "(" + targetPoints + ", " + opponentPoints + ")");
+			System.out.println("MWP = " + mwp);
+			System.out.println("MWP-WR = " + outcomes.proportionTargetWon());
 
 			series.add(index, mwp);
 	    	seriesWR.add(index, outcomes.proportionTargetWon());
