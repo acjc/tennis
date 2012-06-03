@@ -37,6 +37,22 @@ public class TestOMalley
 	}
 
 	@Test
+	public void testTiebreakInProgress()
+	{
+		// Test against pre-play formulae
+		assertThat(round(tiebreakInProgress(0.592, 0.601, true)), equalTo(round(tiebreak(0.592, 0.601))));
+		assertThat(round(tiebreakInProgress(0.592, 0.601, false)), equalTo(round(tiebreak(0.592, 0.601))));
+
+		// Basic game assertions
+		assertThat(tiebreakInProgress(0.00, 0.50, true), equalTo(0.0));
+		assertThat(tiebreakInProgress(0.00, 0.50, false), equalTo(0.0));
+		assertThat(tiebreakInProgress(0.50, 0.50, true), equalTo(0.5));
+		assertThat(tiebreakInProgress(0.50, 0.50, false), equalTo(0.5));
+		assertThat(tiebreakInProgress(1.00, 0.50, true), equalTo(1.0));
+		assertThat(tiebreakInProgress(1.00, 0.50, false), equalTo(1.0));
+	}
+
+	@Test
 	public void testGameInProgress()
 	{
 		// Test against pre-play formulae
