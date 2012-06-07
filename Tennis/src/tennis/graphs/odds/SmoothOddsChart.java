@@ -17,11 +17,11 @@ import tennis.graphs.helper.PlayerOdds;
 import tennis.graphs.helper.SetOdds;
 import au.com.bytecode.opencsv.CSVReader;
 
-public class DefaultOddsChart extends OddsChart
+public class SmoothOddsChart extends OddsChart
 {
-	public DefaultOddsChart(final PlayerOdds favourite, final PlayerOdds underdog) throws IOException
+	public SmoothOddsChart(final PlayerOdds favourite, final PlayerOdds underdog) throws IOException
 	{
-		super(favourite.getTitle() + " (" + favourite.getSurname() + ")", favourite, underdog);
+		super(favourite.getTitle() + " (" + favourite.getSurname() + ") [smooth]", favourite, underdog);
 	}
 
 	@Override
@@ -46,21 +46,45 @@ public class DefaultOddsChart extends OddsChart
 		final List<List<SetOdds>> favouriteSetOdds = parseSetOdds(favouriteSetOddsReaders);
 		final List<List<SetOdds>> underdogSetOdds = parseSetOdds(underdogSetOddsReaders);
 
+		final List<Double> matchOddsProbabilities = new ArrayList<Double>();
+		final List<Double> setOddsProbabilities = new ArrayList<Double>();
+
 	    for (int i = 0; i < favouriteMatchOdds.size(); i++)
 	    {
 	    	final long time = favouriteMatchOdds.get(i).getTime();
-			final Second second = new Second(new Date(time));
-			final double matchOddsProbability = favouriteMatchOdds.get(i).getOddsProbability();
-			final double setOddsProbability = calculateCorrectedSetOddsProbability(favouriteSetOdds, underdogSetOdds, time);
+			matchOddsProbabilities.add(favouriteMatchOdds.get(i).getOddsProbability());
+			setOddsProbabilities.add(calculateCorrectedSetOddsProbability(favouriteSetOdds, underdogSetOdds, time));
+	    }
 
+	    double matchOddsWindowSum = 0;
+	    double setOddsWindowSum = 0;
+	    for (int i = 0; i < 100; i++)
+	    {
+	    	matchOddsWindowSum += matchOddsProbabilities.get(i);
+	    	setOddsWindowSum += setOddsProbabilities.get(i);
+	    }
+
+	    for (int i = 50; i < matchOddsProbabilities.size() - 50; i++)
+		{
+	    	matchOddsWindowSum += matchOddsProbabilities.get(i + 50);
+	    	setOddsWindowSum += setOddsProbabilities.get(i + 50);
+
+	    	final long time = favouriteMatchOdds.get(i).getTime();
+			final Second second = new Second(new Date(time));
+
+	    	final double matchOddsProbability = matchOddsWindowSum / 101.0;
+	    	final double setOddsProbability = setOddsWindowSum / 101.0;
 			matchOddsSeries.add(second, matchOddsProbability);
 			setBettingSeries.add(second, setOddsProbability);
 
-    		final double oddsDifference = Math.abs(matchOddsProbability - setOddsProbability);
-    		oddsDifferenceSeries.add(second, oddsDifference);
+	    	final double oddsDifference = Math.abs(matchOddsProbability - setOddsProbability);
+	    	oddsDifferenceSeries.add(second, oddsDifference);
+
+	    	matchOddsWindowSum = matchOddsWindowSum - matchOddsProbabilities.get(i - 50);
+	    	setOddsWindowSum = setOddsWindowSum - setOddsProbabilities.get(i - 50);
+		}
 
 //			new PrintStream(fout).println(favouriteMatchOddsData.get(0)[DATE_INDEX] + ", " + favouriteMatchOddsData.get(0)[LPM_INDEX]);
-	    }
 
 	    dataset.addSeries(matchOddsSeries);
 	    dataset.addSeries(setBettingSeries);

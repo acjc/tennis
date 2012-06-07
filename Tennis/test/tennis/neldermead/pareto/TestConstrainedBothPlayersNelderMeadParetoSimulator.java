@@ -1,14 +1,15 @@
-package tennis.neldermead.simulator.pareto;
+package tennis.neldermead.pareto;
 
 import org.junit.Test;
 
+import tennis.neldermead.TestNelderMead;
 import tennis.simulator.SimulationOutcomes;
 import tennis.simulator.SimulatorWR;
 import tennis.simulator.SimulatorWRPareto;
 import flanagan.math.Minimisation;
 import flanagan.math.MinimisationFunction;
 
-public class TestConstrainedSecondPlayerNelderMeadParetoSimulator extends TestNelderMead
+public class TestConstrainedBothPlayersNelderMeadParetoSimulator extends TestNelderMead
 {
 	private final double riskA = 0.2;
 	private final double riskB = 0.2;
@@ -17,9 +18,9 @@ public class TestConstrainedSecondPlayerNelderMeadParetoSimulator extends TestNe
 	public void testRetirementRiskFitTwoPlayer()
 	{
 		final Minimisation nm = new Minimisation();
-		final double [] simplex = {40.0, 60.0};
-		final double [] step = {10.0, 10.0};
-		final RetirementRiskSecondPlayerFunction f = new RetirementRiskSecondPlayerFunction();
+		final double [] simplex = {40.0, 40.0, 50.0, 50.0, 60.0, 60.0};
+		final double [] step = {5.0, 5.0,5.0, 5.0, 5.0, 5.0};
+		final RetirementRiskBothPlayersFunction f = new RetirementRiskBothPlayersFunction();
 		nm.nelderMead(f, simplex, step, 0.005);
 
 		System.out.println("\nFinal Answer");
@@ -27,13 +28,13 @@ public class TestConstrainedSecondPlayerNelderMeadParetoSimulator extends TestNe
 		System.out.println("Minimum = " + nm.getMinimum());
 	}
 
-	private class RetirementRiskSecondPlayerFunction implements MinimisationFunction
+	private class RetirementRiskBothPlayersFunction implements MinimisationFunction
 	{
 		@Override
 		public double function(final double[] param)
 		{
-			final double alphaA = 50.0;
-			final double alphaB = param[0];
+			final double alphaA = param[0];
+			final double alphaB = param[1];
 			final double decay = 0.85;
 			System.out.println("AlphaA = " + alphaA + ", alphaB = " + alphaB + ", Decay = " + decay);
 

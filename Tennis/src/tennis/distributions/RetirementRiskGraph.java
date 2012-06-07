@@ -1,4 +1,4 @@
-package tennis.distributions.pareto;
+package tennis.distributions;
 
 import java.awt.Dimension;
 import java.io.IOException;
@@ -11,6 +11,7 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.RefineryUtilities;
 
+import tennis.distributions.pareto.BoundedParetoDistribution;
 import tennis.graphs.XYLineChart;
 
 public class RetirementRiskGraph extends XYLineChart
@@ -34,8 +35,8 @@ public class RetirementRiskGraph extends XYLineChart
 	protected XYDataset createDataset()
 	{
 		final XYSeries series = new XYSeries("Retirement Risk Model");
-		final double alpha = 3.0;
-		final BoundedParetoDistribution pareto = new BoundedParetoDistribution(alpha, 0.85);
+		final double alpha = 0.85;
+		final BoundedParetoDistribution pareto = new BoundedParetoDistribution(alpha, 100.0, 0.9);
 	    for(double t = 0; t <= 300; t++)
 	    {
 			series.add(t, pareto.getCurrentRisk());

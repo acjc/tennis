@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import tennis.graphs.odds.DefaultOddsChart;
 import tennis.graphs.odds.LpmOddsChart;
+import tennis.graphs.odds.SmoothOddsChart;
 
 public class GraphGenerator
 {
@@ -16,45 +17,40 @@ public class GraphGenerator
 
 		String matchType = "examples\\retirements";
 		System.out.println(matchType);
-		final File [] retirementsThreeSets = new File("doc\\" + matchType).listFiles();
-		for (final File match : retirementsThreeSets)
+		final File [] retirements = new File("doc\\" + matchType).listFiles();
+		for (final File match : retirements)
 		{
-			System.out.println(match.getName());
-			final File [] matchOdds = new File("doc\\" + matchType + File.separator + match.getName()).listFiles(filter);
-
-			final String playerOneName = matchOdds[0].getName().split("\\.")[0];
-			final String playerTwoName = matchOdds[1].getName().split("\\.")[0];
-
-			final PlayerOdds playerOne = new PlayerOdds(playerOneName, matchType, match.getName());
-			final PlayerOdds playerTwo = new PlayerOdds(playerTwoName, matchType, match.getName());
-
-			new DefaultOddsChart(playerOne, playerTwo);
-			new DefaultOddsChart(playerTwo, playerOne);
-			new LpmOddsChart(playerOne, playerTwo);
-			new LpmOddsChart(playerTwo, playerOne);
+			drawGraphs(filter, matchType, match);
 		}
 
 		matchType = "examples\\treatment";
 		System.out.println(matchType);
-		final File [] retirementsFiveSets = new File("doc\\" + matchType).listFiles();
-		for (final File match : retirementsFiveSets)
+		final File [] treatment = new File("doc\\" + matchType).listFiles();
+		for (final File match : treatment)
 		{
-			System.out.println(match.getName());
-			final File [] matchOdds = new File("doc\\" + matchType + File.separator + match.getName()).listFiles(filter);
-
-			final String playerOneName = matchOdds[0].getName().split("\\.")[0];
-			final String playerTwoName = matchOdds[1].getName().split("\\.")[0];
-
-			final PlayerOdds playerOne = new PlayerOdds(playerOneName, matchType, match.getName());
-			final PlayerOdds playerTwo = new PlayerOdds(playerTwoName, matchType, match.getName());
-
-			new DefaultOddsChart(playerOne, playerTwo);
-			new DefaultOddsChart(playerTwo, playerOne);
-			new LpmOddsChart(playerOne, playerTwo);
-			new LpmOddsChart(playerTwo, playerOne);
+			drawGraphs(filter, matchType, match);
 		}
 
 		System.out.println("Stopping Graph Generator");
+	}
+
+	private static void drawGraphs(final MatchOddsFilter filter, final String matchType, final File match) throws IOException
+	{
+		System.out.println(match.getName());
+		final File [] matchOdds = new File("doc\\" + matchType + File.separator + match.getName()).listFiles(filter);
+
+		final String playerOneName = matchOdds[0].getName().split("\\.")[0];
+		final String playerTwoName = matchOdds[1].getName().split("\\.")[0];
+
+		final PlayerOdds playerOne = new PlayerOdds(playerOneName, matchType, match.getName());
+		final PlayerOdds playerTwo = new PlayerOdds(playerTwoName, matchType, match.getName());
+
+		new DefaultOddsChart(playerOne, playerTwo);
+		new DefaultOddsChart(playerTwo, playerOne);
+		new LpmOddsChart(playerOne, playerTwo);
+		new LpmOddsChart(playerTwo, playerOne);
+		new SmoothOddsChart(playerOne, playerTwo);
+		new SmoothOddsChart(playerTwo, playerOne);
 	}
 
 	private static class MatchOddsFilter implements FilenameFilter

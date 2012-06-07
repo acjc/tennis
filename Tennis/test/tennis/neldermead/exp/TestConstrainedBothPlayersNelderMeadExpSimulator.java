@@ -1,8 +1,8 @@
-package tennis.neldermead.simulator.exp;
+package tennis.neldermead.exp;
 
 import org.junit.Test;
 
-import tennis.neldermead.simulator.pareto.TestNelderMead;
+import tennis.neldermead.TestNelderMead;
 import tennis.simulator.SimulationOutcomes;
 import tennis.simulator.SimulatorWR;
 import tennis.simulator.SimulatorWRExp;
@@ -38,11 +38,11 @@ public class TestConstrainedBothPlayersNelderMeadExpSimulator extends TestNelder
 		{
 			final double lambdaA = param[0];
 			final double lambdaB = param[1];
-			final double decay = 0.85;
+			final double decay = 0.75;
 			System.out.println("LambdaA = " + lambdaA + ", LambdaB = " + lambdaB + ", Decay = " + decay);
 
 			final SimulatorWR simulator = new SimulatorWRExp(lambdaA, lambdaB, decay, true);
-			final SimulationOutcomes outcomes = simulator.simulate(pa, pb, initialState, true, 50000);
+			final SimulationOutcomes outcomes = simulator.simulate(pa, pb, initialState, true, 25000);
 			final double targetMwpWR = outcomes.proportionTargetWon();
 			final double opponentMwpWR = outcomes.proportionOpponentWon();
 			final double rateA = outcomes.proportionTargetRetirements();
@@ -50,11 +50,12 @@ public class TestConstrainedBothPlayersNelderMeadExpSimulator extends TestNelder
 
 			System.out.println("MWP = " + mwp + ", RiskA = " + riskA + ", RiskB = " + riskB);
 			outcomes.minPrint("A", "B");
-			final double targetNoRetMwp = targetMwpWR / (targetMwpWR + opponentMwpWR);
-			System.out.println("Target No Ret. MWP = " + targetNoRetMwp);
-			final double opponentNoRetMwp = opponentMwpWR / (targetMwpWR + opponentMwpWR);
-			System.out.println("Opponent No Ret. MWP = " + opponentNoRetMwp);
-			return Math.abs(rateA - riskA) + Math.abs(rateB - riskB) + Math.abs(mwp - targetNoRetMwp) + Math.abs((1 - mwp) - opponentNoRetMwp);
+			final double targetNoRiskMwp = targetMwpWR / (targetMwpWR + opponentMwpWR);
+			System.out.println("Target No Risk MWP = " + targetNoRiskMwp);
+			final double opponentNoRiskMwp = opponentMwpWR / (targetMwpWR + opponentMwpWR);
+			System.out.println("Opponent No Risk MWP = " + opponentNoRiskMwp);
+			System.out.println();
+			return Math.abs(rateA - riskA) + Math.abs(rateB - riskB) + Math.abs(mwp - targetNoRiskMwp) + Math.abs((1 - mwp) - opponentNoRiskMwp);
 		}
 	}
 }

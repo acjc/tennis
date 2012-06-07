@@ -26,9 +26,9 @@ public class SimulatorRunsChart extends XYLineChart
 	protected void buildChart() throws IOException
 	{
 		final JFreeChart chart = createXYLineChart(createDataset());
-		((XYPlot) chart.getPlot()).getRangeAxis().setRange(0.4975, 0.5025);
+		((XYPlot) chart.getPlot()).getRangeAxis().setRange(0.48, 0.52);
 		final ChartPanel chartPanel = new ChartPanel(chart);
-	    chartPanel.setPreferredSize(new Dimension(800, 400));
+	    chartPanel.setPreferredSize(new Dimension(1000, 570));
 	    setContentPane(chartPanel);
 
 	    ChartUtilities.saveChartAsPNG(new File("graphs\\" + title + ".png"), chart, 1000, 570);
@@ -41,15 +41,15 @@ public class SimulatorRunsChart extends XYLineChart
 		final XYSeries solutionSeries = new XYSeries("Exact Solution");
 		final XYSeries upperSeries = new XYSeries("Upper Bound");
 		final XYSeries lowerSeries = new XYSeries("Lower Bound");
-	    for(double i = 10000; i <= 750000; i += 10000)
+	    for(double i = 100; i <= 25000; i += 100)
 	    {
 			final double mwp = new Simulator().simulate(0.6, 0.6, i).proportionTargetWon();
 			simulatorSeries.add(i, mwp);
 			System.out.println("Runs = " + i + ", MWP = " + mwp);
 
-			solutionSeries.add(i, 0.500);
-			upperSeries.add(i, 0.501);
-			lowerSeries.add(i, 0.499);
+			solutionSeries.add(i, 0.50);
+			upperSeries.add(i, 0.51);
+			lowerSeries.add(i, 0.49);
 	    }
 
 	    final XYSeriesCollection dataset = new XYSeriesCollection();
@@ -63,7 +63,7 @@ public class SimulatorRunsChart extends XYLineChart
 
 	public static void main(final String[] args) throws IOException
 	{
-	    final SimulatorRunsChart chart = new SimulatorRunsChart("Tennis Simulator Accuracy (best-of-five, p = 0.6, q = 0.4)");
+	    final SimulatorRunsChart chart = new SimulatorRunsChart("Tennis Simulator Accuracy (best-of-five, pa = 0.6, pb = 0.6)");
 	    chart.buildChart();
 	    chart.pack();
 	    RefineryUtilities.centerFrameOnScreen(chart);

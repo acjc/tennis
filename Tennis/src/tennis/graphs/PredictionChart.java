@@ -13,7 +13,7 @@ import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.RefineryUtilities;
 
 import tennis.simulator.SimulationOutcomes;
-import tennis.simulator.Simulator;
+import tennis.simulator.SimulatorWRExpRecord;
 
 public class PredictionChart extends XYLineChart
 {
@@ -33,7 +33,7 @@ public class PredictionChart extends XYLineChart
 		final JFreeChart chart = createXYLineChart(createDataset());
 		((XYPlot) chart.getPlot()).getRangeAxis().setRange(0, 1);
 		final ChartPanel chartPanel = new ChartPanel(chart);
-	    chartPanel.setPreferredSize(new Dimension(800, 400));
+	    chartPanel.setPreferredSize(new Dimension(1000, 570));
 	    setContentPane(chartPanel);
 	}
 
@@ -60,7 +60,7 @@ public class PredictionChart extends XYLineChart
 
 	public static void main(final String[] args) throws IOException
 	{
-		final SimulationOutcomes outcomes = new Simulator().simulate(0.62, 0.39, 1);
+		final SimulationOutcomes outcomes = new SimulatorWRExpRecord(-1, 0.85, false).simulate(0.60, 0.60, 1);
 		final PredictionChart oneBallChart = outcomes.targetOneBallPredictionChart();
 		oneBallChart.buildChart();
 		oneBallChart.pack();

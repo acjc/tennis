@@ -122,10 +122,18 @@ public class SimulatorWRExpRecord extends SimulatorWR
 			score.opponentRetires();
 		}
 
+		outcomes.addPrediction(pa, pb, serving, score);
+		final double gap = outcomes.addInjuryPrediction(pa, pb, serving, score);
+
+		System.out.println("(" + score.getTargetSets() + ", " +  score.getOpponentSets() + "), "
+						   + "(" + score.getTargetGames() + ", " + score.getTargetGames() + "), "
+						   + "(" + score.getTargetPoints() + ", " + score.getOpponentPoints() + "), Gap = " + gap);
+
 		final String[] entries = {Integer.toString(score.getTargetSets()), Integer.toString(score.getOpponentSets()),
 								  Integer.toString(score.getTargetGames()), Integer.toString(score.getOpponentGames()),
-								  Integer.toString(score.getTargetPoints()), Integer.toString(score.getOpponentPoints()), serving ? "1" : "0",
+								  Integer.toString(score.getTargetPoints()), Integer.toString(score.getOpponentPoints()), serving ? "1" : "0", Double.toString(gap),
 							      Double.toString(point), Double.toString(risk.ra), Double.toString(risk.rb)};
 		writer.writeNext(entries);
+
 	}
 }

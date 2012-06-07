@@ -120,6 +120,26 @@ public class SimulationOutcomes
 		return round(proportionOpponentRetirementsFirstSet() * 100);
 	}
 
+	public double proportionTargetRetirementsAfterFirstSet()
+	{
+		return round((targetRetirements - targetRetirementsFirstSet) / runs);
+	}
+
+	public double percentageTargetRetirementsAfterFirstSet()
+	{
+		return round(proportionTargetRetirementsAfterFirstSet() * 100);
+	}
+
+	public double proportionOpponentRetirementsAfterFirstSet()
+	{
+		return round((opponentRetirements - opponentRetirementsFirstSet) / runs);
+	}
+
+	public double percentageOpponentRetirementsAfterFirstSet()
+	{
+		return round(proportionOpponentRetirementsAfterFirstSet() * 100);
+	}
+
 	public double percentageTiebreaksPlayed()
 	{
 		return setsPlayed == 0 ? 0 : round((numTiebreaks / setsPlayed) * 100);
@@ -196,32 +216,34 @@ public class SimulationOutcomes
 		return numDeuces == 0 ? 0 : totalPointsPostDeuce / numDeuces;
 	}
 
-	public void addPrediction(final double p, final double q, final boolean serving, final MatchState matchState) throws IOException
+	public void addPrediction(final double pa, final double pb, final boolean serving, final MatchState matchState)
 	{
-		targetPrediction.add(matchState.getTargetPrediction(p, q, serving));
+		targetPrediction.add(matchState.getTargetPrediction(pa, pb, serving));
 	}
 
-	public void addInjuryPrediction(final double p, final double q, final boolean serving, final MatchState matchState)
+	public double addInjuryPrediction(final double pa, final double pb, final boolean serving, final MatchState matchState)
 	{
-		oneBallTargetInjuryPrediction.add(matchState.getTargetInjuryPrediction(p, q, pareto.getCurrentRisk(), serving));
+		final double gap = pareto.getCurrentRisk();
+		oneBallTargetInjuryPrediction.add(matchState.getTargetInjuryPrediction(pa, pb, gap, serving));
 		if (matchState.setsPlayed() >= 1)
 		{
-			oneSetTargetInjuryPrediction.add(matchState.getTargetInjuryPrediction(p, q, pareto.getCurrentRisk(), serving));
+			oneSetTargetInjuryPrediction.add(matchState.getTargetInjuryPrediction(pa, pb, gap, serving));
 		}
 		else
 		{
-			oneSetTargetInjuryPrediction.add(matchState.getTargetPrediction(p, q, serving));
+			oneSetTargetInjuryPrediction.add(matchState.getTargetPrediction(pa, pb, serving));
 		}
 		if (matchState.setsPlayed() >= 2)
 		{
-			twoSetsTargetInjuryPrediction.add(matchState.getTargetInjuryPrediction(p, q, pareto.getCurrentRisk(), serving));
+			twoSetsTargetInjuryPrediction.add(matchState.getTargetInjuryPrediction(pa, pb, gap, serving));
 		}
 		else
 		{
-			twoSetsTargetInjuryPrediction.add(matchState.getTargetPrediction(p, q, serving));
+			twoSetsTargetInjuryPrediction.add(matchState.getTargetPrediction(pa, pb, serving));
 		}
 		pareto.spikePercentage();
 		pareto.decay();
+		return gap;
 	}
 
 	public PredictionChart targetOneBallPredictionChart() throws IOException

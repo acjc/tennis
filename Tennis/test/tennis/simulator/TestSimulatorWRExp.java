@@ -19,12 +19,23 @@ public class TestSimulatorWRExp
 		}
 	}
 
+	@Ignore
 	@Test
-	public void testFullMatchBothPlayers()
+	public void testFullMatchBothPlayersSmallRisk()
 	{
-		final double lambda = 100000;
-		final SimulatorWR simulator = new SimulatorWRExp(lambda, 0.85, true);
-		simulator.simulate(0.60, 0.60, 10000).minPrint("A", "B");
+		final double lambda = 55000;
+		final double decay = 0.75;
+		final SimulatorWR simulator = new SimulatorWRExp(lambda, decay, true);
+		simulator.simulate(0.60, 0.60, 100000).minPrint("A", "B");
+	}
+
+	@Test
+	public void testFullMatchBothPlayersLargeRisk()
+	{
+		final double lambda = 4150;
+		final double decay = 0.75;
+		final SimulatorWR simulator = new SimulatorWRExp(lambda, decay, true);
+		simulator.simulate(0.60, 0.60, 20000).minPrint("A", "B");
 	}
 
 	@Ignore

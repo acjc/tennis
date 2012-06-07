@@ -58,10 +58,10 @@ public abstract class OddsChart extends ApplicationFrame
 	    chart.setBackgroundPaint(Color.white);
 
 	    final XYPlot plot = chart.getXYPlot();
-	    plot.setBackgroundPaint(Color.lightGray);
-	    plot.setDomainGridlinePaint(Color.white);
-	    plot.setRangeGridlinePaint(Color.white);
-	    plot.getRangeAxis().setRange(0.0, 125.0);
+	    plot.setBackgroundPaint(Color.white);
+	    plot.setDomainGridlinePaint(Color.lightGray);
+	    plot.setRangeGridlinePaint(Color.lightGray);
+	    plot.getRangeAxis().setRange(0.0, 1.2);
 
 	    ChartUtilities.saveChartAsPNG(new File("graphs\\matches\\" + title + ".png"), chart, 1000, 570);
 
@@ -136,34 +136,35 @@ public abstract class OddsChart extends ApplicationFrame
 		return result;
 	}
 
-	protected double calculateCorrectedSetOddsPercentage(final List<List<SetOdds>> favouriteSetOdds, final List<List<SetOdds>> underdogSetOdds, final long time) throws FileNotFoundException
+	protected double calculateCorrectedSetOddsProbability(final List<List<SetOdds>> favouriteSetOdds, final List<List<SetOdds>> underdogSetOdds, final long time)
 	{
 		final List<SetOdds> bets = findMatchingBets(favouriteSetOdds, underdogSetOdds, time);
 		final int numSetsToWin = bets.size() / 2;
 
 		// Add up recent LPM bets
-		double oddsProbability = 0;
+		double lpmProbability = 0;
 		for (int i = 0; i < numSetsToWin; i++)
 		{
 			if (bets.get(i).isMatchedBet())
 			{
-				oddsProbability += bets.get(i).getOddsProbability();
+				lpmProbability += bets.get(i).getOddsProbability();
 			}
 		}
-		oddsProbability = oddsProbability > 1 ? 1.0 : oddsProbability;
+		// Probability can't be greater than 1!...
+		lpmProbability = lpmProbability > 1 ? 1.0 : lpmProbability;
 
 		// Subtract recent LPM bets from total probability
-		double normalisedProbability = 1.0;
+		double remainingProbability = 1.0;
 		for (int i = 0; i < bets.size(); i++)
 		{
 			if (bets.get(i).isMatchedBet())
 			{
-				normalisedProbability -= bets.get(i).getOddsProbability();
+				remainingProbability -= bets.get(i).getOddsProbability();
 			}
 		}
-		normalisedProbability = normalisedProbability < 0 ? 0.0 : normalisedProbability;
+		remainingProbability = remainingProbability < 0 ? 0.0 : remainingProbability;
 
-		final double overround = calculateOverround(bets, normalisedProbability);
+		final double overround = calculateOverround(bets, remainingProbability);
 
 		// Crossmatch while taking into account overround
 		double crossmatchedProbability = 0;
@@ -172,7 +173,7 @@ public abstract class OddsChart extends ApplicationFrame
 			if (!bets.get(i).isMatchedBet())
 			{
 				final double bestBackPrice = bets.get(i).getBestBackPrice();
-				double newProbability = bestBackPrice;
+				double newOdds = bestBackPrice;
 				double sum = 0;
 				for (int j = 0; j < bets.size(); j++)
 				{
@@ -183,31 +184,31 @@ public abstract class OddsChart extends ApplicationFrame
 						{
 							if (bestBackPrice == -1)
 							{
-								newProbability = bets.get(i).getOdds();
+								newOdds = bets.get(i).getOdds();
 							}
 							else
 							{
-								newProbability = bestBackPrice;
+								newOdds = bestBackPrice;
 							}
 							break;
 						}
 						else
 						{
 							sum += 1 / bestLayPrice;
-							newProbability = 1 / (normalisedProbability - sum);
+							newOdds = 1 / (remainingProbability - sum);
 						}
 					}
 				}
-				crossmatchedProbability += 1 / (newProbability * overround);
+				crossmatchedProbability += 1 / (newOdds * overround);
 			}
 		}
 
-		return (crossmatchedProbability + oddsProbability) * 100;
+		return crossmatchedProbability + lpmProbability;
 	}
 
-	private double calculateOverround(final List<SetOdds> bets, final double normalisedProbability)
+	private double calculateOverround(final List<SetOdds> bets, final double remainingProbability)
 	{
-		double remainingProbability = 0.0;
+		double actualRemainingProbability = 0.0;
 		for (int i = 0; i < bets.size(); i++)
 		{
 			if (!bets.get(i).isMatchedBet())
@@ -235,15 +236,15 @@ public abstract class OddsChart extends ApplicationFrame
 						else
 						{
 							sum += 1 / bestLayPrice;
-							newProbability = normalisedProbability - sum;
+							newProbability = remainingProbability - sum;
 						}
 					}
 				}
-				remainingProbability += newProbability;
+				actualRemainingProbability += newProbability;
 			}
 		}
 
-		return normalisedProbability == 0 ? 1.0 : remainingProbability / normalisedProbability;
+		return remainingProbability == 0 ? 1.0 : actualRemainingProbability / remainingProbability;
 	}
 
 	private List<SetOdds> findMatchingBets(final List<List<SetOdds>> favouriteSetOdds, final List<List<SetOdds>> underdogSetOdds, final long time)
@@ -311,6 +312,7 @@ public abstract class OddsChart extends ApplicationFrame
 	private boolean isCandidateBet(final SetOdds bet, final long time)
 	{
 		final long interval = 300000; // 5 minutes
+		// Time difference is less than 'interval' milliseconds or market has stopped trading
 		return Math.abs(time - bet.getTime()) <= interval || (bet.getTime() > time && bet.getOdds() >= 600);
 	}
 
@@ -325,7 +327,7 @@ public abstract class OddsChart extends ApplicationFrame
 				candidateBet = bet;
 			}
 			// Definitely no closer odds entry exists
-			if (candidateBet != null && bet.getTime() - time > Math.abs(time - candidateBet.getTime()))
+			if (candidateBet != null && (bet.getTime() - time) > Math.abs(time - candidateBet.getTime()))
 			{
 				return candidateBet;
 			}

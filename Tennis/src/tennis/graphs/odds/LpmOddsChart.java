@@ -50,18 +50,18 @@ public class LpmOddsChart extends OddsChart
 	    	final long time = favouriteMatchOdds.get(i).getTime();
 			final Second second = new Second(new Date(time));
 
-			final double matchOddsPercentage = favouriteMatchOdds.get(i).getOddsPercentage();
+			final double matchOddsProbability = favouriteMatchOdds.get(i).getOddsProbability();
 
-			double setOddsPercentage = 0;
+			double setOddsProbability = 0;
 			for (int j = 0; j < favouriteSetOdds.size(); j++)
 			{
-				setOddsPercentage += favouriteSetOdds.get(j).get(i).getOddsPercentage();
+				setOddsProbability += favouriteSetOdds.get(j).get(i).getOddsProbability();
 			}
 
-			matchOddsSeries.add(second, matchOddsPercentage);
-			setBettingSeries.add(second, setOddsPercentage);
+			matchOddsSeries.add(second, matchOddsProbability);
+			setBettingSeries.add(second, setOddsProbability);
 
-    		final double oddsDifference = Math.abs(matchOddsPercentage - setOddsPercentage);
+    		final double oddsDifference = Math.abs(matchOddsProbability - setOddsProbability);
     		oddsDifferenceSeries.add(second, oddsDifference);
 
 //			new PrintStream(fout).println(favouriteMatchOddsData.get(0)[DATE_INDEX] + ", " + favouriteMatchOddsData.get(0)[LPM_INDEX]);

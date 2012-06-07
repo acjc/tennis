@@ -1,5 +1,7 @@
 package tennis.simulator;
 
+import tennis.distributions.ProbabilityDistribution;
+
 public class GameState implements Score
 {
 	private boolean serving;
@@ -92,7 +94,7 @@ public class GameState implements Score
 
 	public void coinToss()
 	{
-		serving = (Math.random() < 0.5) ? true : false;
+		serving = (ProbabilityDistribution.twister.nextDouble() < 0.5) ? true : false;
 	}
 
 	public boolean wentToDeuce()

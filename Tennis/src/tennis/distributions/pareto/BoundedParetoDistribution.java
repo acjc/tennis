@@ -7,17 +7,23 @@ public class BoundedParetoDistribution extends ProbabilityDistribution
 {
 	private final double alpha;
 	private final double lowerBound = 1.0;
-	private final double upperBound = 2.0;
+	private final double upperBound;
 	private final double upperboundPowAlpha;
 	private final double decay;
 
 	private double currentRisk = 0;
 
-	public BoundedParetoDistribution(final double alpha, final double decay)
+	public BoundedParetoDistribution(final double alpha, final double upperBound, final double decay)
 	{
 		this.alpha = alpha;
+		this.upperBound = upperBound;
 		this.decay = decay;
 		upperboundPowAlpha = Math.pow(upperBound, alpha);
+	}
+
+	public BoundedParetoDistribution(final double alpha, final double decay)
+	{
+		this(alpha, 2.0, decay);
 	}
 
 	public double getDecay()

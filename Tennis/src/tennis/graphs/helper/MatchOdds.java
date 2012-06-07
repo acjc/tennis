@@ -1,6 +1,5 @@
 package tennis.graphs.helper;
 
-
 public class MatchOdds
 {
 	private final long time;
@@ -15,6 +14,11 @@ public class MatchOdds
 	public long getTime()
 	{
 		return time;
+	}
+
+	public double getOddsProbability()
+	{
+		return 1 / odds;
 	}
 
 	public double getOddsPercentage()

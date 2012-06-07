@@ -23,9 +23,16 @@ import au.com.bytecode.opencsv.CSVReader;
 
 public class PlayArtificialMatch extends XYLineChart
 {
-	public PlayArtificialMatch() throws IOException
+	private final double lambda;
+	private final double decay;
+	private final String file;
+
+	public PlayArtificialMatch(final String file, final double lambda, final double decay) throws IOException
 	{
-		super("Artificial Match", "Point", "MWP");
+		super("Artificial Match" + " (Lambda = " + lambda + ", rho = " + decay + ")", "Point", "MWP");
+		this.file = file;
+		this.lambda = lambda;
+		this.decay = decay;
 	}
 
 	@Override
@@ -43,10 +50,12 @@ public class PlayArtificialMatch extends XYLineChart
 	@Override
 	protected XYDataset createDataset() throws IOException
 	{
-		final XYSeries series = new XYSeries("Artificial Match");
-		final XYSeries seriesWR = new XYSeries("Artificial Match WR");
-		final CSVReader reader = new CSVReader(new FileReader("doc\\testmatch.csv"));
-		final SimulatorWRExp simulator = new SimulatorWRExp(3333, -1, 0.85, true);
+		final XYSeries mwpNoRiskSeries = new XYSeries("No Risk MWP");
+		final XYSeries mwpNormalWinSeries = new XYSeries("Normal Win MWP");
+		final XYSeries mwpWRAfterFirstSetSeries = new XYSeries("MWP Payout After First Set");
+		final XYSeries mwpWRAfterOneBallSeries = new XYSeries("MWP Payout After One Ball");
+		final CSVReader reader = new CSVReader(new FileReader(file));
+		final SimulatorWRExp simulator = new SimulatorWRExp(lambda, decay, true);
 		int index = 0;
 		String [] nextLine;
 	    while ((nextLine = reader.readNext()) != null)
@@ -58,33 +67,45 @@ public class PlayArtificialMatch extends XYLineChart
 	    	final int targetPoints = Integer.parseInt(nextLine[4]);
 	    	final int opponentPoints = Integer.parseInt(nextLine[5]);
 	    	final boolean servingNext = nextLine[6].equals("1") ? true : false;
-	    	final double point = Double.parseDouble(nextLine[7]);
-	    	final double ra = Double.parseDouble(nextLine[8]);
-	    	final double rb = Double.parseDouble(nextLine[9]);
+	    	final double gap = Double.parseDouble(nextLine[7]);
+	    	final double point = Double.parseDouble(nextLine[8]);
+	    	final double ra = Double.parseDouble(nextLine[9]);
+	    	final double rb = Double.parseDouble(nextLine[10]);
 
 	    	final double mwp = OMalley.matchInProgress(0.60, 0.60, new CurrentMatchScore(targetSets, opponentSets), new CurrentSetScore(targetGames, opponentGames), new CurrentGameScore(targetPoints, opponentPoints), servingNext, 3);
 
 	    	final MatchState initialState = new MatchState(targetSets, opponentSets, new SetState(targetGames, opponentGames), new GameState(targetPoints, opponentPoints, true), 3);
 			final SimulationOutcomes outcomes = simulator.simulate(0.60, 0.60, new RetirementRisk(ra, rb), initialState, true, 10000);
 
+			final double targetMwpNormalWin = outcomes.proportionTargetWon();
+			final double opponentMwpNormalWin = outcomes.proportionOpponentWon();
+			final double targetMwpRiskAfterFirstSet = (targetMwpNormalWin + outcomes.proportionOpponentRetirementsFirstSet()) / (targetMwpNormalWin + opponentMwpNormalWin + outcomes.proportionTargetRetirementsFirstSet() + outcomes.proportionOpponentRetirementsFirstSet());
+			final double targetMwpRiskAfterOneBall = (targetMwpNormalWin + outcomes.proportionOpponentRetirements()) / (targetMwpNormalWin + opponentMwpNormalWin + outcomes.proportionTargetRetirements() + outcomes.proportionOpponentRetirements());
+
 			System.out.println(index + ": (" + targetSets + ", " + opponentSets + "), " + "(" + targetGames + ", " + opponentGames + "), " + "(" + targetPoints + ", " + opponentPoints + ")");
 			System.out.println("MWP = " + mwp);
-			System.out.println("MWP-WR = " + outcomes.proportionTargetWon());
+			outcomes.minPrint("A", "B");
+			System.out.println();
 
-			series.add(index, mwp);
-	    	seriesWR.add(index, outcomes.proportionTargetWon());
+			mwpNoRiskSeries.add(index, mwp);
+			mwpNormalWinSeries.add(index, targetMwpNormalWin);
+			mwpWRAfterFirstSetSeries.add(index, targetMwpRiskAfterFirstSet);
+			mwpWRAfterOneBallSeries.add(index, targetMwpRiskAfterOneBall);
 	    	index++;
 	    }
 	    final XYSeriesCollection dataset = new XYSeriesCollection();
-	    dataset.addSeries(series);
-	    dataset.addSeries(seriesWR);
+	    dataset.addSeries(mwpNoRiskSeries);
+	    dataset.addSeries(mwpNormalWinSeries);
+	    dataset.addSeries(mwpWRAfterFirstSetSeries);
+	    dataset.addSeries(mwpWRAfterOneBallSeries);
 
 	    return dataset;
 	}
 
 	public static void main(final String[] args) throws IOException
 	{
-	    final PlayArtificialMatch chart = new PlayArtificialMatch();
+//	    final PlayArtificialMatch chart = new PlayArtificialMatch("doc\\testmatch2.csv", 4150, 0.75);
+	    final PlayArtificialMatch chart = new PlayArtificialMatch("doc\\testmatch1.csv", 55000, 0.75);
 	    chart.buildChart();
 	    chart.pack();
 	    RefineryUtilities.centerFrameOnScreen(chart);

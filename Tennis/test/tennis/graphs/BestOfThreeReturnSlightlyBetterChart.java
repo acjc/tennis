@@ -1,7 +1,13 @@
 package tennis.graphs;
 
+import java.awt.Dimension;
+import java.io.File;
 import java.io.IOException;
 
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.ChartUtilities;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -13,16 +19,29 @@ public class BestOfThreeReturnSlightlyBetterChart extends XYLineChart
 {
 	public BestOfThreeReturnSlightlyBetterChart() throws IOException
 	{
-	    super("Probability of winning a best-of-3 set match with return pwp 0.02 better", "p", "bestOfThree(p, 1-(p-0.02)");
+	    super("3 set match with pa always 0.02 better than pb", "pa", "bestOfThree(pa, pa - 0.02");
 	}
+
+	@Override
+	protected void buildChart() throws IOException
+	{
+		final JFreeChart chart = createXYLineChart(createDataset());
+		final ChartPanel chartPanel = new ChartPanel(chart);
+		((XYPlot) chart.getPlot()).getRangeAxis().setRange(0.5, 1);
+	    chartPanel.setPreferredSize(new Dimension(1000, 300));
+	    setContentPane(chartPanel);
+
+	    ChartUtilities.saveChartAsPNG(new File("graphs\\" + title + ".png"), chart, 1000, 300);
+	}
+
 
 	@Override
 	protected XYDataset createDataset()
 	{
 		final XYSeries series = new XYSeries("BestOfThree");
-	    for(double i = 0.02; i <= 1.0; i += 0.01)
+	    for(double i = 0.02; i < 1.01; i += 0.01)
 	    {
-			series.add(i, OMalley.bestOfThree(i, 1 - (i - 0.02)));
+			series.add(i, OMalley.bestOfThree(i, i - 0.02));
 	    }
 
 	    final XYSeriesCollection dataset = new XYSeriesCollection();

@@ -269,17 +269,17 @@ public class MatchState implements Score
 		return setScores[i][j];
 	}
 
-	public double getTargetPrediction(final double p, final double q, final boolean serving)
+	public double getTargetPrediction(final double pa, final double pb, final boolean serving)
 	{
-		return OMalley.matchInProgress(p, q, new CurrentMatchScore(targetSets, opponentSets),
-											 new CurrentSetScore(set.getTargetGames(), set.getOpponentGames()),
-				  					  	     new CurrentGameScore(game.getTargetPoints(), game.getOpponentPoints()),
-				  					  	     isServingNext(), numSetsForWin);
+		return OMalley.matchInProgress(pa, pb, new CurrentMatchScore(targetSets, opponentSets),
+											   new CurrentSetScore(getTargetGames(), getOpponentGames()),
+				  					  	       new CurrentGameScore(getTargetPoints(), getOpponentPoints()),
+				  					   isServingNext(), numSetsForWin);
 	}
 
-	public Double getTargetInjuryPrediction(final double p, final double q, final double risk, final boolean serving)
+	public Double getTargetInjuryPrediction(final double pa, final double pb, final double risk, final boolean serving)
 	{
-		final double targetInjuryPrediction = getTargetPrediction(p, q, serving) - risk;
+		final double targetInjuryPrediction = getTargetPrediction(pa, pb, serving) - risk;
 		return targetInjuryPrediction < 0 ? 0 : targetInjuryPrediction;
 	}
 }
