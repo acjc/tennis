@@ -4,35 +4,27 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import tennis.distributions.ProbabilityDistribution;
-import tennis.distributions.exp.TruncatedExponentialDistribution;
+import tennis.distributions.exp.TruncatedHyperExponentialDistribution;
 import au.com.bytecode.opencsv.CSVWriter;
 
-public class SimulatorWRExpRecord extends SimulatorWR
+public class SimulatorWRHypExpRecord extends SimulatorWR
 {
-	private final double lambdaA;
-	private final double lambdaB;
-	private final TruncatedExponentialDistribution riskA;
-	private final TruncatedExponentialDistribution riskB;
+	private final double chance;
+	private final double lambda;
+	private final double decay;
+	private final TruncatedHyperExponentialDistribution riskA;
+	private final TruncatedHyperExponentialDistribution riskB;
 	private final CSVWriter writer;
 
-	public SimulatorWRExpRecord(final double lambdaA, final double lambdaB, final double decay, final boolean withRetirement, final CSVWriter writer)
+	public SimulatorWRHypExpRecord(final double chance, final double lambda, final double decay, final boolean withRetirement) throws IOException
 	{
 		super(decay, withRetirement);
-		this.lambdaA = lambdaA;
-		this.lambdaB = lambdaB;
-		this.riskA = new TruncatedExponentialDistribution(lambdaA);
-		this.riskB = new TruncatedExponentialDistribution(lambdaB);
-		this.writer = writer;
-	}
-
-	public SimulatorWRExpRecord(final double lambdaA, final double lambdaB, final double decay, final boolean withRetirement) throws IOException
-	{
-		this(lambdaA, lambdaB, decay, withRetirement, new CSVWriter(new FileWriter("doc\\match.csv"), ','));
-	}
-
-	public SimulatorWRExpRecord(final double lambda, final double decay, final boolean withRetirement) throws IOException
-	{
-		this(lambda, lambda, decay, withRetirement, new CSVWriter(new FileWriter("doc\\match.csv"), ','));
+		this.chance = chance;
+		this.lambda = lambda;
+		this.decay = decay;
+		this.riskA = new TruncatedHyperExponentialDistribution(chance, lambda);
+		this.riskB = new TruncatedHyperExponentialDistribution(chance, lambda);
+		this.writer = new CSVWriter(new FileWriter("doc\\match.csv"), ',');
 	}
 
 	@Override
@@ -71,7 +63,7 @@ public class SimulatorWRExpRecord extends SimulatorWR
 	{
 		if (withRetirement)
 		{
-			if (lambdaA < 0)
+			if (chance < 0)
 			{
 				risk.ra = 0;
 			}
@@ -80,7 +72,7 @@ public class SimulatorWRExpRecord extends SimulatorWR
 				risk.ra *= decay;
 				risk.ra += riskA.sample();
 			}
-			if (lambdaB < 0)
+			if (lambda < 0)
 			{
 				risk.rb = 0;
 			}

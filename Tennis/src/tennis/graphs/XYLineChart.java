@@ -62,7 +62,7 @@ public abstract class XYLineChart extends ApplicationFrame
 	    plot.setRangeGridlinePaint(Color.lightGray);
 
 	    final XYSplineRenderer renderer = new XYSplineRenderer();
-	    renderer.setBaseShapesVisible(false);
+	    renderer.setBaseShapesVisible(true);
 	    plot.setRenderer(renderer);
 
 	    return chart;

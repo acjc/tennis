@@ -23,8 +23,8 @@ public class TestSimulatorWRPareto
 	@Test
 	public void testFullMatchBothPlayers()
 	{
-		final double baseAlpha = 100000;
-		final SimulatorWR simulator = new SimulatorWRPareto(baseAlpha, 0.85, true);
+		final double baseAlpha = 53000;
+		final SimulatorWR simulator = new SimulatorWRPareto(baseAlpha, 0.75, true);
 		simulator.simulate(0.60, 0.60, 20000).minPrint("A", "B");
 	}
 

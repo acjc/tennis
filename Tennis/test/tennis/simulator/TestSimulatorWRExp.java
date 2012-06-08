@@ -19,16 +19,16 @@ public class TestSimulatorWRExp
 		}
 	}
 
-	@Ignore
 	@Test
 	public void testFullMatchBothPlayersSmallRisk()
 	{
 		final double lambda = 55000;
 		final double decay = 0.75;
 		final SimulatorWR simulator = new SimulatorWRExp(lambda, decay, true);
-		simulator.simulate(0.60, 0.60, 100000).minPrint("A", "B");
+		simulator.simulate(0.60, 0.60, 10000).minPrint("A", "B");
 	}
 
+	@Ignore
 	@Test
 	public void testFullMatchBothPlayersLargeRisk()
 	{

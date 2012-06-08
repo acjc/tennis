@@ -18,17 +18,15 @@ public class OMalleyWRMatchChart extends XYLineChart
 {
 	private final double p;
 	private final double q;
-	private final double r;
 	private final boolean servingNext;
 	private final int numSetsToWin;
 	private final double retirementRisk;
 
-	public OMalleyWRMatchChart(final double p, final double q, final double r, final boolean servingNext, final int numSetsToWin, final double retirementRisk) throws IOException
+	public OMalleyWRMatchChart(final double p, final double q, final boolean servingNext, final int numSetsToWin, final double retirementRisk) throws IOException
 	{
 		super("OMalleyWithRetirementLevels", "Target Games", "MWP");
 		this.p = p;
 		this.q = q;
-		this.r = r;
 		this.servingNext = servingNext;
 		this.numSetsToWin = numSetsToWin;
 		this.retirementRisk = retirementRisk;
@@ -81,7 +79,7 @@ public class OMalleyWRMatchChart extends XYLineChart
 
 	public static void main(final String[] args) throws IOException
 	{
-	    final OMalleyWRMatchChart chart = new OMalleyWRMatchChart(0.55, 0.46, 0.01, true, 3, 0.2);
+	    final OMalleyWRMatchChart chart = new OMalleyWRMatchChart(0.55, 0.46, true, 3, 0.2);
 	    chart.buildChart();
 	    chart.pack();
 	    RefineryUtilities.centerFrameOnScreen(chart);

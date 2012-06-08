@@ -8,6 +8,7 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -28,6 +29,9 @@ public class BoundedParetoCdf extends XYLineChart
 		final JFreeChart chart = createXYLineChart(createDataset());
 		final ChartPanel chartPanel = new ChartPanel(chart);
 		((XYPlot) chart.getPlot()).getRangeAxis().setRange(0, 1.2);
+		final XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
+	    renderer.setBaseShapesVisible(false);
+	    ((XYPlot) chart.getPlot()).setRenderer(renderer);
 	    chartPanel.setPreferredSize(new Dimension(1000, 570));
 	    setContentPane(chartPanel);
 
@@ -38,8 +42,8 @@ public class BoundedParetoCdf extends XYLineChart
 	protected XYDataset createDataset()
 	{
 		final XYSeries series = new XYSeries("Shifted Bounded Pareto CDF");
-		final BoundedParetoDistribution pareto = new BoundedParetoDistribution(20, 0.85);
-	    for(double x = 1.0; x <= 2.0; x += 0.01)
+		final BoundedParetoDistribution pareto = new BoundedParetoDistribution(2000, 0.85);
+	    for(double x = 1.0; x <= 1.1; x += 0.0001)
 	    {
 			series.add(x - 1, pareto.F(x));
 	    }

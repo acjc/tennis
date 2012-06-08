@@ -61,7 +61,7 @@ public abstract class OddsChart extends ApplicationFrame
 	    plot.setBackgroundPaint(Color.white);
 	    plot.setDomainGridlinePaint(Color.lightGray);
 	    plot.setRangeGridlinePaint(Color.lightGray);
-	    plot.getRangeAxis().setRange(0.0, 1.2);
+	    plot.getRangeAxis().setRange(0.0, 1);
 
 	    ChartUtilities.saveChartAsPNG(new File("graphs\\matches\\" + title + ".png"), chart, 1000, 570);
 
