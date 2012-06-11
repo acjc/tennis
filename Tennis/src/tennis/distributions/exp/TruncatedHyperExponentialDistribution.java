@@ -26,7 +26,7 @@ public class TruncatedHyperExponentialDistribution extends ProbabilityDistributi
 	{
 		final double u1 = twister.nextDouble();
 		final double u2 = twister.nextDouble();
-		double sample = 0;
+		double sample = 0.0;
 		if(u1 < chance)
 		{
 			sample = (-log(u2) / lambda);

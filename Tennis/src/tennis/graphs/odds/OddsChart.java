@@ -35,15 +35,18 @@ public abstract class OddsChart extends ApplicationFrame
 		this.title = title;
 		this.favourite = favourite;
 		this.underdog = underdog;
+	}
 
-		final ChartPanel chartPanel = new ChartPanel(createTimeSeriesChart());
+	public void buildChart() throws IOException
+	{
+		final ChartPanel chartPanel = new ChartPanel(createChart());
 	    chartPanel.setPreferredSize(new Dimension(1000, 570));
 	    setContentPane(chartPanel);
 	}
 
 	protected abstract XYDataset createDataset() throws FileNotFoundException, IOException;
 
-	protected JFreeChart createTimeSeriesChart() throws IOException
+	protected JFreeChart createChart() throws IOException
 	{
 	    final JFreeChart chart = ChartFactory.createTimeSeriesChart(
 	    	title,
@@ -61,7 +64,7 @@ public abstract class OddsChart extends ApplicationFrame
 	    plot.setBackgroundPaint(Color.white);
 	    plot.setDomainGridlinePaint(Color.lightGray);
 	    plot.setRangeGridlinePaint(Color.lightGray);
-	    plot.getRangeAxis().setRange(0.0, 1);
+	    plot.getRangeAxis().setRange(0.0, 1.0);
 
 	    ChartUtilities.saveChartAsPNG(new File("graphs\\matches\\" + title + ".png"), chart, 1000, 570);
 

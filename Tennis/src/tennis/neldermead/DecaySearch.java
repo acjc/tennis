@@ -14,7 +14,7 @@ import tennis.simulator.SimulatorWRExp;
 import flanagan.math.Minimisation;
 import flanagan.math.MinimisationFunction;
 
-public class NelderMeadDecaySearch
+public class DecaySearch
 {
 	private final double pa;
 	private final double pb;
@@ -23,7 +23,7 @@ public class NelderMeadDecaySearch
 	private final double riskA;
 	private final double riskB;
 
-	public NelderMeadDecaySearch(final double pa, final double pb, final MatchState matchState, final double mwp, final double riskA, final double riskB)
+	public DecaySearch(final double pa, final double pb, final MatchState matchState, final double mwp, final double riskA, final double riskB)
 	{
 		this.pa = pa;
 		this.pb = pb;
@@ -56,7 +56,7 @@ public class NelderMeadDecaySearch
 			final double riskB = twister.nextDouble() * (1 - mwp);
 			System.out.println("pa = " + pa + ", pb = " + pb);
 			System.out.println("(" + targetSets + ", " + opponentSets + "), " + "(" + targetGames + ", " + opponentGames + "), " + "(" + targetPoints + ", " + opponentPoints + ")");
-			result += new NelderMeadDecaySearch(pa, pb, matchState, mwp, riskA, riskB).findDecay();
+			result += new DecaySearch(pa, pb, matchState, mwp, riskA, riskB).findDecay();
 		}
 		System.out.println(result / 10.0);
 	}

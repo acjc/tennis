@@ -53,7 +53,6 @@ public abstract class SimulatorWR
 	{
 		while (!score.over())
 		{
-//			System.out.println("START!");
 			while (!score.setOver())
 			{
 				while (!score.gameOver())

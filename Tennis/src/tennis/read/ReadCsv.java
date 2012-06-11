@@ -13,7 +13,8 @@ public class ReadCsv
 	    printLine(reader.readNext());
 	    printLine(reader.readNext());
 	    String [] nextLine;
-	    while ((nextLine = reader.readNext()) != null) {
+	    while ((nextLine = reader.readNext()) != null)
+	    {
 	        printLpm(nextLine);
 	    }
 	}

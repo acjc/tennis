@@ -7,7 +7,7 @@ import tennis.distributions.ProbabilityDistribution;
 import tennis.distributions.exp.TruncatedHyperExponentialDistribution;
 import au.com.bytecode.opencsv.CSVWriter;
 
-public class SimulatorWRHypExpRecord extends SimulatorWR
+public class SimulatorWRHyperExpRecord extends SimulatorWR
 {
 	private final double chance;
 	private final double lambda;
@@ -16,7 +16,7 @@ public class SimulatorWRHypExpRecord extends SimulatorWR
 	private final TruncatedHyperExponentialDistribution riskB;
 	private final CSVWriter writer;
 
-	public SimulatorWRHypExpRecord(final double chance, final double lambda, final double decay, final boolean withRetirement) throws IOException
+	public SimulatorWRHyperExpRecord(final double chance, final double lambda, final double decay, final boolean withRetirement) throws IOException
 	{
 		super(decay, withRetirement);
 		this.chance = chance;
@@ -71,6 +71,7 @@ public class SimulatorWRHypExpRecord extends SimulatorWR
 			{
 				risk.ra *= decay;
 				risk.ra += riskA.sample();
+				risk.ra = risk.ra > 1.0 ? 1.0 : risk.ra;
 			}
 			if (lambda < 0)
 			{
@@ -80,6 +81,16 @@ public class SimulatorWRHypExpRecord extends SimulatorWR
 			{
 				risk.rb *= decay;
 				risk.rb += riskB.sample();
+				risk.rb = risk.rb > 1.0 ? 1.0 : risk.rb;
+			}
+		}
+
+		if(risk.ra > 0.03)
+		{
+			System.out.println(risk.ra);
+			if(score.inFirstSet())
+			{
+				TestSimulatorWRHypExpRecord.GO = false;
 			}
 		}
 
@@ -108,23 +119,25 @@ public class SimulatorWRHypExpRecord extends SimulatorWR
 		else if (point >= p + q && point < p + q + risk.ra)
 		{
 			score.targetRetires();
+			TestSimulatorWRHypExpRecord.GO = true;
 		}
 		else if (point >= p + q + risk.ra)
 		{
 			score.opponentRetires();
+			TestSimulatorWRHypExpRecord.GO = true;
 		}
 
-		outcomes.addPrediction(pa, pb, serving, score);
-		final double gap = outcomes.addInjuryPrediction(pa, pb, serving, score);
+//		outcomes.addPrediction(pa, pb, serving, score);
+//		final double gap = outcomes.addInjuryPrediction(pa, pb, serving, score);
 
-		System.out.println("(" + score.getTargetSets() + ", " +  score.getOpponentSets() + "), "
-						   + "(" + score.getTargetGames() + ", " + score.getTargetGames() + "), "
-						   + "(" + score.getTargetPoints() + ", " + score.getOpponentPoints() + "), Gap = " + gap);
+//		System.out.println("(" + score.getTargetSets() + ", " +  score.getOpponentSets() + "), "
+//						   + "(" + score.getTargetGames() + ", " + score.getTargetGames() + "), "
+//						   + "(" + score.getTargetPoints() + ", " + score.getOpponentPoints() + ")");
 
 		final String[] entries = {Integer.toString(score.getTargetSets()), Integer.toString(score.getOpponentSets()),
 								  Integer.toString(score.getTargetGames()), Integer.toString(score.getOpponentGames()),
-								  Integer.toString(score.getTargetPoints()), Integer.toString(score.getOpponentPoints()), serving ? "1" : "0", Double.toString(gap),
-							      Double.toString(point), Double.toString(risk.ra), Double.toString(risk.rb)};
+								  Integer.toString(score.getTargetPoints()), Integer.toString(score.getOpponentPoints()), serving ? "1" : "0", "0",
+							      Double.toString(risk.ra), Double.toString(risk.rb)};
 		writer.writeNext(entries);
 
 	}

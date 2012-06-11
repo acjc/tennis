@@ -185,6 +185,13 @@ public class SimulationOutcomes
 			{
 				targetMatchesWon++;
 			}
+			else
+			{
+				if(!TestSimulatorWRHypExpRecord.GO)
+				{
+					TestSimulatorWRHypExpRecord.GO = true;
+				}
+			}
 
 			final int targetSets = matchState.getTargetSets();
 			final int opponentSets = matchState.getOpponentSets();

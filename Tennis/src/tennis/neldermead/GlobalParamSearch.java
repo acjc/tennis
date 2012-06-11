@@ -6,7 +6,7 @@ import tennis.simulator.SimulatorWRHyperExp;
 import flanagan.math.Minimisation;
 import flanagan.math.MinimisationFunction;
 
-public class NelderMeadParamSearch
+public class GlobalParamSearch
 {
 	private final double pa;
 	private final double pb;
@@ -14,7 +14,7 @@ public class NelderMeadParamSearch
 	private final double riskB;
 	private final double mwp;
 
-	public NelderMeadParamSearch(final double pa, final double pb, final double riskA, final double riskB, final double mwp)
+	public GlobalParamSearch(final double pa, final double pb, final double riskA, final double riskB, final double mwp)
 	{
 		this.pa = pa;
 		this.pb = pb;
@@ -32,7 +32,7 @@ public class NelderMeadParamSearch
 		double decayAvg = 0.0;
 		for (int i = 0; i < 10; i++)
 		{
-			final double [] results = new NelderMeadParamSearch(pa, pb, 0.0195, 0.0195, 0.5).runNelderMead();
+			final double [] results = new GlobalParamSearch(pa, pb, 0.0195, 0.0195, 0.5).runNelderMead();
 			chanceAvg += results[0];
 			lambdaAvg += results[1];
 			decayAvg += results[2];
@@ -43,13 +43,19 @@ public class NelderMeadParamSearch
 	public double [] runNelderMead()
 	{
 		final Minimisation nm = new Minimisation();
-		final double [] simplex = {0, 8.0, 0.80, 0.002, 10.0, 0.83, 0.007, 12.0, 0.87, 0.01, 15.0, 0.90};
-		final double [] step = {0.001, 5.0, 0.05, 0.001, 5.0, 0.05, 0.001, 5.0, 0.05, 0.001, 5.0, 0.05};
+		final double [] simplex = {0.0001, 5.0, 0.95,
+								   0.0002, 12.0, 0.96,
+								   0.0007, 18.0, 0.97,
+								   0.001, 25.0, 0.99};
+		final double [] step = {0.0001, 5.0, 0.05,
+								0.0001, 5.0, 0.05,
+								0.0001, 5.0, 0.05,
+								0.0001, 5.0, 0.05};
 		nm.addConstraint(0, -1, 0.000001);
-		nm.addConstraint(0, 1, 0.001);
-		nm.addConstraint(1, -1, 8.0);
-		nm.addConstraint(2, -1, 0.80);
-		nm.addConstraint(2, 1, 0.90);
+		nm.addConstraint(0, 1, 0.002);
+		nm.addConstraint(1, -1, 2.0);
+		nm.addConstraint(2, -1, 0.95);
+		nm.addConstraint(2, 1, 0.99);
 		final RetirementRiskFunction f = new RetirementRiskFunction();
 		nm.nelderMead(f, simplex, step, 0.005);
 
