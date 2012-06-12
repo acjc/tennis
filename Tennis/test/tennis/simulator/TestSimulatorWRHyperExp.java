@@ -12,6 +12,6 @@ public class TestSimulatorWRHyperExp
 		final double decay = 0.95;
 
 		final SimulatorWR simulator = new SimulatorWRHyperExp(chance, lambda, decay, true);
-		simulator.simulate(0.60, 0.60, 25000).minPrint("A", "B");
+		simulator.simulate(0.60, 0.60, 10000).minPrint("A", "B");
 	}
 }

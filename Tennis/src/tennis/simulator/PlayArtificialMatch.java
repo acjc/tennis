@@ -1,5 +1,6 @@
 package tennis.simulator;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.io.File;
 import java.io.FileReader;
@@ -9,6 +10,7 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -45,6 +47,10 @@ public class PlayArtificialMatch extends XYLineChart
 		final JFreeChart chart = createXYLineChart(createDataset());
 		final ChartPanel chartPanel = new ChartPanel(chart);
 		((XYPlot) chart.getPlot()).getRangeAxis().setRange(0, 1);
+	    final XYItemRenderer renderer = ((XYPlot) chart.getPlot()).getRenderer();
+	    renderer.setSeriesPaint(0, Color.blue);
+	    renderer.setSeriesPaint(1, Color.yellow);
+	    renderer.setSeriesPaint(2, Color.red);
 	    chartPanel.setPreferredSize(new Dimension(1000, 570));
 	    setContentPane(chartPanel);
 
@@ -55,7 +61,6 @@ public class PlayArtificialMatch extends XYLineChart
 	protected XYDataset createDataset() throws IOException
 	{
 		final XYSeries mwpNoRiskSeries = new XYSeries("No Risk MWP");
-		final XYSeries mwpNormalWinSeries = new XYSeries("Normal Win MWP");
 		final XYSeries mwpWRAfterFirstSetSeries = new XYSeries("MWP Payout After First Set");
 		final XYSeries mwpWRAfterOneBallSeries = new XYSeries("MWP Payout After One Ball");
 		final CSVReader reader = new CSVReader(new FileReader(file));
@@ -71,9 +76,8 @@ public class PlayArtificialMatch extends XYLineChart
 	    	final int targetPoints = Integer.parseInt(nextLine[4]);
 	    	final int opponentPoints = Integer.parseInt(nextLine[5]);
 	    	final boolean servingNext = nextLine[6].equals("1") ? true : false;
-	    	final double gap = Double.parseDouble(nextLine[7]);
-	    	final double ra = Double.parseDouble(nextLine[8]);
-	    	final double rb = Double.parseDouble(nextLine[9]);
+	    	final double ra = Double.parseDouble(nextLine[7]);
+	    	final double rb = Double.parseDouble(nextLine[8]);
 
 	    	final double mwp = OMalley.matchInProgress(pa, pb, new CurrentMatchScore(targetSets, opponentSets), new CurrentSetScore(targetGames, opponentGames), new CurrentGameScore(targetPoints, opponentPoints), servingNext, 3);
 
@@ -91,14 +95,12 @@ public class PlayArtificialMatch extends XYLineChart
 			System.out.println();
 
 			mwpNoRiskSeries.add(index, mwp);
-			mwpNormalWinSeries.add(index, targetMwpNormalWin);
 			mwpWRAfterFirstSetSeries.add(index, targetMwpRiskAfterFirstSet);
 			mwpWRAfterOneBallSeries.add(index, targetMwpRiskAfterOneBall);
 	    	index++;
 	    }
 	    final XYSeriesCollection dataset = new XYSeriesCollection();
 	    dataset.addSeries(mwpNoRiskSeries);
-	    dataset.addSeries(mwpNormalWinSeries);
 	    dataset.addSeries(mwpWRAfterFirstSetSeries);
 	    dataset.addSeries(mwpWRAfterOneBallSeries);
 
@@ -107,8 +109,9 @@ public class PlayArtificialMatch extends XYLineChart
 
 	public static void main(final String[] args) throws IOException
 	{
-//		final PlayArtificialMatch chart = new PlayArtificialMatch("doc\\realism.csv", 0.000115, 10.0, 0.95);
-		final PlayArtificialMatch chart = new PlayArtificialMatch("doc\\retirement.csv", 0.000115, 10.0, 0.95);
+		final PlayArtificialMatch chart = new PlayArtificialMatch("doc\\realism.csv", 0.000115, 10.0, 0.95);
+//		final PlayArtificialMatch chart = new PlayArtificialMatch("doc\\firstset.csv", 0.000115, 10.0, 0.95);
+//		final PlayArtificialMatch chart = new PlayArtificialMatch("doc\\retirement.csv", 0.000115, 10.0, 0.95);
 	    chart.buildChart();
 	    chart.pack();
 	    RefineryUtilities.centerFrameOnScreen(chart);

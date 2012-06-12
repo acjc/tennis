@@ -45,12 +45,12 @@ public class GraphGenerator
 		final PlayerOdds playerOne = new PlayerOdds(playerOneName, matchType, match.getName());
 		final PlayerOdds playerTwo = new PlayerOdds(playerTwoName, matchType, match.getName());
 
-		new DefaultOddsChart(playerOne, playerTwo);
-		new DefaultOddsChart(playerTwo, playerOne);
-		new LpmOddsChart(playerOne, playerTwo);
-		new LpmOddsChart(playerTwo, playerOne);
-		new SmoothOddsChart(playerOne, playerTwo);
-		new SmoothOddsChart(playerTwo, playerOne);
+		new DefaultOddsChart(playerOne, playerTwo).buildChart();
+		new DefaultOddsChart(playerTwo, playerOne).buildChart();
+		new LpmOddsChart(playerOne, playerTwo).buildChart();
+		new LpmOddsChart(playerTwo, playerOne).buildChart();
+		new SmoothOddsChart(playerOne, playerTwo).buildChart();
+		new SmoothOddsChart(playerTwo, playerOne).buildChart();
 	}
 
 	private static class MatchOddsFilter implements FilenameFilter

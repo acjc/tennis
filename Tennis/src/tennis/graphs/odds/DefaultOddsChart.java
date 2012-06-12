@@ -1,7 +1,6 @@
 package tennis.graphs.odds;
 
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -40,7 +39,7 @@ public class DefaultOddsChart extends OddsChart
 
 		final TimeSeries oddsDifferenceSeries = new TimeSeries("Odds Difference");
 
-		final FileOutputStream fout = new FileOutputStream ("doc\\adam.txt");
+//		final FileOutputStream fout = new FileOutputStream ("doc\\adam.txt");
 
 		final List<MatchOdds> favouriteMatchOdds = parseMatchOdds(favouriteMatchOddsReader);
 		final List<List<SetOdds>> favouriteSetOdds = parseSetOdds(favouriteSetOddsReaders);

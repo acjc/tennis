@@ -41,11 +41,11 @@ public class PointLevelRetirementRiskSearch
 	public double search()
 	{
 		final Minimisation nm = new Minimisation();
-		final double [] simplex = {0.05, 0.2};
-		final double [] step = {0.05, 0.05};
+		final double [] simplex = {0.001, 0.01};
+		final double [] step = {0.001, 0.001};
 		nm.addConstraint(0, -1, 0);
 		final RetirementRiskFunction f = new RetirementRiskFunction();
-		nm.nelderMead(f, simplex, step, 0.005);
+		nm.nelderMead(f, simplex, step, 0.001, 50);
 
 		System.out.println("Final Answer");
 		final double[] params = nm.getParamValues();
@@ -56,13 +56,18 @@ public class PointLevelRetirementRiskSearch
 		return params[0];
 	}
 
+	public static void main(final String[] args)
+	{
+		System.out.println(new PointLevelRetirementRiskSearch(0.645, 0.6, 0.2, 0, 0, 0, 0, 0, 0, 0, true).search());
+	}
+
 	private class RetirementRiskFunction implements MinimisationFunction
 	{
 		@Override
 		public double function(final double[] param)
 		{
 			final double ra = param[0];
-//			System.out.println("ra = " + ra);
+			System.out.println("ra = " + ra);
 
 			final SimulatorWR simulator = new SimulatorWRHyperExp(chance, lambda, decay, true);
 			final SimulationOutcomes outcomes = simulator.simulate(pa, pb, new RetirementRisk(ra, 0), initialState, true, 10000);
@@ -71,14 +76,14 @@ public class PointLevelRetirementRiskSearch
 			final double rateA = outcomes.proportionTargetRetirements();
 			final double rateB = outcomes.proportionOpponentRetirements();
 
-//			System.out.println("MWP = " + mwp + ", RiskA = " + riskA + ", RiskB = " + riskB);
-//			outcomes.minPrint("A", "B");
+			System.out.println("MWP = " + mwp + ", RiskA = " + riskA + ", RiskB = " + riskB);
+			outcomes.minPrint("A", "B");
 			final double targetNoRiskMwp = targetMwpWR / (targetMwpWR + opponentMwpWR);
-//			System.out.println("Target No Risk MWP = " + targetNoRiskMwp);
+			System.out.println("Target No Risk MWP = " + targetNoRiskMwp);
 			final double opponentNoRiskMwp = opponentMwpWR / (targetMwpWR + opponentMwpWR);
-//			System.out.println("Opponent No Risk MWP = " + opponentNoRiskMwp);
-//			System.out.println();
-			return Math.abs(rateA - riskA) + Math.abs(rateB - riskB) + Math.abs(mwp - targetNoRiskMwp) + Math.abs((1 - mwp) - opponentNoRiskMwp);
+			System.out.println("Opponent No Risk MWP = " + opponentNoRiskMwp);
+			System.out.println();
+			return Math.abs(mwp - (targetMwpWR + riskA));
 		}
 	}
 }

@@ -11,7 +11,7 @@ public class MurrayNieminenCaseStudy
 {
 	public static void main(final String[] args) throws IOException
 	{
-		final ReadMatch chart = new ReadMatch("Murray vs Nieminen - French Open 2012 Second Round", 0.556, 213, "doc\\murraynieminen.csv",
+		final ReadMatch chart = new ReadMatch("Murray vs Nieminen - French Open 2012 Second Round", 213, "doc\\murraynieminen.csv",
 											  new PlayerOdds("Andy Murray", "examples\\treatment", "Murray vs Nieminen - French Open 2012 Second Round"),
 											  new PlayerOdds("Jarkko Nieminen", "examples\\treatment", "Murray vs Nieminen - French Open 2012 Second Round"));
 		chart.buildChart();

@@ -127,13 +127,6 @@ public class SimulatorWRHyperExpRecord extends SimulatorWR
 			TestSimulatorWRHypExpRecord.GO = true;
 		}
 
-//		outcomes.addPrediction(pa, pb, serving, score);
-//		final double gap = outcomes.addInjuryPrediction(pa, pb, serving, score);
-
-//		System.out.println("(" + score.getTargetSets() + ", " +  score.getOpponentSets() + "), "
-//						   + "(" + score.getTargetGames() + ", " + score.getTargetGames() + "), "
-//						   + "(" + score.getTargetPoints() + ", " + score.getOpponentPoints() + ")");
-
 		final String[] entries = {Integer.toString(score.getTargetSets()), Integer.toString(score.getOpponentSets()),
 								  Integer.toString(score.getTargetGames()), Integer.toString(score.getOpponentGames()),
 								  Integer.toString(score.getTargetPoints()), Integer.toString(score.getOpponentPoints()), serving ? "1" : "0", "0",

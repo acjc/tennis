@@ -40,7 +40,7 @@ public class PlayerOdds
 		return "doc\\" + matchType + File.separator + title;
 	}
 
-	private String getName()
+	public String getName()
 	{
 		return firstName + " " + surname;
 	}
