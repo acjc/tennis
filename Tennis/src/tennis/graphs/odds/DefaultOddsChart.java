@@ -20,7 +20,7 @@ public class DefaultOddsChart extends OddsChart
 {
 	public DefaultOddsChart(final PlayerOdds favourite, final PlayerOdds underdog) throws IOException
 	{
-		super(favourite.getTitle() + " (" + favourite.getSurname() + ")", favourite, underdog);
+		super("Evolution of Betfair odds data for " + favourite.getName() + " (" + favourite.getSurname() + " vs. " + underdog.getSurname() + ")", favourite, underdog);
 	}
 
 	@Override
@@ -28,16 +28,16 @@ public class DefaultOddsChart extends OddsChart
 	{
 		final TimeSeriesCollection dataset = new TimeSeriesCollection();
 
-		final TimeSeries matchOddsSeries = new TimeSeries("Match Odds");
+		final TimeSeries matchOddsSeries = new TimeSeries("Match Odds Market");
 		final CSVReader favouriteMatchOddsReader = favourite.getMatchOdds();
 
-		final TimeSeries setBettingSeries = new TimeSeries("Set Betting Odds");
+		final TimeSeries setBettingSeries = new TimeSeries("Set Betting Market");
 		final List<CSVReader> favouriteSetOddsReaders = new ArrayList<CSVReader>();
 		final List<CSVReader> underdogSetOddsReaders = new ArrayList<CSVReader>();
 		favouriteSetOddsReaders.addAll(favourite.getSetOdds());
 		underdogSetOddsReaders.addAll(underdog.getSetOdds());
 
-		final TimeSeries oddsDifferenceSeries = new TimeSeries("Odds Difference");
+		final TimeSeries oddsDifferenceSeries = new TimeSeries("Set Betting minus Match Odds");
 
 //		final FileOutputStream fout = new FileOutputStream ("doc\\adam.txt");
 
@@ -55,8 +55,9 @@ public class DefaultOddsChart extends OddsChart
 			matchOddsSeries.add(second, matchOddsProbability);
 			setBettingSeries.add(second, setOddsProbability);
 
-    		final double oddsDifference = Math.abs(matchOddsProbability - setOddsProbability);
-    		oddsDifferenceSeries.add(second, oddsDifference);
+    		final double oddsDifference = setOddsProbability - matchOddsProbability;
+			final double risk = oddsDifference >= 0 ? oddsDifference : 0;
+    		oddsDifferenceSeries.add(second, risk);
 
 //			new PrintStream(fout).println(favouriteMatchOddsData.get(0)[DATE_INDEX] + ", " + favouriteMatchOddsData.get(0)[LPM_INDEX]);
 	    }

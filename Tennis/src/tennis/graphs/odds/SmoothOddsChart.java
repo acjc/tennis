@@ -1,7 +1,6 @@
 package tennis.graphs.odds;
 
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,7 +20,7 @@ public class SmoothOddsChart extends OddsChart
 {
 	public SmoothOddsChart(final PlayerOdds favourite, final PlayerOdds underdog) throws IOException
 	{
-		super(favourite.getTitle() + " (" + favourite.getSurname() + ") [smooth]", favourite, underdog);
+		super("'Smoothed' evolution of Betfair odds data for " + favourite.getName() + " (" + favourite.getSurname() + " vs. " + underdog.getSurname() + ")", favourite, underdog);
 	}
 
 	@Override
@@ -29,18 +28,18 @@ public class SmoothOddsChart extends OddsChart
 	{
 		final TimeSeriesCollection dataset = new TimeSeriesCollection();
 
-		final TimeSeries matchOddsSeries = new TimeSeries("Match Odds");
+		final TimeSeries matchOddsSeries = new TimeSeries("Match Odds Market");
 		final CSVReader favouriteMatchOddsReader = favourite.getMatchOdds();
 
-		final TimeSeries setBettingSeries = new TimeSeries("Set Betting Odds");
+		final TimeSeries setBettingSeries = new TimeSeries("Set Betting Market");
 		final List<CSVReader> favouriteSetOddsReaders = new ArrayList<CSVReader>();
 		final List<CSVReader> underdogSetOddsReaders = new ArrayList<CSVReader>();
 		favouriteSetOddsReaders.addAll(favourite.getSetOdds());
 		underdogSetOddsReaders.addAll(underdog.getSetOdds());
 
-		final TimeSeries oddsDifferenceSeries = new TimeSeries("Odds Difference");
+		final TimeSeries oddsDifferenceSeries = new TimeSeries("Set Betting minus Match Odds");
 
-		final FileOutputStream fout = new FileOutputStream ("doc\\adam.txt");
+//		final FileOutputStream fout = new FileOutputStream ("doc\\adam.txt");
 
 		final List<MatchOdds> favouriteMatchOdds = parseMatchOdds(favouriteMatchOddsReader);
 		final List<List<SetOdds>> favouriteSetOdds = parseSetOdds(favouriteSetOddsReaders);
@@ -77,8 +76,9 @@ public class SmoothOddsChart extends OddsChart
 			matchOddsSeries.add(second, matchOddsProbability);
 			setBettingSeries.add(second, setOddsProbability);
 
-	    	final double oddsDifference = Math.abs(matchOddsProbability - setOddsProbability);
-	    	oddsDifferenceSeries.add(second, oddsDifference);
+    		final double oddsDifference = setOddsProbability - matchOddsProbability;
+			final double risk = oddsDifference >= 0 ? oddsDifference : 0;
+    		oddsDifferenceSeries.add(second, risk);
 
 	    	matchOddsWindowSum = matchOddsWindowSum - matchOddsProbabilities.get(i - 50);
 	    	setOddsWindowSum = setOddsWindowSum - setOddsProbabilities.get(i - 50);

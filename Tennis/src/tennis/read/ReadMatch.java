@@ -38,15 +38,19 @@ public class ReadMatch extends OddsChart
 {
 	private final double avgPwp = 0.645;
 	private final int points;
+	private final int numSetsToWin;
 	private final String match;
 	private final double chance = 0.000115;
 	private final double lambda = 10.0;
 	private final double decay = 0.95;
+	public final List<Double> pointLevelRisks = new ArrayList<Double>();
+	public final List<Double> risks = new ArrayList<Double>();
 
-	public ReadMatch(final String title, final int points, final String match, final PlayerOdds favourite, final PlayerOdds underdog) throws IOException
+	public ReadMatch(final int points, final int numSetsToWin, final String match, final PlayerOdds favourite, final PlayerOdds underdog) throws IOException
 	{
-		super("Evolution of Modelled Match Odds Markets for " + favourite.getName() + " (" + favourite.getSurname() + "vs " + underdog.getSurname() + ")", favourite, underdog);
+		super("Evolution of modelled Match Odds markets for " + favourite.getName() + " (" + favourite.getSurname() + " vs. " + underdog.getSurname() + ")", favourite, underdog);
 		this.points = points;
+		this.numSetsToWin = numSetsToWin;
 		this.match = match;
 	}
 
@@ -73,10 +77,9 @@ public class ReadMatch extends OddsChart
 	    plot.getRangeAxis().setRange(0.0, 1.0);
 
 	    final XYItemRenderer renderer = plot.getRenderer();
-	    renderer.setSeriesPaint(0, Color.blue);
-	    renderer.setSeriesPaint(1, Color.red);
-	    renderer.setSeriesPaint(2, Color.yellow);
-	    renderer.setSeriesPaint(3, Color.green);
+	    renderer.setSeriesPaint(0, Color.BLUE);
+	    renderer.setSeriesPaint(1, Color.RED);
+	    renderer.setSeriesPaint(2, Color.YELLOW);
 
 	    ChartUtilities.saveChartAsPNG(new File("graphs\\matches\\" + title + ".png"), chart, 1000, 570);
 
@@ -123,10 +126,9 @@ public class ReadMatch extends OddsChart
 		simpleRetirementRisks.add(retirementRisks.get(oddsSize - 1) >= 0 ? retirementRisks.get(oddsSize - 1) : 0);
 
 		System.out.println("Processing match...\n");
-		final XYSeries mwpNoRiskSeries = new XYSeries("No Risk MWP");
-		final XYSeries mwpWRAfterFirstSetSeries = new XYSeries("MWP Payout After First Set");
-		final XYSeries mwpWRAfterOneBallSeries = new XYSeries("MWP Payout After One Ball");
-		final XYSeries pointLevelRetirementRiskSeries = new XYSeries("Point-level Retirement Risk");
+		final XYSeries mwpNoRiskSeries = new XYSeries("No Risk Market");
+		final XYSeries mwpWRAfterFirstSetSeries = new XYSeries("Payout After First Set Market");
+		final XYSeries mwpWRAfterOneBallSeries = new XYSeries("Payout After One Ball Market");
 
 		final CSVReader reader = new CSVReader(new FileReader(match));
 		final SimulatorWRHyperExp simulator = new SimulatorWRHyperExp(chance, lambda, decay, true);
@@ -147,77 +149,65 @@ public class ReadMatch extends OddsChart
 
 	    	System.out.println(index + ":");
 	    	final double oddsMwp = simpleSetOddsProbabilities.get(index);
-	    	final double pwpGap = new PbGapSearch(oddsMwp, targetSets, opponentSets, targetGames, opponentGames, targetPoints, opponentPoints, servingNext).search();
+	    	System.out.println("Odds MWP = " + oddsMwp);
+	    	final double pwpGap = new PbGapSearch(oddsMwp, targetSets, opponentSets, targetGames, opponentGames, targetPoints, opponentPoints, servingNext, numSetsToWin).search();
 
-	    	double pa, pb;
-	    	if (oddsMwp >= 0.5)
-	    	{
-	    		pa = avgPwp + (pwpGap / 2.0);
-	    		pb = avgPwp - (pwpGap / 2.0);
-	    	}
-	    	else
-	    	{
-	    		pa = avgPwp - (pwpGap / 2.0);
-	    		pb = avgPwp + (pwpGap / 2.0);
-	    	}
+    		final double pa = avgPwp + (pwpGap / 2.0);
+    		final double pb = avgPwp - (pwpGap / 2.0);
 	    	System.out.println("PA = " + pa + ", PB = " + pb);
+	    	System.out.println("RA = " + simpleRetirementRisks.get(index));
 
-	    	final double mwp = OMalley.matchInProgress(pa, pb, new CurrentMatchScore(targetSets, opponentSets), new CurrentSetScore(targetGames, opponentGames), new CurrentGameScore(targetPoints, opponentPoints), servingNext, 3);
+	    	final double mwp = OMalley.matchInProgress(pa, pb, new CurrentMatchScore(targetSets, opponentSets), new CurrentSetScore(targetGames, opponentGames), new CurrentGameScore(targetPoints, opponentPoints), servingNext, numSetsToWin);
 
-	    	final double ra = new PointLevelRetirementRiskSearch(pa, pb, simpleRetirementRisks.get(index), 0, targetSets, opponentSets, targetGames, opponentGames, targetPoints, opponentPoints, servingNext).search();
+	    	final double ra = new PointLevelRetirementRiskSearch(pa, pb, simpleRetirementRisks.get(index), 0, targetSets, opponentSets, targetGames, opponentGames, targetPoints, opponentPoints, servingNext, numSetsToWin).search();
+	    	pointLevelRisks.add(index, ra);
 
 	    	final MatchState initialState = new MatchState(targetSets, opponentSets, new SetState(targetGames, opponentGames), new GameState(targetPoints, opponentPoints, true), 3);
 			final SimulationOutcomes outcomes = simulator.simulate(pa, pb, new RetirementRisk(ra, 0), initialState, true, 10000);
+
+			risks.add(index, outcomes.proportionTargetRetirements());
 
 			final double targetMwpNormalWin = outcomes.proportionTargetWon();
 			final double opponentMwpNormalWin = outcomes.proportionOpponentWon();
 			final double targetMwpRiskAfterFirstSet = (targetMwpNormalWin + outcomes.proportionOpponentRetirementsAfterFirstSet()) / (targetMwpNormalWin + opponentMwpNormalWin + outcomes.proportionTargetRetirementsAfterFirstSet() + outcomes.proportionOpponentRetirementsAfterFirstSet());
 			final double targetMwpRiskAfterOneBall = (targetMwpNormalWin + outcomes.proportionOpponentRetirements()) / (targetMwpNormalWin + opponentMwpNormalWin + outcomes.proportionTargetRetirements() + outcomes.proportionOpponentRetirements());
 
-			System.out.println("RA = " + simpleRetirementRisks.get(index));
 			System.out.println("(" + targetSets + ", " + opponentSets + "), " + "(" + targetGames + ", " + opponentGames + "), " + "(" + targetPoints + ", " + opponentPoints + ")");
-			System.out.println("MWP = " + mwp);
 			outcomes.minPrint(favourite.getSurname(), underdog.getSurname());
 			System.out.println();
 
 			mwpNoRiskSeries.add(index, mwp);
 			mwpWRAfterFirstSetSeries.add(index, targetMwpRiskAfterFirstSet);
 			mwpWRAfterOneBallSeries.add(index, targetMwpRiskAfterOneBall);
-			pointLevelRetirementRiskSeries.add(index, ra);
 
 		    index++;
 	    }
 
 	    /**********In case of retirement**********/
     	final double oddsMwp = simpleSetOddsProbabilities.get(index);
-    	final double pwpGap = new PbGapSearch(oddsMwp, targetSets, opponentSets, targetGames, opponentGames, targetPoints, opponentPoints, servingNext).search();
+    	System.out.println("Odds MWP = " + oddsMwp);
+    	final double pwpGap = new PbGapSearch(oddsMwp, targetSets, opponentSets, targetGames, opponentGames, targetPoints, opponentPoints, servingNext, numSetsToWin).search();
 
-    	double pa, pb;
-    	if (oddsMwp >= 0.5)
-    	{
-    		pa = avgPwp + (pwpGap / 2.0);
-    		pb = avgPwp - (pwpGap / 2.0);
-    	}
-    	else
-    	{
-    		pa = avgPwp - (pwpGap / 2.0);
-    		pb = avgPwp + (pwpGap / 2.0);
-    	}
+    	final double pa = avgPwp + (pwpGap / 2.0);
+    	final double pb = avgPwp - (pwpGap / 2.0);
     	System.out.println("PA = " + pa + ", PB = " + pb);
+    	System.out.println("RA = " + simpleRetirementRisks.get(index));
 
     	final double mwp = OMalley.matchInProgress(pa, pb, new CurrentMatchScore(targetSets, opponentSets), new CurrentSetScore(targetGames, opponentGames), new CurrentGameScore(targetPoints, opponentPoints), servingNext, 3);
 
-    	final double ra = new PointLevelRetirementRiskSearch(pa, pb, simpleRetirementRisks.get(index), 0, targetSets, opponentSets, targetGames, opponentGames, targetPoints, opponentPoints, servingNext).search();
+    	final double ra = new PointLevelRetirementRiskSearch(pa, pb, simpleRetirementRisks.get(index), 0, targetSets, opponentSets, targetGames, opponentGames, targetPoints, opponentPoints, servingNext, numSetsToWin).search();
+    	pointLevelRisks.add(index, ra);
 
     	final MatchState initialState = new MatchState(targetSets, opponentSets, new SetState(targetGames, opponentGames), new GameState(targetPoints, opponentPoints, true), 3);
 		final SimulationOutcomes outcomes = simulator.simulate(pa, pb, new RetirementRisk(ra, 0), initialState, true, 10000);
+
+		risks.add(index, outcomes.proportionTargetRetirements());
 
 		final double targetMwpNormalWin = outcomes.proportionTargetWon();
 		final double opponentMwpNormalWin = outcomes.proportionOpponentWon();
 		final double targetMwpRiskAfterFirstSet = (targetMwpNormalWin + outcomes.proportionOpponentRetirementsAfterFirstSet()) / (targetMwpNormalWin + opponentMwpNormalWin + outcomes.proportionTargetRetirementsAfterFirstSet() + outcomes.proportionOpponentRetirementsAfterFirstSet());
 		final double targetMwpRiskAfterOneBall = (targetMwpNormalWin + outcomes.proportionOpponentRetirements()) / (targetMwpNormalWin + opponentMwpNormalWin + outcomes.proportionTargetRetirements() + outcomes.proportionOpponentRetirements());
 
-		System.out.println("RA = " + simpleRetirementRisks.get(index));
 		System.out.println("(" + targetSets + ", " + opponentSets + "), " + "(" + targetGames + ", " + opponentGames + "), " + "(" + targetPoints + ", " + opponentPoints + ")");
 		System.out.println("MWP = " + mwp);
 		outcomes.minPrint(favourite.getSurname(), underdog.getSurname());
@@ -226,14 +216,12 @@ public class ReadMatch extends OddsChart
 		mwpNoRiskSeries.add(index, mwp);
 		mwpWRAfterFirstSetSeries.add(index, targetMwpRiskAfterFirstSet);
 		mwpWRAfterOneBallSeries.add(index, targetMwpRiskAfterOneBall);
-		pointLevelRetirementRiskSeries.add(index, ra);
 		/*****************************************/
 
 	    final XYSeriesCollection dataset = new XYSeriesCollection();
 	    dataset.addSeries(mwpNoRiskSeries);
 	    dataset.addSeries(mwpWRAfterFirstSetSeries);
 	    dataset.addSeries(mwpWRAfterOneBallSeries);
-	    dataset.addSeries(pointLevelRetirementRiskSeries);
 
 	    return dataset;
 	}

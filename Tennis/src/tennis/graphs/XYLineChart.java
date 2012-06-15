@@ -29,9 +29,9 @@ public abstract class XYLineChart extends ApplicationFrame
 		this.yLabel = yLabel;
 	}
 
-	protected void buildChart() throws IOException
+	public void buildChart() throws IOException
 	{
-		final JFreeChart chart = createXYLineChart(createDataset());
+		final JFreeChart chart = createChart();
 		final ChartPanel chartPanel = new ChartPanel(chart);
 	    chartPanel.setPreferredSize(new Dimension(1000, 570));
 	    setContentPane(chartPanel);
@@ -41,13 +41,13 @@ public abstract class XYLineChart extends ApplicationFrame
 
 	protected abstract XYDataset createDataset() throws IOException;
 
-	protected JFreeChart createXYLineChart(final XYDataset dataset) throws IOException
+	protected JFreeChart createChart() throws IOException
 	{
 		final JFreeChart chart = ChartFactory.createXYLineChart(
 			title,
 	        xLabel,
 	        yLabel,
-	        dataset,
+	        createDataset(),
 	        PlotOrientation.VERTICAL,
 	        true,                    			 // legend
 	        true,                     			 // tooltips

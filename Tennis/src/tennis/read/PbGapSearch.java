@@ -15,10 +15,11 @@ public class PbGapSearch
 	private final int targetPoints;
 	private final int opponentPoints;
 	private final boolean servingNext;
+	private final int numSetsToWin;
 
 	public PbGapSearch(final double oddsMwp,
-					final int targetSets, final int opponentSets, final int targetGames, final int opponentGames, final int targetPoints, final int opponentPoints,
-					final boolean servingNext)
+					   final int targetSets, final int opponentSets, final int targetGames, final int opponentGames, final int targetPoints, final int opponentPoints,
+					   final boolean servingNext, final int numSetsToWin)
 	{
 		this.oddsMwp = oddsMwp;
 		this.targetSets = targetSets;
@@ -28,45 +29,40 @@ public class PbGapSearch
 		this.targetPoints = targetPoints;
 		this.opponentPoints = opponentPoints;
 		this.servingNext = servingNext;
+		this.numSetsToWin = numSetsToWin;
 	}
 
 	public static void main(final String[] args)
 	{
-		System.out.println(new PbGapSearch(0.787, 0, 0, 0, 0, 0, 0, true).search());
+		System.out.println(new PbGapSearch(0.375, 0, 0, 0, 0, 0, 0, true, 3).search());
 	}
 
 	public double search()
 	{
+		double upperGap = 0.4;
 		double gap = 0.0;
-		double pa = 0.645;
-		double pb = 0.645;
+		double lowerGap = -0.4;
+		final double pa = 0.645;
+		final double pb = 0.645;
 		double mwp = 0.5;
-		if (oddsMwp > 0.5)
+		int iterations = 0;
+		while(Math.abs(mwp - oddsMwp) > 0.0001 && iterations < 50)
 		{
-			while(mwp < oddsMwp)
+			gap = (upperGap + lowerGap) / 2.0;
+			mwp = OMalley.matchInProgress(pa + (gap / 2.0), pb - (gap / 2.0), new CurrentMatchScore(targetSets, opponentSets), new CurrentSetScore(targetGames, opponentGames), new CurrentGameScore(targetPoints, opponentPoints), servingNext, numSetsToWin);
+			if(mwp > oddsMwp)
 			{
-				pa += 0.0005;
-				pb -= 0.0005;
-				gap += 0.001;
-				mwp = OMalley.matchInProgress(pa, pb, new CurrentMatchScore(targetSets, opponentSets), new CurrentSetScore(targetGames, opponentGames), new CurrentGameScore(targetPoints, opponentPoints), servingNext, 3);
-//				System.out.println(mwp);
+				upperGap = gap;
 			}
-		}
-		else if (oddsMwp < 0.5)
-		{
-			while(mwp > oddsMwp)
+			else
 			{
-				pa -= 0.0005;
-				pb += 0.0005;
-				gap += 0.001;
-				mwp = OMalley.matchInProgress(pa, pb, new CurrentMatchScore(targetSets, opponentSets), new CurrentSetScore(targetGames, opponentGames), new CurrentGameScore(targetPoints, opponentPoints), servingNext, 3);
+				lowerGap = gap;
 			}
-		}
-		else
-		{
-			return 0;
+			iterations++;
+//			System.out.println("U = " + upperGap + ", L = " + lowerGap + ", Gap = " + gap + ", MWP = " + mwp);
 		}
 
+//		System.out.println((pa + (gap / 2.0)) + ", " + (pb - (gap / 2.0)));
 		return gap;
 	}
 }

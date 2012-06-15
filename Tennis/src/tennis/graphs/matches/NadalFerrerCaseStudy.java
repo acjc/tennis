@@ -8,19 +8,19 @@ import tennis.graphs.helper.PlayerOdds;
 import tennis.read.ReadMatch;
 import tennis.read.RiskChart;
 
-public class RoddickHewittCaseStudy
+public class NadalFerrerCaseStudy
 {
 	public static void main(final String[] args) throws IOException
 	{
-		final ReadMatch marketChart = new ReadMatch(168, 3, "doc\\roddickhewitt.csv",
-				  						            new PlayerOdds("Andy Roddick", "examples\\retirements", "Roddick vs Hewitt - Australian Open 2012 Second Round"),
-				  						            new PlayerOdds("Lleyton Hewitt", "examples\\retirements", "Roddick vs Hewitt - Australian Open 2012 Second Round"));
+		final ReadMatch marketChart = new ReadMatch(168, 3, "doc\\nadalferrer.csv",
+											        new PlayerOdds("Rafael Nadal", "examples\\treatment", "Nadal vs Ferrer - Australian Open 2011 Quarter Final"),
+											        new PlayerOdds("David Ferrer", "examples\\treatment", "Nadal vs Ferrer - Australian Open 2011 Quarter Final"));
 		marketChart.buildChart();
 	    marketChart.pack();
 	    RefineryUtilities.centerFrameOnScreen(marketChart);
 	    marketChart.setVisible(true);
 
-	    final RiskChart riskChart = new RiskChart("Andy Roddick", "Roddick", "Hewitt", marketChart.pointLevelRisks, marketChart.risks);
+	    final RiskChart riskChart = new RiskChart("Rafael Nadal", "Nadal", "Ferrer", marketChart.pointLevelRisks, marketChart.risks);
 	    riskChart.buildChart();
 	    riskChart.pack();
 	    RefineryUtilities.centerFrameOnScreen(riskChart);

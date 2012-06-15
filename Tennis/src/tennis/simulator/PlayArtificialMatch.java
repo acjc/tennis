@@ -27,30 +27,27 @@ public class PlayArtificialMatch extends XYLineChart
 {
 	private final double pa = 0.6;
 	private final double pb = 0.6;
-	private final double chance;
-	private final double lambda;
-	private final double decay;
+	private final double chance = 0.000115;
+	private final double lambda = 10.0;
+	private final double decay = 0.95;
 	private final String file;
 
-	public PlayArtificialMatch(final String file, final double chance, final double lambda, final double decay) throws IOException
+	public PlayArtificialMatch(final String file) throws IOException
 	{
-		super("Artificial Match" + " (Chance = " + chance + ", Lambda = " + lambda + ", Rho = " + decay + ")", "Point", "MWP");
+		super("Evolution of modelled Match Odds markets for an artificial match", "Point", "Match-winning Probability (MWP)");
 		this.file = file;
-		this.chance = chance;
-		this.lambda = lambda;
-		this.decay = decay;
 	}
 
 	@Override
-	protected void buildChart() throws IOException
+	public void buildChart() throws IOException
 	{
-		final JFreeChart chart = createXYLineChart(createDataset());
+		final JFreeChart chart = createChart();
 		final ChartPanel chartPanel = new ChartPanel(chart);
 		((XYPlot) chart.getPlot()).getRangeAxis().setRange(0, 1);
 	    final XYItemRenderer renderer = ((XYPlot) chart.getPlot()).getRenderer();
-	    renderer.setSeriesPaint(0, Color.blue);
-	    renderer.setSeriesPaint(1, Color.yellow);
-	    renderer.setSeriesPaint(2, Color.red);
+	    renderer.setSeriesPaint(0, Color.BLUE);
+	    renderer.setSeriesPaint(1, Color.RED);
+	    renderer.setSeriesPaint(2, Color.YELLOW);
 	    chartPanel.setPreferredSize(new Dimension(1000, 570));
 	    setContentPane(chartPanel);
 
@@ -61,8 +58,8 @@ public class PlayArtificialMatch extends XYLineChart
 	protected XYDataset createDataset() throws IOException
 	{
 		final XYSeries mwpNoRiskSeries = new XYSeries("No Risk MWP");
-		final XYSeries mwpWRAfterFirstSetSeries = new XYSeries("MWP Payout After First Set");
-		final XYSeries mwpWRAfterOneBallSeries = new XYSeries("MWP Payout After One Ball");
+		final XYSeries mwpWRAfterFirstSetSeries = new XYSeries("Payout After First Set MWP");
+		final XYSeries mwpWRAfterOneBallSeries = new XYSeries("Payout After One Ball MWP");
 		final CSVReader reader = new CSVReader(new FileReader(file));
 		final SimulatorWRHyperExp simulator = new SimulatorWRHyperExp(chance, lambda, decay, true);
 		int index = 0;
@@ -109,9 +106,9 @@ public class PlayArtificialMatch extends XYLineChart
 
 	public static void main(final String[] args) throws IOException
 	{
-		final PlayArtificialMatch chart = new PlayArtificialMatch("doc\\realism.csv", 0.000115, 10.0, 0.95);
-//		final PlayArtificialMatch chart = new PlayArtificialMatch("doc\\firstset.csv", 0.000115, 10.0, 0.95);
-//		final PlayArtificialMatch chart = new PlayArtificialMatch("doc\\retirement.csv", 0.000115, 10.0, 0.95);
+//		final PlayArtificialMatch chart = new PlayArtificialMatch("doc\\realism.csv");
+		final PlayArtificialMatch chart = new PlayArtificialMatch("doc\\firstset.csv");
+//		final PlayArtificialMatch chart = new PlayArtificialMatch("doc\\retirement.csv");
 	    chart.buildChart();
 	    chart.pack();
 	    RefineryUtilities.centerFrameOnScreen(chart);

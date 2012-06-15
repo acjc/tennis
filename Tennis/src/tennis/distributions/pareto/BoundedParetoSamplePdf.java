@@ -23,9 +23,9 @@ public class BoundedParetoSamplePdf extends XYLineChart
 	}
 
 	@Override
-	protected void buildChart() throws IOException
+	public void buildChart() throws IOException
 	{
-		final JFreeChart chart = createXYLineChart(createDataset());
+		final JFreeChart chart = createChart();
 		final ChartPanel chartPanel = new ChartPanel(chart);
 		((XYPlot) chart.getPlot()).getRangeAxis().setRange(0, 1000);
 	    chartPanel.setPreferredSize(new Dimension(1000, 570));
