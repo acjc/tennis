@@ -35,7 +35,7 @@ public class LpmOddsChart extends OddsChart
 		final List<CSVReader> favouriteSetOddsReaders = new ArrayList<CSVReader>();
 		favouriteSetOddsReaders.addAll(favourite.getSetOdds());
 
-		final TimeSeries oddsDifferenceSeries = new TimeSeries("Set Betting minus Match Odds");
+		final TimeSeries oddsDifferenceSeries = new TimeSeries("Difference between Set Betting and Match Odds Markets");
 
 //		final FileOutputStream fout = new FileOutputStream ("doc\\adam.txt");
 

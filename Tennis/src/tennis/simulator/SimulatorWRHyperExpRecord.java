@@ -88,10 +88,7 @@ public class SimulatorWRHyperExpRecord extends SimulatorWR
 		if(risk.ra > 0.03)
 		{
 			System.out.println(risk.ra);
-			if(score.inFirstSet())
-			{
-				TestSimulatorWRHypExpRecord.GO = false;
-			}
+			TestSimulatorWRHypExpRecord.GO = false;
 		}
 
 		// p = probability target player wins this point, q = probability target player loses this point
@@ -119,7 +116,7 @@ public class SimulatorWRHyperExpRecord extends SimulatorWR
 		else if (point >= p + q && point < p + q + risk.ra)
 		{
 			score.targetRetires();
-			TestSimulatorWRHypExpRecord.GO = true;
+//			TestSimulatorWRHypExpRecord.GO = false;
 		}
 		else if (point >= p + q + risk.ra)
 		{
@@ -129,7 +126,7 @@ public class SimulatorWRHyperExpRecord extends SimulatorWR
 
 		final String[] entries = {Integer.toString(score.getTargetSets()), Integer.toString(score.getOpponentSets()),
 								  Integer.toString(score.getTargetGames()), Integer.toString(score.getOpponentGames()),
-								  Integer.toString(score.getTargetPoints()), Integer.toString(score.getOpponentPoints()), serving ? "1" : "0", "0",
+								  Integer.toString(score.getTargetPoints()), Integer.toString(score.getOpponentPoints()), serving ? "1" : "0",
 							      Double.toString(risk.ra), Double.toString(risk.rb)};
 		writer.writeNext(entries);
 

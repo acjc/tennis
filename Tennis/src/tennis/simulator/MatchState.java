@@ -66,10 +66,6 @@ public class MatchState implements Score
 
 	public boolean setOver()
 	{
-		if (retirementOccurred())
-		{
-			return true;
-		}
 		if (set.over())
 		{
 			setScores[set.getTargetGames()][set.getOpponentGames()]++;
@@ -82,6 +78,10 @@ public class MatchState implements Score
 				opponentSets++;
 			}
 			set.reset();
+			return true;
+		}
+		if (retirementOccurred())
+		{
 			return true;
 		}
 		return false;
@@ -104,10 +104,6 @@ public class MatchState implements Score
 
 	public boolean tiebreakOver()
 	{
-		if (retirementOccurred())
-		{
-			return true;
-		}
 		if (game.tiebreakOver())
 		{
 			totalTiebreakPoints += game.getTargetPoints();
@@ -116,15 +112,15 @@ public class MatchState implements Score
 			resetGame();
 			return true;
 		}
+		if (retirementOccurred())
+		{
+			return true;
+		}
 		return false;
 	}
 
 	public boolean gameOver()
 	{
-		if (retirementOccurred())
-		{
-			return true;
-		}
 		if (game.over())
 		{
 			if (game.wentToDeuce())
@@ -134,6 +130,10 @@ public class MatchState implements Score
 				totalPointsPostDeuce += game.getOpponentPoints() - 3;
 			}
 			resetGame();
+			return true;
+		}
+		if (retirementOccurred())
+		{
 			return true;
 		}
 		return false;

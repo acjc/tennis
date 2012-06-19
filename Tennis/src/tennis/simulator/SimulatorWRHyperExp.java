@@ -42,6 +42,11 @@ public class SimulatorWRHyperExp extends SimulatorWR
 			}
 		}
 
+//		if(risk.ra > 0.03 && score.inFirstSet())
+//		{
+//			System.out.println(risk.ra);
+//		}
+
 		// p = probability target player wins this point, q = probability target player loses this point
 		double p, q;
 		if(serving)

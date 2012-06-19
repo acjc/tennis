@@ -12,15 +12,16 @@ public class NadalFerrerCaseStudy
 {
 	public static void main(final String[] args) throws IOException
 	{
-		final ReadMatch marketChart = new ReadMatch(168, 3, "doc\\nadalferrer.csv",
+		final ReadMatch marketChart = new ReadMatch(168, 3, "doc\\nadalferrer.csv", "nadalferrermodel",
 											        new PlayerOdds("Rafael Nadal", "examples\\treatment", "Nadal vs Ferrer - Australian Open 2011 Quarter Final"),
-											        new PlayerOdds("David Ferrer", "examples\\treatment", "Nadal vs Ferrer - Australian Open 2011 Quarter Final"));
+											        new PlayerOdds("David Ferrer", "examples\\treatment", "Nadal vs Ferrer - Australian Open 2011 Quarter Final"),
+													false);
 		marketChart.buildChart();
 	    marketChart.pack();
 	    RefineryUtilities.centerFrameOnScreen(marketChart);
 	    marketChart.setVisible(true);
 
-	    final RiskChart riskChart = new RiskChart("Rafael Nadal", "Nadal", "Ferrer", marketChart.pointLevelRisks, marketChart.risks);
+	    final RiskChart riskChart = new RiskChart("Rafael Nadal", "Nadal", "Ferrer", "nadalferrerrisk", marketChart.pointLevelRisks, marketChart.risks);
 	    riskChart.buildChart();
 	    riskChart.pack();
 	    RefineryUtilities.centerFrameOnScreen(riskChart);

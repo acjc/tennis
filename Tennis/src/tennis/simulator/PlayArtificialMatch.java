@@ -5,6 +5,8 @@ import java.awt.Dimension;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartUtilities;
@@ -14,13 +16,13 @@ import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-import org.jfree.ui.RefineryUtilities;
 
 import tennis.graphs.XYLineChart;
 import tennis.omalley.CurrentGameScore;
 import tennis.omalley.CurrentMatchScore;
 import tennis.omalley.CurrentSetScore;
 import tennis.omalley.OMalley;
+import tennis.read.RiskChart;
 import au.com.bytecode.opencsv.CSVReader;
 
 public class PlayArtificialMatch extends XYLineChart
@@ -31,11 +33,15 @@ public class PlayArtificialMatch extends XYLineChart
 	private final double lambda = 10.0;
 	private final double decay = 0.95;
 	private final String file;
+	private final String savename;
+	private final List<Double> pointLevelRisks = new ArrayList<Double>();
+	private final List<Double> risks = new ArrayList<Double>();
 
-	public PlayArtificialMatch(final String file) throws IOException
+	public PlayArtificialMatch(final String file, final String savename) throws IOException
 	{
 		super("Evolution of modelled Match Odds markets for an artificial match", "Point", "Match-winning Probability (MWP)");
 		this.file = file;
+		this.savename = savename;
 	}
 
 	@Override
@@ -47,11 +53,11 @@ public class PlayArtificialMatch extends XYLineChart
 	    final XYItemRenderer renderer = ((XYPlot) chart.getPlot()).getRenderer();
 	    renderer.setSeriesPaint(0, Color.BLUE);
 	    renderer.setSeriesPaint(1, Color.RED);
-	    renderer.setSeriesPaint(2, Color.YELLOW);
+	    renderer.setSeriesPaint(2, Color.ORANGE);
 	    chartPanel.setPreferredSize(new Dimension(1000, 570));
 	    setContentPane(chartPanel);
 
-	    ChartUtilities.saveChartAsPNG(new File("graphs\\" + title + ".png"), chart, 1000, 570);
+	    ChartUtilities.saveChartAsPNG(new File("graphs\\" + savename + ".png"), chart, 1000, 570);
 	}
 
 	@Override
@@ -78,24 +84,28 @@ public class PlayArtificialMatch extends XYLineChart
 
 	    	final double mwp = OMalley.matchInProgress(pa, pb, new CurrentMatchScore(targetSets, opponentSets), new CurrentSetScore(targetGames, opponentGames), new CurrentGameScore(targetPoints, opponentPoints), servingNext, 3);
 
-	    	final MatchState initialState = new MatchState(targetSets, opponentSets, new SetState(targetGames, opponentGames), new GameState(targetPoints, opponentPoints, true), 3);
+	    	final MatchState initialState = new MatchState(targetSets, opponentSets, new SetState(targetGames, opponentGames), new GameState(targetPoints, opponentPoints, servingNext), 3);
 			final SimulationOutcomes outcomes = simulator.simulate(pa, pb, new RetirementRisk(ra, rb), initialState, true, 10000);
 
 			final double targetMwpNormalWin = outcomes.proportionTargetWon();
 			final double opponentMwpNormalWin = outcomes.proportionOpponentWon();
-			final double targetMwpRiskAfterFirstSet = (targetMwpNormalWin + outcomes.proportionOpponentRetirementsAfterFirstSet()) / (targetMwpNormalWin + opponentMwpNormalWin + outcomes.proportionTargetRetirementsAfterFirstSet() + outcomes.proportionOpponentRetirementsAfterFirstSet());
-			final double targetMwpRiskAfterOneBall = (targetMwpNormalWin + outcomes.proportionOpponentRetirements()) / (targetMwpNormalWin + opponentMwpNormalWin + outcomes.proportionTargetRetirements() + outcomes.proportionOpponentRetirements());
+			final double targetMwpAfterFirstSet = (targetMwpNormalWin + outcomes.proportionOpponentRetirementsAfterFirstSet()) / (targetMwpNormalWin + opponentMwpNormalWin + outcomes.proportionTargetRetirementsAfterFirstSet() + outcomes.proportionOpponentRetirementsAfterFirstSet());
+			final double targetMwpAfterOneBall = (targetMwpNormalWin + outcomes.proportionOpponentRetirements()) / (targetMwpNormalWin + opponentMwpNormalWin + outcomes.proportionTargetRetirements() + outcomes.proportionOpponentRetirements());
 			System.out.println("ra = " + ra + ", rb = " + rb);
 			System.out.println(index + ": (" + targetSets + ", " + opponentSets + "), " + "(" + targetGames + ", " + opponentGames + "), " + "(" + targetPoints + ", " + opponentPoints + ")");
 			System.out.println("MWP = " + mwp);
 			outcomes.minPrint("A", "B");
 			System.out.println();
 
+			pointLevelRisks.add(index, ra);
+			risks.add(index, outcomes.proportionTargetRetirements());
+
 			mwpNoRiskSeries.add(index, mwp);
-			mwpWRAfterFirstSetSeries.add(index, targetMwpRiskAfterFirstSet);
-			mwpWRAfterOneBallSeries.add(index, targetMwpRiskAfterOneBall);
+			mwpWRAfterFirstSetSeries.add(index, targetMwpAfterFirstSet);
+			mwpWRAfterOneBallSeries.add(index, targetMwpAfterOneBall);
 	    	index++;
 	    }
+
 	    final XYSeriesCollection dataset = new XYSeriesCollection();
 	    dataset.addSeries(mwpNoRiskSeries);
 	    dataset.addSeries(mwpWRAfterFirstSetSeries);
@@ -106,12 +116,20 @@ public class PlayArtificialMatch extends XYLineChart
 
 	public static void main(final String[] args) throws IOException
 	{
-//		final PlayArtificialMatch chart = new PlayArtificialMatch("doc\\realism.csv");
-		final PlayArtificialMatch chart = new PlayArtificialMatch("doc\\firstset.csv");
-//		final PlayArtificialMatch chart = new PlayArtificialMatch("doc\\retirement.csv");
-	    chart.buildChart();
-	    chart.pack();
-	    RefineryUtilities.centerFrameOnScreen(chart);
-	    chart.setVisible(true);
+		final PlayArtificialMatch retirement = new PlayArtificialMatch("doc\\retirement.csv", "artificialretirement");
+		final PlayArtificialMatch firstSet = new PlayArtificialMatch("doc\\firstset.csv", "artificialfirstset");
+		final PlayArtificialMatch win = new PlayArtificialMatch("doc\\realism.csv", "artificialwin");
+		retirement.buildChart();
+		firstSet.buildChart();
+		win.buildChart();
+
+	    final RiskChart retirementRisks = new RiskChart("artificialretirementrisk", retirement.pointLevelRisks, retirement.risks);
+	    retirementRisks.buildChart();
+	    final RiskChart firstSetRisks = new RiskChart("artificialfirstsetrisk", firstSet.pointLevelRisks, firstSet.risks);
+	    firstSetRisks.buildChart();
+	    final RiskChart winRisks = new RiskChart("artificialwinrisk", win.pointLevelRisks, win.risks);
+	    retirementRisks.buildChart();
+	    firstSetRisks.buildChart();
+	    winRisks.buildChart();
 	}
 }

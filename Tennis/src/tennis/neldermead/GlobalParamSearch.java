@@ -30,7 +30,7 @@ public class GlobalParamSearch
 		double chanceAvg = 0.0;
 		double lambdaAvg = 0.0;
 		double decayAvg = 0.0;
-		for (int i = 0; i < 10; i++)
+		for (int i = 0; i < 1; i++)
 		{
 			final double [] results = new GlobalParamSearch(pa, pb, 0.0195, 0.0195, 0.5).runNelderMead();
 			chanceAvg += results[0];
@@ -43,21 +43,21 @@ public class GlobalParamSearch
 	public double [] runNelderMead()
 	{
 		final Minimisation nm = new Minimisation();
-		final double [] simplex = {0.0001, 5.0, 0.95,
-								   0.0002, 12.0, 0.96,
-								   0.0007, 18.0, 0.97,
-								   0.001, 25.0, 0.99};
-		final double [] step = {0.0001, 5.0, 0.05,
-								0.0001, 5.0, 0.05,
-								0.0001, 5.0, 0.05,
-								0.0001, 5.0, 0.05};
+		final double [] simplex = {0.0001, 2.0, 0.75,
+								   0.0002, 6.0, 0.85,
+								   0.0007, 10.0, 0.92,
+								   0.001, 15.0, 0.99};
+		final double [] step = {0.0001, 2.0, 0.05,
+								0.0001, 2.0, 0.05,
+								0.0001, 2.0, 0.05,
+								0.0001, 2.0, 0.05};
 		nm.addConstraint(0, -1, 0.000001);
 		nm.addConstraint(0, 1, 0.002);
-		nm.addConstraint(1, -1, 2.0);
-		nm.addConstraint(2, -1, 0.95);
+		nm.addConstraint(1, -1, 1.0);
+		nm.addConstraint(2, -1, 0.75);
 		nm.addConstraint(2, 1, 0.99);
 		final RetirementRiskFunction f = new RetirementRiskFunction();
-		nm.nelderMead(f, simplex, step, 0.005);
+		nm.nelderMead(f, simplex, step, 0.003);
 
 		System.out.println("\nFinal Answer");
 		final double[] params = nm.getParamValues();

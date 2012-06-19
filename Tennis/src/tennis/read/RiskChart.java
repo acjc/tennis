@@ -21,12 +21,22 @@ import tennis.graphs.XYLineChart;
 
 public class RiskChart extends XYLineChart
 {
+	private final String savename;
 	private final List<Double> pointLevelRisks;
 	private final List<Double> risks;
 
-	public RiskChart(final String favourite, final String favSurname, final String undSurname, final List<Double> pointLevelRisks, final List<Double> risks) throws IOException
+	public RiskChart(final String favourite, final String favSurname, final String undSurname, final String savename, final List<Double> pointLevelRisks, final List<Double> risks) throws IOException
 	{
 		super("Evolution of modelled retirement risk for " + favourite + " (" + favSurname + " vs. " + undSurname + ")", "Point", "Risk");
+		this.savename = savename;
+		this.pointLevelRisks = pointLevelRisks;
+		this.risks = risks;
+	}
+
+	public RiskChart(final String savename, final List<Double> pointLevelRisks, final List<Double> risks) throws IOException
+	{
+		super("Evolution of modelled retirement risks for an artificial match", "Point", "Risk");
+		this.savename = savename;
 		this.pointLevelRisks = pointLevelRisks;
 		this.risks = risks;
 	}
@@ -39,7 +49,7 @@ public class RiskChart extends XYLineChart
 	    chartPanel.setPreferredSize(new Dimension(1000, 570));
 	    setContentPane(chartPanel);
 
-	    ChartUtilities.saveChartAsPNG(new File("graphs\\matches\\" + title + ".png"), chart, 1000, 570);
+	    ChartUtilities.saveChartAsPNG(new File("graphs\\matches\\" + savename + ".png"), chart, 1000, 570);
 	}
 
 	@Override

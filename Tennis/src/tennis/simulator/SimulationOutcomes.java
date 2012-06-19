@@ -62,7 +62,7 @@ public class SimulationOutcomes
 
 	public double proportionTargetWon()
 	{
-		return round(targetMatchesWon / runs);
+		return targetMatchesWon / runs;
 	}
 
 	public double percentageTargetWon()
@@ -72,7 +72,7 @@ public class SimulationOutcomes
 
 	public double proportionOpponentWon()
 	{
-		return round(1 - (proportionTargetWon() + proportionTargetRetirements() + proportionOpponentRetirements()));
+		return 1 - (proportionTargetWon() + proportionTargetRetirements() + proportionOpponentRetirements());
 	}
 
 	public double percentageOpponentWon()
@@ -82,7 +82,7 @@ public class SimulationOutcomes
 
 	public double proportionTargetRetirements()
 	{
-		return round(targetRetirements / runs);
+		return targetRetirements / runs;
 	}
 
 	public double percentageTargetRetirements()
@@ -92,7 +92,7 @@ public class SimulationOutcomes
 
 	public double proportionOpponentRetirements()
 	{
-		return round(opponentRetirements / runs);
+		return opponentRetirements / runs;
 	}
 
 	public double percentageOpponentRetirements()
@@ -102,7 +102,7 @@ public class SimulationOutcomes
 
 	public double proportionTargetRetirementsFirstSet()
 	{
-		return round(targetRetirementsFirstSet / runs);
+		return targetRetirementsFirstSet / runs;
 	}
 
 	public double percentageTargetRetirementsFirstSet()
@@ -112,7 +112,7 @@ public class SimulationOutcomes
 
 	public double proportionOpponentRetirementsFirstSet()
 	{
-		return round(opponentRetirementsFirstSet / runs);
+		return opponentRetirementsFirstSet / runs;
 	}
 
 	public double percentageOpponentRetirementsFirstSet()
@@ -122,7 +122,7 @@ public class SimulationOutcomes
 
 	public double proportionTargetRetirementsAfterFirstSet()
 	{
-		return round((targetRetirements - targetRetirementsFirstSet) / runs);
+		return (targetRetirements - targetRetirementsFirstSet) / runs;
 	}
 
 	public double percentageTargetRetirementsAfterFirstSet()
@@ -132,7 +132,7 @@ public class SimulationOutcomes
 
 	public double proportionOpponentRetirementsAfterFirstSet()
 	{
-		return round((opponentRetirements - opponentRetirementsFirstSet) / runs);
+		return (opponentRetirements - opponentRetirementsFirstSet) / runs;
 	}
 
 	public double percentageOpponentRetirementsAfterFirstSet()
@@ -184,13 +184,6 @@ public class SimulationOutcomes
 			if (matchState.targetWon())
 			{
 				targetMatchesWon++;
-			}
-			else
-			{
-				if(!TestSimulatorWRHypExpRecord.GO)
-				{
-					TestSimulatorWRHypExpRecord.GO = true;
-				}
 			}
 
 			final int targetSets = matchState.getTargetSets();

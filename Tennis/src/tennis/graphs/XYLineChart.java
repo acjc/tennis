@@ -60,6 +60,7 @@ public abstract class XYLineChart extends ApplicationFrame
 	    plot.setBackgroundPaint(Color.white);
 	    plot.setDomainGridlinePaint(Color.lightGray);
 	    plot.setRangeGridlinePaint(Color.lightGray);
+	    plot.getRangeAxis().setRange(0.0, 1.0);
 
 	    final XYSplineRenderer renderer = new XYSplineRenderer();
 	    renderer.setBaseShapesVisible(false);
