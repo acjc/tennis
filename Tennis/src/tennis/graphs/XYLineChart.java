@@ -33,37 +33,56 @@ public abstract class XYLineChart extends ApplicationFrame
 	{
 		final JFreeChart chart = createChart();
 		final ChartPanel chartPanel = new ChartPanel(chart);
-	    chartPanel.setPreferredSize(new Dimension(1000, 570));
+	    chartPanel.setPreferredSize(new Dimension(1200, 670));
 	    setContentPane(chartPanel);
 
-	    ChartUtilities.saveChartAsPNG(new File("graphs\\" + title + ".png"), chart, 1000, 570);
+	    ChartUtilities.saveChartAsPNG(new File("graphs\\" + title + ".png"), chart, 1200, 670);
 	}
 
 	protected abstract XYDataset createDataset() throws IOException;
 
 	protected JFreeChart createChart() throws IOException
 	{
+		final XYDataset dataset = createDataset();
 		final JFreeChart chart = ChartFactory.createXYLineChart(
 			title,
 	        xLabel,
 	        yLabel,
-	        createDataset(),
+	        dataset,
 	        PlotOrientation.VERTICAL,
 	        true,                    			 // legend
 	        true,                     			 // tooltips
 	        false                     			// urls
 	    );
 
-	    chart.setBackgroundPaint(Color.white);
+//	    final TextTitle chartTitle = chart.getTitle();
+//	    chartTitle.setFont(new Font("sansserif", Font.BOLD, 28));
+//
+//		final LegendTitle legend = chart.getLegend();
+//		legend.setItemFont(new Font("serif", Font.BOLD, 24));
+//		legend.setLegendItemGraphicPadding(new RectangleInsets(5, 10, 5, 0));
+//		legend.setItemLabelPadding(new RectangleInsets(5, 10, 5, 10));
 
 	    final XYPlot plot = chart.getXYPlot();
 	    plot.setBackgroundPaint(Color.white);
 	    plot.setDomainGridlinePaint(Color.lightGray);
 	    plot.setRangeGridlinePaint(Color.lightGray);
 	    plot.getRangeAxis().setRange(0.0, 1.0);
-
+//	    plot.getRangeAxis().setLabelFont(new Font("sansserif", Font.BOLD, 24));
+//	    plot.getRangeAxis().setTickLabelFont(new Font("sansserif", Font.PLAIN, 20));
+//	    plot.getDomainAxis().setLabelFont(new Font("sansserif", Font.BOLD, 24));
+//	    plot.getDomainAxis().setTickLabelFont(new Font("sansserif", Font.PLAIN, 20));
+//
 	    final XYSplineRenderer renderer = new XYSplineRenderer();
+//	    final Stroke stroke = new BasicStroke(3.0f);
+//	    for(int i = 0; i < dataset.getSeriesCount(); i++)
+//	    {
+//	         renderer.setSeriesStroke(i, stroke);
+//	    }
+//
+//	    renderer.setLegendLine(new Rectangle(30, 15));
 	    renderer.setBaseShapesVisible(false);
+
 	    plot.setRenderer(renderer);
 
 	    return chart;

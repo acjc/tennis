@@ -15,7 +15,7 @@ public class RoddickHewittCaseStudy
 		final ReadMatch marketChart = new ReadMatch(168, 3, "doc\\roddickhewitt.csv", "roddickhewittmodel",
 				  						            new PlayerOdds("Andy Roddick", "examples\\retirements", "Roddick vs Hewitt - Australian Open 2012 Second Round"),
 				  						            new PlayerOdds("Lleyton Hewitt", "examples\\retirements", "Roddick vs Hewitt - Australian Open 2012 Second Round"),
-				  						            true);
+				  						            true, 0.645);
 		marketChart.buildChart();
 	    marketChart.pack();
 	    RefineryUtilities.centerFrameOnScreen(marketChart);

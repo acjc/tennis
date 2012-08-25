@@ -1,16 +1,16 @@
 package tennis.read;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.data.xy.XYDataset;
@@ -35,7 +35,7 @@ import au.com.bytecode.opencsv.CSVReader;
 
 public class ReadMatch extends OddsChart
 {
-	private final double avgPwp = 0.645;
+	private final double avgPwp;
 	private final int points;
 	private final int numSetsToWin;
 	private final String match;
@@ -47,46 +47,30 @@ public class ReadMatch extends OddsChart
 	public final List<Double> pointLevelRisks = new ArrayList<Double>();
 	public final List<Double> risks = new ArrayList<Double>();
 
-	public ReadMatch(final int points, final int numSetsToWin, final String match, final String savename, final PlayerOdds favourite, final PlayerOdds underdog, final boolean hasRetirement) throws IOException
+	public ReadMatch(final int points, final int numSetsToWin, final String match, final String savename, final PlayerOdds favourite, final PlayerOdds underdog, final boolean hasRetirement, final double avgPwp) throws IOException
 	{
-		super("Evolution of modelled Match Odds markets for " + favourite.getName() + " (" + favourite.getSurname() + " vs. " + underdog.getSurname() + ")", favourite, underdog);
+		super("Evolution of modelled Match Odds markets for " + favourite.getName() + " (" + favourite.getSurname() + " vs. " + underdog.getSurname() + ")", "Point", "Implied Probability", favourite, underdog);
 		this.points = points;
 		this.numSetsToWin = numSetsToWin;
 		this.match = match;
 		this.savename = savename;
 		this.hasRetirement = hasRetirement;
+		this.avgPwp = avgPwp;
 	}
 
 	@Override
-	protected JFreeChart createChart() throws IOException
+	public void buildChart() throws IOException
 	{
-		final JFreeChart chart = ChartFactory.createXYLineChart(
-				title,
-		        "Point",
-		        "Implied Probability",
-		        createDataset(),
-		        PlotOrientation.VERTICAL,
-		        true,                    			 // legend
-		        true,                     			 // tooltips
-		        false                     			// urls
-		    );
-
-	    chart.setBackgroundPaint(Color.white);
-
-	    final XYPlot plot = chart.getXYPlot();
-	    plot.setBackgroundPaint(Color.white);
-	    plot.setDomainGridlinePaint(Color.lightGray);
-	    plot.setRangeGridlinePaint(Color.lightGray);
-	    plot.getRangeAxis().setRange(0.0, 1.0);
-
-	    final XYItemRenderer renderer = plot.getRenderer();
+		final JFreeChart chart = createXYChart();
+		final ChartPanel chartPanel = new ChartPanel(chart);
+		final XYItemRenderer renderer = ((XYPlot) chart.getPlot()).getRenderer();
 	    renderer.setSeriesPaint(0, Color.BLUE);
 	    renderer.setSeriesPaint(1, Color.RED);
-	    renderer.setSeriesPaint(2, Color.ORANGE);
+	    renderer.setSeriesPaint(2, new Color(205, 102, 0));
+	    chartPanel.setPreferredSize(new Dimension(1200, 670));
+	    setContentPane(chartPanel);
 
-	    ChartUtilities.saveChartAsPNG(new File("graphs\\matches\\" + savename + ".png"), chart, 1000, 570);
-
-	    return chart;
+	    ChartUtilities.saveChartAsPNG(new File("graphs\\matches\\" + savename + ".png"), chart, 1200, 670);
 	}
 
 	@Override

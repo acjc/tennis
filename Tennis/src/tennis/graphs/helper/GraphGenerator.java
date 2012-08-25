@@ -5,8 +5,6 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 
 import tennis.graphs.odds.DefaultOddsChart;
-import tennis.graphs.odds.LpmOddsChart;
-import tennis.graphs.odds.SmoothOddsChart;
 
 public class GraphGenerator
 {
@@ -47,10 +45,10 @@ public class GraphGenerator
 
 		new DefaultOddsChart(playerOne, playerTwo).buildChart();
 		new DefaultOddsChart(playerTwo, playerOne).buildChart();
-		new LpmOddsChart(playerOne, playerTwo).buildChart();
-		new LpmOddsChart(playerTwo, playerOne).buildChart();
-		new SmoothOddsChart(playerOne, playerTwo).buildChart();
-		new SmoothOddsChart(playerTwo, playerOne).buildChart();
+//		new LpmOddsChart(playerOne, playerTwo).buildChart();
+//		new LpmOddsChart(playerTwo, playerOne).buildChart();
+//		new SmoothOddsChart(playerOne, playerTwo).buildChart();
+//		new SmoothOddsChart(playerTwo, playerOne).buildChart();
 	}
 
 	private static class MatchOddsFilter implements FilenameFilter

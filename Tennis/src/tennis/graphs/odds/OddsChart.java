@@ -14,7 +14,10 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYItemRenderer;
+import org.jfree.chart.renderer.xy.XYSplineRenderer;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.ui.ApplicationFrame;
 
@@ -28,47 +31,102 @@ public abstract class OddsChart extends ApplicationFrame
 	protected final String title;
 	protected final PlayerOdds favourite;
 	protected final PlayerOdds underdog;
+	private final String xLabel;
+	private final String yLabel;
 
-	public OddsChart(final String title, final PlayerOdds favourite, final PlayerOdds underdog) throws IOException
+	public OddsChart(final String title, final String xLabel, final String yLabel, final PlayerOdds favourite, final PlayerOdds underdog) throws IOException
 	{
 		super(title);
 		this.title = title;
+		this.xLabel = xLabel;
+		this.yLabel = yLabel;
 		this.favourite = favourite;
 		this.underdog = underdog;
 	}
 
 	public void buildChart() throws IOException
 	{
-		final ChartPanel chartPanel = new ChartPanel(createChart());
-	    chartPanel.setPreferredSize(new Dimension(1000, 570));
+		final JFreeChart chart = createTimeChart();
+		final XYItemRenderer renderer = ((XYPlot) chart.getPlot()).getRenderer();
+	    renderer.setSeriesPaint(0, Color.BLUE);
+	    renderer.setSeriesPaint(1, Color.RED);
+	    renderer.setSeriesPaint(2, new Color(87, 107, 47));
+		final ChartPanel chartPanel = new ChartPanel(chart);
+	    chartPanel.setPreferredSize(new Dimension(1200, 670));
 	    setContentPane(chartPanel);
+
+	    ChartUtilities.saveChartAsPNG(new File("graphs\\matches\\" + title + ".png"), chart, 1200, 670);
 	}
 
 	protected abstract XYDataset createDataset() throws FileNotFoundException, IOException;
 
-	protected JFreeChart createChart() throws IOException
+	protected JFreeChart createTimeChart() throws IOException
 	{
-	    final JFreeChart chart = ChartFactory.createTimeSeriesChart(
+	    final XYDataset dataset = createDataset();
+		final JFreeChart chart = ChartFactory.createTimeSeriesChart(
 	    	title,
-	    	"Time",
-	    	"Implied Probability",
-	        createDataset(),
+	    	xLabel,
+	    	yLabel,
+	        dataset,
 	        true,                    			 // legend
 	        true,                     			 // tooltips
 	        false                     			// urls
 	    );
 
-	    chart.setBackgroundPaint(Color.white);
+	    prepareChart(dataset, chart);
+
+	    return chart;
+	}
+
+	protected JFreeChart createXYChart() throws IOException
+	{
+	    final XYDataset dataset = createDataset();
+		final JFreeChart chart = ChartFactory.createXYLineChart(
+	    	title,
+	    	xLabel,
+	    	yLabel,
+	        dataset,
+	        PlotOrientation.VERTICAL,
+	        true,                    			 // legend
+	        true,                     			 // tooltips
+	        false                     			// urls
+	    );
+
+	    prepareChart(dataset, chart);
+
+	    return chart;
+	}
+
+	private void prepareChart(final XYDataset dataset, final JFreeChart chart)
+	{
+//	    final TextTitle chartTitle = chart.getTitle();
+//	    chartTitle.setFont(new Font("sansserif", Font.BOLD, 28));
+//
+//		final LegendTitle legend = chart.getLegend();
+//		legend.setItemFont(new Font("serif", Font.BOLD, 24));
+//		legend.setLegendItemGraphicPadding(new RectangleInsets(5, 10, 5, 0));
+//		legend.setItemLabelPadding(new RectangleInsets(5, 10, 5, 10));
 
 	    final XYPlot plot = chart.getXYPlot();
 	    plot.setBackgroundPaint(Color.white);
 	    plot.setDomainGridlinePaint(Color.lightGray);
 	    plot.setRangeGridlinePaint(Color.lightGray);
-	    plot.getRangeAxis().setRange(0.0, 1.0);
+//	    plot.getRangeAxis().setRange(0.0, 1.0);
+//	    plot.getRangeAxis().setLabelFont(new Font("sansserif", Font.BOLD, 24));
+//	    plot.getRangeAxis().setTickLabelFont(new Font("sansserif", Font.PLAIN, 20));
+//	    plot.getDomainAxis().setLabelFont(new Font("sansserif", Font.BOLD, 24));
+//	    plot.getDomainAxis().setTickLabelFont(new Font("sansserif", Font.PLAIN, 20));
+//
+	    final XYSplineRenderer renderer = new XYSplineRenderer();
+//	    final Stroke stroke = new  BasicStroke(3.0f);
+//	    for(int i = 0; i < dataset.getSeriesCount(); i++)
+//	    {
+//	         renderer.setSeriesStroke(i, stroke);
+//	    }
+//	    renderer.setLegendLine(new Rectangle(30, 10));
+	    renderer.setBaseShapesVisible(false);
 
-	    ChartUtilities.saveChartAsPNG(new File("graphs\\matches\\" + title + ".png"), chart, 1000, 570);
-
-	    return chart;
+	    plot.setRenderer(renderer);
 	}
 
 	private boolean endOfData(final List<String[]> oddsData)

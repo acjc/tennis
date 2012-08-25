@@ -20,7 +20,7 @@ public class LpmOddsChart extends OddsChart
 {
 	public LpmOddsChart(final PlayerOdds favourite, final PlayerOdds underdog) throws IOException
 	{
-		super("Evolution of Betfair LPM odds data for " + favourite.getName() + " (" + favourite.getSurname() + " vs. " + underdog.getSurname() + ")", favourite, underdog);
+		super("Evolution of Betfair LPM odds data for " + favourite.getName() + " (" + favourite.getSurname() + " vs. " + underdog.getSurname() + ")", "Time", "Implied Probability", favourite, underdog);
 	}
 
 	@Override

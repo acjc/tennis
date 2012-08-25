@@ -15,7 +15,7 @@ public class AzarenkaSharapovaCaseStudy
 		final ReadMatch marketChart = new ReadMatch(93, 2, "doc\\azarenkasharapova.csv", "azarenkasharapovamodel",
 											        new PlayerOdds("Victoria Azarenka", "examples\\retirements", "Azarenka vs Sharapova - Rome Masters 2011 Quarter Final"),
 											        new PlayerOdds("Maria Sharapova", "examples\\retirements", "Azarenka vs Sharapova - Rome Masters 2011 Quarter Final"),
-											        true);
+											        true, 0.560);
 		marketChart.buildChart();
 	    marketChart.pack();
 	    RefineryUtilities.centerFrameOnScreen(marketChart);

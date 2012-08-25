@@ -15,7 +15,7 @@ public class NadalFerrerCaseStudy
 		final ReadMatch marketChart = new ReadMatch(168, 3, "doc\\nadalferrer.csv", "nadalferrermodel",
 											        new PlayerOdds("Rafael Nadal", "examples\\treatment", "Nadal vs Ferrer - Australian Open 2011 Quarter Final"),
 											        new PlayerOdds("David Ferrer", "examples\\treatment", "Nadal vs Ferrer - Australian Open 2011 Quarter Final"),
-													false);
+													false, 0.645);
 		marketChart.buildChart();
 	    marketChart.pack();
 	    RefineryUtilities.centerFrameOnScreen(marketChart);

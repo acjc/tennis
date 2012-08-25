@@ -39,7 +39,7 @@ public class PlayArtificialMatch extends XYLineChart
 
 	public PlayArtificialMatch(final String file, final String savename) throws IOException
 	{
-		super("Evolution of modelled Match Odds markets for an artificial match", "Point", "Match-winning Probability (MWP)");
+		super("Evolution of modelled Match Odds markets for an artificial match", "Point", "Match-winning Probability");
 		this.file = file;
 		this.savename = savename;
 	}
@@ -49,23 +49,22 @@ public class PlayArtificialMatch extends XYLineChart
 	{
 		final JFreeChart chart = createChart();
 		final ChartPanel chartPanel = new ChartPanel(chart);
-		((XYPlot) chart.getPlot()).getRangeAxis().setRange(0, 1);
 	    final XYItemRenderer renderer = ((XYPlot) chart.getPlot()).getRenderer();
 	    renderer.setSeriesPaint(0, Color.BLUE);
 	    renderer.setSeriesPaint(1, Color.RED);
-	    renderer.setSeriesPaint(2, Color.ORANGE);
-	    chartPanel.setPreferredSize(new Dimension(1000, 570));
+	    renderer.setSeriesPaint(2, new Color(205, 102, 0));
+	    chartPanel.setPreferredSize(new Dimension(1200, 670));
 	    setContentPane(chartPanel);
 
-	    ChartUtilities.saveChartAsPNG(new File("graphs\\" + savename + ".png"), chart, 1000, 570);
+	    ChartUtilities.saveChartAsPNG(new File("graphs\\" + savename + ".png"), chart, 1200, 670);
 	}
 
 	@Override
 	protected XYDataset createDataset() throws IOException
 	{
-		final XYSeries mwpNoRiskSeries = new XYSeries("No Risk MWP");
-		final XYSeries mwpWRAfterFirstSetSeries = new XYSeries("Payout After First Set MWP");
-		final XYSeries mwpWRAfterOneBallSeries = new XYSeries("Payout After One Ball MWP");
+		final XYSeries mwpNoRiskSeries = new XYSeries("No Risk Market");
+		final XYSeries mwpWRAfterFirstSetSeries = new XYSeries("Payout After First Set Market");
+		final XYSeries mwpWRAfterOneBallSeries = new XYSeries("Payout After One Ball Market");
 		final CSVReader reader = new CSVReader(new FileReader(file));
 		final SimulatorWRHyperExp simulator = new SimulatorWRHyperExp(chance, lambda, decay, true);
 		int index = 0;

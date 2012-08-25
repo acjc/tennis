@@ -20,7 +20,7 @@ public class SmoothOddsChart extends OddsChart
 {
 	public SmoothOddsChart(final PlayerOdds favourite, final PlayerOdds underdog) throws IOException
 	{
-		super("'Smoothed' evolution of Betfair odds data for " + favourite.getName() + " (" + favourite.getSurname() + " vs. " + underdog.getSurname() + ")", favourite, underdog);
+		super("'Smoothed' evolution of Betfair odds data for " + favourite.getName() + " (" + favourite.getSurname() + " vs. " + underdog.getSurname() + ")", "Time", "Implied Probability", favourite, underdog);
 	}
 
 	@Override

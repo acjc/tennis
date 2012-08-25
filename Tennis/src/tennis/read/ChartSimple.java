@@ -1,16 +1,9 @@
 package tennis.read;
 
-import java.awt.Color;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartUtilities;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -28,35 +21,8 @@ public class ChartSimple extends OddsChart
 
 	public ChartSimple(final String title, final int points, final PlayerOdds favourite, final PlayerOdds underdog) throws IOException
 	{
-		super(title, favourite, underdog);
+		super(title, "Time", "Implied Probability", favourite, underdog);
 		this.points = points;
-	}
-
-	@Override
-	protected JFreeChart createChart() throws IOException
-	{
-		final JFreeChart chart = ChartFactory.createXYLineChart(
-				title,
-		        "Point",
-		        "Implied Probability",
-		        createDataset(),
-		        PlotOrientation.VERTICAL,
-		        true,                    			 // legend
-		        true,                     			 // tooltips
-		        false                     			// urls
-		    );
-
-	    chart.setBackgroundPaint(Color.white);
-
-	    final XYPlot plot = chart.getXYPlot();
-	    plot.setBackgroundPaint(Color.white);
-	    plot.setDomainGridlinePaint(Color.lightGray);
-	    plot.setRangeGridlinePaint(Color.lightGray);
-	    plot.getRangeAxis().setRange(0.0, 1.2);
-
-	    ChartUtilities.saveChartAsPNG(new File("graphs\\matches\\" + title + ".png"), chart, 1000, 570);
-
-	    return chart;
 	}
 
 	@Override

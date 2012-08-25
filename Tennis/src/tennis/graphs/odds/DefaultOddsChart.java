@@ -20,7 +20,7 @@ public class DefaultOddsChart extends OddsChart
 {
 	public DefaultOddsChart(final PlayerOdds favourite, final PlayerOdds underdog) throws IOException
 	{
-		super("Evolution of Betfair odds data for " + favourite.getName() + " (" + favourite.getSurname() + " vs. " + underdog.getSurname() + ")", favourite, underdog);
+		super("Evolution of Betfair odds data for " + favourite.getName() + " (" + favourite.getSurname() + " vs. " + underdog.getSurname() + ")", "Time", "Implied Probability", favourite, underdog);
 	}
 
 	@Override
@@ -62,8 +62,8 @@ public class DefaultOddsChart extends OddsChart
 //			new PrintStream(fout).println(favouriteMatchOddsData.get(0)[DATE_INDEX] + ", " + favouriteMatchOddsData.get(0)[LPM_INDEX]);
 	    }
 
-	    dataset.addSeries(matchOddsSeries);
 	    dataset.addSeries(setBettingSeries);
+	    dataset.addSeries(matchOddsSeries);
 	    dataset.addSeries(oddsDifferenceSeries);
 
 		return dataset;

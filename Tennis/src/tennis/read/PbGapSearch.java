@@ -34,7 +34,7 @@ public class PbGapSearch
 
 	public static void main(final String[] args)
 	{
-		System.out.println(new PbGapSearch(0.375, 0, 0, 0, 0, 0, 0, true, 3).search());
+		System.out.println(new PbGapSearch(0.8518885448916409, 0, 0, 2, 1, 0, 1, false, 2).search());
 	}
 
 	public double search()
