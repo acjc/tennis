@@ -2,8 +2,12 @@ package tennis.graphs.odds;
 
 import static tennis.graphs.helper.PlayerOdds.*;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Rectangle;
+import java.awt.Stroke;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -18,8 +22,11 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYSplineRenderer;
+import org.jfree.chart.title.LegendTitle;
+import org.jfree.chart.title.TextTitle;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.ui.ApplicationFrame;
+import org.jfree.ui.RectangleInsets;
 
 import tennis.graphs.helper.MatchOdds;
 import tennis.graphs.helper.PlayerOdds;
@@ -99,33 +106,39 @@ public abstract class OddsChart extends ApplicationFrame
 
 	private void prepareChart(final XYDataset dataset, final JFreeChart chart)
 	{
-//	    final TextTitle chartTitle = chart.getTitle();
-//	    chartTitle.setFont(new Font("sansserif", Font.BOLD, 28));
-//
-//		final LegendTitle legend = chart.getLegend();
-//		legend.setItemFont(new Font("serif", Font.BOLD, 24));
-//		legend.setLegendItemGraphicPadding(new RectangleInsets(5, 10, 5, 0));
-//		legend.setItemLabelPadding(new RectangleInsets(5, 10, 5, 10));
+	    final TextTitle chartTitle = chart.getTitle();
+	    chartTitle.setFont(new Font("sansserif", Font.BOLD, 28));
+		chart.setBackgroundPaint(new Color(255, 255, 255, 0));
+		chart.setBackgroundImageAlpha(0.0f);
+
+		final LegendTitle legend = chart.getLegend();
+		legend.setItemFont(new Font("serif", Font.BOLD, 24));
+		legend.setLegendItemGraphicPadding(new RectangleInsets(5, 10, 5, 0));
+		legend.setItemLabelPadding(new RectangleInsets(5, 10, 5, 10));
+		legend.setBackgroundPaint(new Color(255, 255, 255, 0));
 
 	    final XYPlot plot = chart.getXYPlot();
-	    plot.setBackgroundPaint(Color.white);
+	    plot.setBackgroundPaint(new Color(255, 255, 255, 0));
+	    plot.setBackgroundImageAlpha(0.0f);
 	    plot.setDomainGridlinePaint(Color.lightGray);
 	    plot.setRangeGridlinePaint(Color.lightGray);
-//	    plot.getRangeAxis().setRange(0.0, 1.0);
-//	    plot.getRangeAxis().setLabelFont(new Font("sansserif", Font.BOLD, 24));
-//	    plot.getRangeAxis().setTickLabelFont(new Font("sansserif", Font.PLAIN, 20));
-//	    plot.getDomainAxis().setLabelFont(new Font("sansserif", Font.BOLD, 24));
-//	    plot.getDomainAxis().setTickLabelFont(new Font("sansserif", Font.PLAIN, 20));
-//
-	    final XYSplineRenderer renderer = new XYSplineRenderer();
-//	    final Stroke stroke = new  BasicStroke(3.0f);
-//	    for(int i = 0; i < dataset.getSeriesCount(); i++)
-//	    {
-//	         renderer.setSeriesStroke(i, stroke);
-//	    }
-//	    renderer.setLegendLine(new Rectangle(30, 10));
-	    renderer.setBaseShapesVisible(false);
 
+	    plot.getRangeAxis().setRange(0.0, 1.0);
+	    plot.getRangeAxis().setLabelFont(new Font("sansserif", Font.BOLD, 24));
+	    plot.getRangeAxis().setTickLabelFont(new Font("sansserif", Font.PLAIN, 20));
+	    plot.getDomainAxis().setLabelFont(new Font("sansserif", Font.BOLD, 24));
+	    plot.getDomainAxis().setTickLabelFont(new Font("sansserif", Font.PLAIN, 20));
+
+	    final XYSplineRenderer renderer = new XYSplineRenderer();
+
+	    final Stroke stroke = new  BasicStroke(3.0f);
+	    for(int i = 0; i < dataset.getSeriesCount(); i++)
+	    {
+	         renderer.setSeriesStroke(i, stroke);
+	    }
+	    renderer.setLegendLine(new Rectangle(30, 10));
+
+	    renderer.setBaseShapesVisible(false);
 	    plot.setRenderer(renderer);
 	}
 

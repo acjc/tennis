@@ -102,6 +102,5 @@ public class DataDownloader
 			os.close();
 			in.close();
 		}
-
 	}
 }

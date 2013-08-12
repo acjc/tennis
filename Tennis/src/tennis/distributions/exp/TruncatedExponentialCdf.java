@@ -1,5 +1,6 @@
 package tennis.distributions.exp;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.io.File;
 import java.io.IOException;
@@ -30,12 +31,23 @@ public class TruncatedExponentialCdf extends XYLineChart
 	public void buildChart() throws IOException
 	{
 		final JFreeChart chart = createChart();
-		final ChartPanel chartPanel = new ChartPanel(chart);
-		((XYPlot) chart.getPlot()).getRangeAxis().setRange(0, 1.2);
+		chart.setBackgroundPaint(new Color(255, 255, 255, 0));
+		chart.setBackgroundImageAlpha(0.0f);
+		chart.getLegend().setBackgroundPaint(new Color(255, 255, 255, 0));
+
+		final XYPlot plot = (XYPlot) chart.getPlot();
+		plot.getRangeAxis().setRange(0, 1.2);
+		plot.setBackgroundPaint(new Color(255, 255, 255, 0));
+	    plot.setBackgroundImageAlpha(0.0f);
+
 	    final XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
 	    renderer.setBaseShapesVisible(true);
-	    ((XYPlot) chart.getPlot()).setRenderer(renderer);
+
+	    plot.setRenderer(renderer);
+
+	    final ChartPanel chartPanel = new ChartPanel(chart);
 	    chartPanel.setPreferredSize(new Dimension(1000, 570));
+
 	    setContentPane(chartPanel);
 
 	    ChartUtilities.saveChartAsPNG(new File("graphs\\" + title + ".png"), chart, 1000, 570);
